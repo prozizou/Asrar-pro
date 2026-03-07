@@ -2,22 +2,33 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon App Menu</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kanzou App</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f1717">
 </head>
 <body>
+
+    <div id="splash-screen">
+        <div class="splash-content">
+            <div class="loader"></div>
+            <h1>Initialisation</h1>
+        </div>
+    </div>
 
     <div class="container">
         <header>
             <h1 id="categoryTitle">Menu Principal</h1>
+            <div class="search-area">
+                <input type="text" id="searchInput" placeholder="Rechercher..." onkeyup="filtrerElements()">
+                <button id="resetOrderBtn" onclick="reinitialiserOrdre()">Réinitialiser l'ordre</button>
+            </div>
         </header>
 
         <div class="menu-grid" id="menuGrid">
-            <p style="text-align: center; grid-column: span 2;">Chargement des données...</p>
-        </div>
-
-        </div>
+            </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
