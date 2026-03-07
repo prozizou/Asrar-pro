@@ -1,12 +1,12 @@
 body { background: #0c0f0f; color: white; margin: 0; font-family: sans-serif; }
 .asrar-layout { display: flex; height: 100vh; }
-.asrar-sidebar { width: 105px; background: #141a1a; display: flex; flex-direction: column; align-items: center; padding-top: 20px; border-right: 1px solid #222; }
+.asrar-sidebar { width: 100px; background: #141a1a; padding-top: 20px; display: flex; flex-direction: column; align-items: center; border-right: 1px solid #222; }
 .back-btn { background: none; border: none; color: #4fd1c5; font-size: 1.5rem; cursor: pointer; margin-bottom: 20px; }
-#side-menu button { width: 90px; padding: 12px 5px; margin-bottom: 10px; background: #1e2727; border: 1px solid #2d3e3e; color: #90a4ae; border-radius: 6px; font-size: 0.65rem; cursor: pointer; }
-#side-menu button.active { border-left: 4px solid #2196f3; color: white; background: #2d3e3e; }
+#side-menu button { width: 85px; padding: 10px 5px; margin-bottom: 8px; background: #1e2727; border: 1px solid #333; color: #999; border-radius: 5px; font-size: 0.6rem; cursor: pointer; }
+#side-menu button.active { border-left: 3px solid #2196f3; color: white; background: #222; }
 .asrar-content { flex: 1; overflow-y: auto; padding: 20px; }
-.v-list { display: flex; flex-direction: column; align-items: center; gap: 40px; }
-.asrar-card { width: 100%; max-width: 250px; text-align: center; }
-.img-box { background: white; border-radius: 12px; height: 210px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+.v-list { display: flex; flex-direction: column; align-items: center; gap: 30px; }
+.asrar-card { width: 220px; text-align: center; }
+.img-box { background: white; border-radius: 12px; height: 200px; display: flex; align-items: center; justify-content: center; }
 .img-box img { width: 85%; height: 85%; object-fit: contain; }
-.asrar-card p { font-size: 0.75rem; font-weight: bold; text-transform: uppercase; color: #eceff1; }
+.asrar-card p { font-size: 0.8rem; font-weight: bold; margin-top: 10px; text-transform: uppercase; }
