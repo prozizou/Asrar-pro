@@ -9,22 +9,70 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 </head>
 <body>
-
     <div class="asrar-layout">
         <aside class="asrar-sidebar">
-            <div class="top-section">
-                <button onclick="window.location.href='index.html'" class="back-home">⬅</button>
-                <div class="notif-badge">15</div>
-            </div>
-            <nav id="asrar-nav-menu"></nav>
+            <button onclick="window.location.href='index.html'" class="back-btn">⬅</button>
+            <div class="badge">15</div>
+            <nav id="side-menu"></nav>
         </aside>
 
         <main class="asrar-content">
-            <div id="asrar-vertical-list" class="vertical-scroll">
-                </div>
+            <div id="vertical-list" class="v-list"></div>
         </main>
     </div>
 
-    <script src="asrar.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBLzPKzbiNYitUz7sv9Ftqm0oF20rA32Zk",
+            authDomain: "asrar-bc059.firebaseapp.com",
+            databaseURL: "https://asrar-bc059.firebaseio.com",
+            projectId: "asrar-bc059",
+            storageBucket: "asrar-bc059.appspot.com",
+            appId: "1:199810893447:android:044629472e10f9eb68da22"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        const params = new URLSearchParams(window.location.search);
+        let currentCat = params.get('cat') || 'asrar';
+
+        db.ref('/').on('value', (snapshot) => {
+            const data = snapshot.val();
+            renderSidebar(data);
+            renderList(data[currentCat]);
+        });
+
+        function renderSidebar(data) {
+            const menu = document.getElementById('side-menu');
+            menu.innerHTML = '';
+            Object.keys(data).forEach(cat => {
+                const btn = document.createElement('button');
+                btn.innerText = cat;
+                if(cat === currentCat) btn.className = 'active';
+                btn.onclick = () => {
+                    currentCat = cat;
+                    window.history.pushState({}, '', `?cat=${cat}`);
+                    renderSidebar(data);
+                    renderList(data[cat]);
+                };
+                menu.appendChild(btn);
+            });
+        }
+
+        function renderList(items) {
+            const list = document.getElementById('vertical-list');
+            list.innerHTML = '';
+            if(!items) return;
+            Object.values(items).forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'asrar-card';
+                card.innerHTML = `
+                    <div class="img-box"><img src="${item.image}"></div>
+                    <p>${item.titre}</p>
+                `;
+                list.appendChild(card);
+            });
+        }
+    </script>
 </body>
 </html>
