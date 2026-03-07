@@ -3,99 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kanzou - Accueil</title>
+    <title>Kanzou - Accueil Officiel</title>
     <style>
-        /* STYLE CSS INTÉGRÉ */
         :root {
             --bg: #0f172a;
             --card: #1e293b;
             --text: #f8fafc;
             --accent: #38bdf8;
+            --gold: #fbbf24;
         }
 
         body {
             background-color: var(--bg);
             color: var(--text);
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             margin: 0;
+            padding: 20px 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             min-height: 100vh;
         }
 
-        h1 { margin-bottom: 30px; font-weight: 800; letter-spacing: -1px; }
+        h1 { 
+            font-size: 1.8rem; 
+            font-weight: 800; 
+            letter-spacing: 2px; 
+            margin-bottom: 30px;
+            color: var(--text);
+            text-transform: uppercase;
+        }
 
         .menu-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 15px;
-            width: 90%;
-            max-width: 400px;
+            width: 92%;
+            max-width: 500px;
         }
 
-        /* La carte de base */
+        /* Style des cartes */
         .menu-item {
             background: var(--card);
-            padding: 20px;
             border-radius: 24px;
-            text-align: center;
+            overflow: hidden;
             border: 1px solid rgba(255,255,255,0.05);
-            transition: 0.3s;
-            cursor: default; /* Par défaut, pas de curseur de lien */
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Style spécifique pour le bouton cliquable Asrar */
-        .clickable-asrar {
+        .image-container {
+            width: 100%;
+            height: 120px;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.8;
+            transition: 0.3s;
+        }
+
+        .title-box {
+            padding: 12px;
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            background: var(--card);
+        }
+
+        /* État cliquable uniquement pour ASRAR (ID: 1) */
+        .clickable {
             cursor: pointer;
             border: 1px solid var(--accent);
-            box-shadow: 0 10px 20px rgba(56, 189, 248, 0.1);
+            box-shadow: 0 10px 20px rgba(56, 189, 248, 0.15);
         }
 
-        .clickable-asrar:active {
-            transform: scale(0.95);
-            background: rgba(56, 189, 248, 0.1);
+        .clickable:active {
+            transform: scale(0.96);
         }
 
-        .icon { font-size: 2rem; margin-bottom: 10px; display: block; }
-        .label { font-size: 0.9rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+        .clickable img {
+            opacity: 1 !important;
+        }
 
-        .disabled { opacity: 0.5; filter: grayscale(1); }
+        .clickable .title-box {
+            color: var(--accent);
+        }
+
+        /* Badge pour le bouton principal */
+        .badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--gold);
+            color: black;
+            font-size: 0.6rem;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-weight: 900;
+        }
+
+        /* Autres boutons (Inactifs pour l'instant) */
+        .locked {
+            opacity: 0.7;
+            filter: grayscale(0.5);
+        }
     </style>
 </head>
 <body>
 
     <h1>KANZOU</h1>
 
-    <div class="menu-grid">
-        <div class="menu-item clickable-asrar" onclick="goToAsrar()">
-            <span class="icon">✨</span>
-            <span class="label">Asrar</span>
+    <div class="menu-grid" id="main-menu">
         </div>
-
-        <div class="menu-item disabled">
-            <span class="icon">📚</span>
-            <span class="label">Zikr</span>
-        </div>
-
-        <div class="menu-item disabled">
-            <span class="icon">📅</span>
-            <span class="label">Horaires</span>
-        </div>
-
-        <div class="menu-item disabled">
-            <span class="icon">⚙️</span>
-            <span class="label">Profil</span>
-        </div>
-    </div>
 
     <script>
-        /* LOGIQUE JAVASCRIPT */
-        function goToAsrar() {
-            // Seule cette fonction déclenche la redirection
-            window.location.href = 'asrar.html';
-        }
+        // Vos données JSON officielles
+        const data = {
+          "asrar": [
+            { "id": 1, "titre": "Asrar", "image": "https://i.ibb.co/mryjJvhR/40688297-mystique-alchimique-cercle-secret-la-magie-cercle-pour-breloques-vectoriel.jpg" },
+            { "id": 2, "titre": "Bibliothèque", "image": "https://i.ibb.co/zWf4zhFR/pile-livres-colores-1308-171741.jpg" },
+            { "id": 3, "titre": "Marché & Services", "image": "https://i.ibb.co/933WytbF/a-shop-logo-little-town-market-11042322-png-sw800.png" },
+            { "id": 4, "titre": "Planètes", "image": "https://i.ibb.co/5XHS58hc/saatan-ornament.png" },
+            { "id": 5, "titre": "Chiffres", "image": "https://i.ibb.co/nqwHmSPh/61y8x3rk-XAL-AC-UF1000-1000-QL80.jpg" },
+            { "id": 6, "titre": "Abajad", "image": "https://i.ibb.co/G35RKtJ7/9b0701045eeefb2a23fc82c027b80636-fgraphic.png" },
+            { "id": 7, "titre": "Applications", "image": "https://i.ibb.co/xSWbhgYZ/What-Google-is-telling-app-developers-to-do-will-make-the-Play-Store-look-better.png" },
+            { "id": 8, "titre": "Consultation", "image": "https://i.ibb.co/Rkc7wGWj/symbole-medical-plat-23-2149496593.jpg" }
+          ]
+        };
+
+        const menuContainer = document.getElementById('main-menu');
+
+        data.asrar.forEach(item => {
+            const card = document.createElement('div');
+            
+            // Logique de distinction : Seul l'ID 1 est cliquable
+            if(item.id === 1) {
+                card.className = 'menu-item clickable';
+                card.onclick = () => window.location.href = 'asrar.html';
+                card.innerHTML = `<div class="badge">OPEN</div>`;
+            } else {
+                card.className = 'menu-item locked';
+                card.onclick = () => console.log(item.titre + " est verrouillé");
+            }
+
+            card.innerHTML += `
+                <div class="image-container">
+                    <img src="${item.image}" alt="${item.titre}">
+                </div>
+                <div class="title-box">${item.titre}</div>
+            `;
+            
+            menuContainer.appendChild(card);
+        });
     </script>
 </body>
 </html>
