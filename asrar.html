@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#0c0f0f">
-    <title>ASRAR PRO V2 - Premium Glass</title>
+    <title>ASRAR PRO V2 - Stable Edition</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
@@ -12,7 +12,7 @@
     <style>
         :root {
             --couleur-fond: #0c0f0f;
-            --couleur-sidebar: rgba(29, 37, 37, 0.7); /* Transparence pour le verre */
+            --couleur-sidebar: #1d2525;
             --couleur-accent: #2196f3;
             --safe-top: env(safe-area-inset-top);
             --safe-bottom: env(safe-area-inset-bottom);
@@ -22,11 +22,9 @@
             background-color: var(--couleur-fond); 
             color: white; 
             margin: 0; 
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            font-family: Arial, sans-serif; 
             overflow: hidden;
             position: fixed; width: 100%; height: 100%;
-            /* Fond avec un léger dégradé pour accentuer l'effet de profondeur */
-            background: radial-gradient(circle at top right, #1a2a2a, #0c0f0f);
         }
 
         .asrar-layout { 
@@ -36,35 +34,26 @@
             padding-bottom: var(--safe-bottom);
         }
 
-        /* SIDEBAR GLASSMORPHISM */
+        /* Sidebar Classique */
         .asrar-sidebar { 
-            width: 105px; 
+            width: 110px; 
             background: var(--couleur-sidebar); 
-            backdrop-filter: blur(15px); /* L'effet de flou crucial */
-            -webkit-backdrop-filter: blur(15px);
             display: flex; 
             flex-direction: column; 
             align-items: center; 
             padding-top: 20px;
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
-            z-index: 100;
+            border-right: 1px solid #222;
         }
 
         .btn-nav { 
-            width: 85px; padding: 12px 2px; margin-bottom: 12px; 
-            background: rgba(44, 54, 54, 0.6); border: 1px solid rgba(255,255,255,0.05); 
-            color: #90a4ae; border-radius: 10px; font-size: 0.65rem; cursor: pointer; 
-            transition: all 0.3s ease;
+            width: 90px; padding: 12px 2px; margin-bottom: 10px; 
+            background: #2c3636; border: none; color: #90a4ae; 
+            border-radius: 6px; font-size: 0.65rem; cursor: pointer; 
         }
 
-        .btn-nav.active { 
-            background: var(--couleur-accent); 
-            color: white; 
-            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.4);
-            transform: scale(1.05);
-        }
+        .btn-nav.active { border-left: 4px solid var(--couleur-accent); background: #3e4e4e; color: white; }
 
-        /* MAIN CONTENT */
+        /* Zone Principale */
         .asrar-main { 
             flex: 1; 
             overflow-y: auto; 
@@ -72,96 +61,67 @@
             display: flex; 
             flex-direction: column; 
             align-items: center;
-            scroll-behavior: smooth;
         }
         .asrar-main::-webkit-scrollbar { display: none; }
 
-        /* BARRE DE RECHERCHE GLASS */
         .search-box { 
-            width: 100%; max-width: 320px; 
-            position: sticky; top: 0; z-index: 50; 
-            padding-bottom: 25px;
+            width: 100%; max-width: 300px; 
+            position: sticky; top: 0; z-index: 10; 
+            background: var(--couleur-fond); padding-bottom: 20px; 
         }
 
         #searchInput { 
-            width: 100%; padding: 14px; border-radius: 30px; 
-            border: 1px solid rgba(255,255,255,0.1); 
-            background: rgba(26, 26, 26, 0.8); 
-            backdrop-filter: blur(10px);
-            color: white; outline: none; text-align: center;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            width: 100%; padding: 12px; border-radius: 25px; 
+            border: 1px solid #333; background: #1a1a1a; 
+            color: white; outline: none; text-align: center; 
         }
 
-        /* CARTES & SHIMMER */
-        .vertical-feed { display: flex; flex-direction: column; align-items: center; gap: 45px; width: 100%; }
-        
-        .secret-card { 
-            width: 100%; max-width: 280px; text-align: center; cursor: pointer; 
-            transition: transform 0.3s ease;
-        }
-        .secret-card:active { transform: scale(0.95); }
+        /* Cartes & Shimmer */
+        .vertical-feed { display: flex; flex-direction: column; align-items: center; gap: 40px; width: 100%; }
+        .secret-card { width: 100%; max-width: 260px; text-align: center; cursor: pointer; }
 
         .card-img-box {
-            border-radius: 20px; padding: 8px; border: 1px solid rgba(255,255,255,0.1); 
-            height: 260px; display: flex; align-items: center; justify-content: center; 
-            position: relative; overflow: hidden; background: #fff;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            border-radius: 12px; padding: 5px; border: 1px solid #666; height: 240px; 
+            display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
+            background: #fff;
         }
 
         .loading-shimmer {
-            background-color: #f0f0f0;
-            background-image: linear-gradient(90deg, #f0f0f0 0%, #e0e0e0 20%, #f0f0f0 40%, #f0f0f0 100%);
-            background-repeat: no-repeat; background-size: 800px 260px;
+            background-color: #f6f7f8;
+            background-image: linear-gradient(90deg, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
+            background-repeat: no-repeat; background-size: 800px 240px;
             animation: shimmer 2s infinite linear;
         }
 
         .loading-shimmer::after {
             content: ""; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent);
-            animation: glide 2.5s infinite linear;
+            animation: glide 3s infinite;
         }
 
         @keyframes shimmer { 0% { background-position: -468px 0; } 100% { background-position: 468px 0; } }
         @keyframes glide { 0% { left: -100%; } 100% { left: 100%; } }
 
-        .card-img-box img { max-width: 92%; max-height: 92%; object-fit: contain; opacity: 0; transition: opacity 0.8s ease-in; }
+        .card-img-box img { max-width: 95%; max-height: 95%; object-fit: contain; opacity: 0; transition: opacity 0.7s; }
         .img-loaded { opacity: 1 !important; }
         
-        .card-label { 
-            margin-top: 15px; font-size: 0.8rem; font-weight: 600; 
-            color: rgba(255,255,255,0.9); letter-spacing: 0.8px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-        }
+        .card-label { margin-top: 12px; font-size: 0.75rem; font-weight: bold; color: #eceff1; }
 
-        .btn-load-more { 
-            background: rgba(33, 150, 243, 0.1); color: var(--couleur-accent); 
-            border: 1px solid var(--couleur-accent); padding: 14px 40px; 
-            border-radius: 30px; margin: 40px 0; cursor: pointer; font-weight: bold;
-            transition: 0.3s;
-        }
-        .btn-load-more:active { background: var(--couleur-accent); color: white; }
+        .btn-load-more { background: #2c3636; color: var(--couleur-accent); border: 1px solid var(--couleur-accent); padding: 12px 30px; border-radius: 25px; margin: 30px 0; cursor: pointer; font-weight: bold; }
 
-        /* MODALE PREMIUM */
-        .modal-overlay { 
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
-            z-index: 1000; align-items: center; justify-content: center; padding: 20px;
-        }
-        .modal-card { 
-            background: rgba(30, 30, 30, 0.9); border: 1px solid rgba(255,255,255,0.1);
-            width: 100%; max-width: 500px; padding: 30px; border-radius: 25px; 
-            max-height: 85vh; overflow-y: auto; box-shadow: 0 25px 50px rgba(0,0,0,0.6);
-        }
-        .detail-img img { width: 100%; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
-        .detail-txt { color: #e0e0e0; line-height: 1.8; font-size: 1.1rem; white-space: pre-wrap; }
-        .btn-fermer { background: var(--couleur-accent); color: white; border: none; padding: 16px; border-radius: 12px; margin-top: 30px; width: 100%; cursor: pointer; font-weight: bold; }
+        /* Modale */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+        .modal-card { background: #1a1a1a; width: 100%; max-width: 500px; padding: 25px; border-radius: 20px; max-height: 90vh; overflow-y: auto; }
+        .detail-img img { width: 100%; border-radius: 12px; }
+        .detail-txt { color: #ccc; line-height: 1.8; font-size: 1.05rem; margin-top: 20px; white-space: pre-wrap; }
+        .btn-fermer { background: var(--couleur-accent); color: white; border: none; padding: 15px; border-radius: 8px; margin-top: 25px; width: 100%; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div class="asrar-layout">
         <aside class="asrar-sidebar">
-            <button onclick="window.location.href='index.html'" style="background:none; border:none; color:#4fd1c5; font-size:2rem; cursor:pointer; margin-bottom:30px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));">⬅</button>
+            <button onclick="window.location.href='index.html'" style="background:none; border:none; color:#4fd1c5; font-size:1.8rem; cursor:pointer; margin-bottom:25px;">⬅</button>
             <nav id="nav-categories">
                 <button onclick="changerCategorie('db_sirr_protection', this)" class="btn-nav active">Protections</button>
                 <button onclick="changerCategorie('db_sirr_ouverture', this)" class="btn-nav">Ouvertures</button>
@@ -176,16 +136,16 @@
                 <input type="text" id="searchInput" placeholder="🔍 Rechercher un secret..." onkeyup="filtrerListe()">
             </div>
             <div id="container-liste" class="vertical-feed"></div>
-            <button id="loadMoreBtn" class="btn-load-more" onclick="chargerData()" style="display:none;">VOIR PLUS DE SECRETS</button>
+            <button id="loadMoreBtn" class="btn-load-more" onclick="chargerData()" style="display:none;">CHARGER PLUS</button>
         </main>
     </div>
 
     <div id="ma-modale" class="modal-overlay" onclick="fermerModale()">
         <div class="modal-card" onclick="event.stopPropagation()">
             <div id="modal-img" class="detail-img"></div>
-            <h2 id="modal-title" style="margin-top:0; font-size:1.6rem; color:var(--couleur-accent); text-align:center;"></h2>
+            <h2 id="modal-title" style="margin-top:0; color:var(--couleur-accent);"></h2>
             <div id="modal-sirr" class="detail-txt"></div>
-            <button class="btn-fermer" onclick="fermerModale()">FERMER</button>
+            <button class="btn-fermer" onclick="fermerModale()">RETOUR AU CATALOGUE</button>
         </div>
     </div>
 
