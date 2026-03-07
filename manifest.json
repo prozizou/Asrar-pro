@@ -3,12 +3,12 @@
   "name": "Application mystique",
   "icons": [
     {
-      "src": "https://picsum.photos/192",
+      "src": "https://drive.google.com/file/d/1MDTiCNY_W5EUsHJ_Bzg-U5xHA6U8lHZc/view?usp=drivesdk",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "https://picsum.photos/512",
+      "src": "https://drive.google.com/file/d/1J7eRmbOaZfpgcN3F6V9LDaWBlgQGZX8A/view?usp=drivesdk",
       "type": "image/png",
       "sizes": "512x512"
     }
