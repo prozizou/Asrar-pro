@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kanzou - Accueil Officiel</title>
+    <title>ASRAR PRO - Accueil</title>
     <style>
         :root {
             --bg: #0f172a;
@@ -26,29 +26,31 @@
         }
 
         h1 { 
-            font-size: 1.8rem; 
-            font-weight: 800; 
-            letter-spacing: 2px; 
+            font-size: 1.6rem; 
+            font-weight: 900; 
+            letter-spacing: 3px; 
             margin-bottom: 30px;
             color: var(--text);
             text-transform: uppercase;
+            border-bottom: 3px solid var(--accent);
+            padding-bottom: 5px;
         }
 
         .menu-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
+            gap: 16px;
             width: 92%;
             max-width: 500px;
         }
 
-        /* Style des cartes */
+        /* Cartes du Menu */
         .menu-item {
             background: var(--card);
-            border-radius: 24px;
+            border-radius: 20px;
             overflow: hidden;
             border: 1px solid rgba(255,255,255,0.05);
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             display: flex;
             flex-direction: column;
@@ -56,7 +58,7 @@
 
         .image-container {
             width: 100%;
-            height: 120px;
+            height: 110px;
             overflow: hidden;
             background: #000;
         }
@@ -65,66 +67,65 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            opacity: 0.8;
-            transition: 0.3s;
+            opacity: 0.7;
+            transition: 0.5s;
         }
 
         .title-box {
-            padding: 12px;
+            padding: 14px;
             text-align: center;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 700;
             background: var(--card);
+            letter-spacing: 0.5px;
         }
 
-        /* État cliquable uniquement pour ASRAR (ID: 1) */
+        /* BOUTON ASRAR ACTIF (ID: 1) */
         .clickable {
             cursor: pointer;
             border: 1px solid var(--accent);
-            box-shadow: 0 10px 20px rgba(56, 189, 248, 0.15);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
         }
 
-        .clickable:active {
-            transform: scale(0.96);
+        .clickable:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(56, 189, 248, 0.3);
         }
 
-        .clickable img {
-            opacity: 1 !important;
-        }
+        .clickable img { opacity: 1; }
+        .clickable .title-box { color: var(--accent); }
 
-        .clickable .title-box {
-            color: var(--accent);
-        }
-
-        /* Badge pour le bouton principal */
-        .badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: var(--gold);
-            color: black;
-            font-size: 0.6rem;
-            padding: 3px 8px;
-            border-radius: 10px;
-            font-weight: 900;
-        }
-
-        /* Autres boutons (Inactifs pour l'instant) */
+        /* EFFET VERROUILLÉ POUR LES AUTRES */
         .locked {
-            opacity: 0.7;
-            filter: grayscale(0.5);
+            opacity: 0.6;
+            filter: grayscale(0.8);
+            cursor: default;
+        }
+
+        /* Badge d'accès */
+        .status-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: var(--accent);
+            color: #000;
+            font-size: 0.6rem;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-weight: 800;
+            z-index: 2;
         }
     </style>
 </head>
 <body>
 
-    <h1>KANZOU</h1>
+    <h1>ASRAR PRO</h1>
 
     <div class="menu-grid" id="main-menu">
         </div>
 
     <script>
-        // Vos données JSON officielles
+        // Utilisation stricte de votre JSON
         const data = {
           "asrar": [
             { "id": 1, "titre": "Asrar", "image": "https://i.ibb.co/mryjJvhR/40688297-mystique-alchimique-cercle-secret-la-magie-cercle-pour-breloques-vectoriel.jpg" },
@@ -143,14 +144,14 @@
         data.asrar.forEach(item => {
             const card = document.createElement('div');
             
-            // Logique de distinction : Seul l'ID 1 est cliquable
             if(item.id === 1) {
+                // Seul l'élément Asrar est actif
                 card.className = 'menu-item clickable';
                 card.onclick = () => window.location.href = 'asrar.html';
-                card.innerHTML = `<div class="badge">OPEN</div>`;
+                card.innerHTML = `<div class="status-badge">ACCÈS LIBRE</div>`;
             } else {
+                // Les autres sont verrouillés
                 card.className = 'menu-item locked';
-                card.onclick = () => console.log(item.titre + " est verrouillé");
             }
 
             card.innerHTML += `
