@@ -1,163 +1,80 @@
 :root {
-    --bg-dark: #121212;
-    --sidebar-bg: #1e2525;
-    --card-border: #ffffff;
-    --accent-blue: #2196f3;
+    --couleur-fond: #0c0f0f;
+    --couleur-sidebar: #1d2525;
+    --couleur-accent: #2196f3;
 }
 
 body {
-    background-color: var(--bg-dark);
+    background-color: var(--couleur-fond);
     color: white;
-    margin: 0;
-    font-family: sans-serif;
+    margin: 0; font-family: Arial, sans-serif;
     overflow: hidden;
 }
 
-.asrar-layout {
-    display: flex;
-    height: 100vh;
-}
+.asrar-layout { display: flex; height: 100vh; }
 
-/* Sidebar à gauche */
 .asrar-sidebar {
     width: 110px;
-    background: var(--sidebar-bg);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 20px;
-    border-right: 1px solid #333;
+    background: var(--couleur-sidebar);
+    display: flex; flex-direction: column;
+    align-items: center; padding-top: 20px;
 }
 
-.sidebar-top {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 20px;
+.btn-retour { background: none; border: none; color: #4fd1c5; font-size: 1.6rem; cursor: pointer; margin-bottom: 10px; }
+
+.badge-notif {
+    background: #d32f2f; color: white; width: 30px; height: 30px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem; font-weight: bold; margin-bottom: 20px;
 }
 
-.back-btn {
-    background: none;
-    border: none;
-    color: #4fd1c5;
-    font-size: 1.5rem;
-    cursor: pointer;
-    margin-bottom: 15px;
+.btn-nav {
+    width: 90px; padding: 12px 2px; margin-bottom: 10px;
+    background: #2c3636; border: none;
+    color: #90a4ae; border-radius: 6px; font-size: 0.65rem; cursor: pointer;
 }
 
-.notif-badge {
-    background: #ff4444;
-    color: white;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.8rem;
-    font-weight: bold;
+.btn-nav.active {
+    border-left: 4px solid var(--couleur-accent);
+    background: #3e4e4e; color: white;
 }
 
-#side-menu button {
-    width: 90px;
-    padding: 10px 5px;
-    margin-bottom: 10px;
-    background: #2c3e3e;
-    border: 1px solid #3e4e4e;
-    color: #90a4ae;
-    border-radius: 6px;
-    font-size: 0.7rem;
-    cursor: pointer;
-    transition: 0.3s;
+.asrar-main { flex: 1; overflow-y: auto; padding: 20px; }
+
+.vertical-feed { display: flex; flex-direction: column; align-items: center; gap: 40px; }
+
+.secret-card { width: 100%; max-width: 260px; text-align: center; cursor: pointer; }
+
+.card-img-box {
+    background: #fff; border-radius: 12px; padding: 5px;
+    border: 1px solid #666; height: 240px;
+    display: flex; align-items: center; justify-content: center;
 }
 
-#side-menu button.active {
-    border-left: 4px solid var(--accent-blue);
-    background: #3e4e4e;
-    color: white;
-}
+.card-img-box img { max-width: 95%; max-height: 95%; object-fit: contain; }
 
-/* Liste de cartes à droite */
-.asrar-content {
-    flex: 1;
-    overflow-y: auto;
-    padding: 20px;
-}
-
-.v-list {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 40px;
-}
-
-.asrar-card {
-    width: 100%;
-    max-width: 280px;
-    text-align: center;
-    cursor: pointer;
-}
-
-.img-container {
-    background: white;
-    border-radius: 15px;
-    padding: 5px;
-    border: 2px solid var(--card-border);
-    height: 250px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
-.img-container img {
-    max-width: 95%;
-    max-height: 95%;
-    object-fit: contain;
-}
-
-.card-title {
-    margin-top: 10px;
-    font-size: 0.75rem;
-    font-weight: bold;
-    color: #ffffff;
-    letter-spacing: 0.5px;
-    line-height: 1.3;
+.card-label {
+    margin-top: 12px; font-size: 0.7rem; font-weight: bold;
+    color: #eceff1; line-height: 1.3;
 }
 
 /* Modale */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0; top: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.9);
-    align-items: center;
-    justify-content: center;
+.modal-overlay {
+    display: none; position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%; background: rgba(0,0,0,0.95);
+    z-index: 1000; align-items: center; justify-content: center;
 }
 
-.modal-content {
-    background: #1a1a1a;
-    width: 90%;
-    max-width: 400px;
-    padding: 20px;
-    border-radius: 15px;
-    text-align: center;
+.modal-card {
+    background: #1a1a1a; width: 90%; max-width: 450px;
+    padding: 20px; border-radius: 15px; max-height: 90vh; overflow-y: auto;
 }
 
-#m-faida {
-    font-size: 0.9rem;
-    color: #ccc;
-    line-height: 1.5;
-    margin: 15px 0;
-}
+.detail-img img { width: 100%; border-radius: 10px; }
 
-.close-btn {
-    background: var(--accent-blue);
-    border: none;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
+.detail-txt { color: #ccc; line-height: 1.6; font-size: 1rem; margin-top: 15px; white-space: pre-wrap; }
+
+.btn-fermer {
+    background: var(--couleur-accent); color: white; border: none;
+    padding: 12px; border-radius: 5px; margin-top: 20px; width: 100%; cursor: pointer;
 }
