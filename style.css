@@ -1,5 +1,0 @@
-body { background: #0a0e0e; color: white; font-family: sans-serif; text-align: center; }
-.menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px; }
-.menu-item { background: #151d1d; border-radius: 15px; padding: 15px; border: 1px solid #222; }
-.icon-box img { width: 60px; height: 60px; border-radius: 10px; object-fit: cover; }
-.menu-item p { font-size: 0.8rem; margin-top: 10px; font-weight: bold; }
