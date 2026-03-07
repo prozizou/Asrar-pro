@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ASRAR PRO V2 - Liste</title>
+    <link rel="stylesheet" href="asrar.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+</head>
+<body>
+
+    <div class="asrar-layout">
+        <aside class="asrar-sidebar">
+            <div class="top-section">
+                <button onclick="window.location.href='index.html'" class="back-home">⬅</button>
+                <div class="notif-badge">15</div>
+            </div>
+            <nav id="asrar-nav-menu"></nav>
+        </aside>
+
+        <main class="asrar-content">
+            <div id="asrar-vertical-list" class="vertical-scroll">
+                </div>
+        </main>
+    </div>
+
+    <script src="asrar.js"></script>
+</body>
+</html>
