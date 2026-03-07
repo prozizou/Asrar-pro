@@ -7,61 +7,30 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
     <div class="container">
-        <header>
-            <h1>ASRAR PRO V2</h1>
-        </header>
-
-        <div class="menu-grid" id="menuGrid">
-            </div>
+        <header><h1>ASRAR PRO V2</h1></header>
+        <div class="menu-grid" id="menuGrid"></div>
     </div>
 
     <script>
-        async function initialiserGrille() {
-            try {
-                const response = await fetch('data.json');
-                const data = await response.json();
-                const grid = document.getElementById('menuGrid');
-                
-                grid.innerHTML = '';
-
-                // On parcourt le tableau contenu dans "asrar"
-                data.asrar.forEach(item => {
-                    const card = document.createElement('div');
-                    card.className = 'menu-item';
-                    
-                    // On définit ici vers quel chemin Firebase chaque bouton doit envoyer
-                    // J'associe les ID aux noms de vos bases Firebase
-                    let firebasePath = "";
-                    switch(item.id) {
-                        case 1: firebasePath = "db_sirr_protection"; break;
-                        case 2: firebasePath = "db_sirr_ouverture"; break;
-                        case 3: firebasePath = "db_sirr_deblocage"; break;
-                        case 4: firebasePath = "db_sirr_domptage"; break;
-                        case 5: firebasePath = "db_sirr_ilham"; break;
-                        default: firebasePath = "db_sirr_protection";
-                    }
-
-                    card.innerHTML = `
-                        <div class="icon-container">
-                            <img src="${item.image}" alt="${item.titre}">
-                        </div>
-                        <p>${item.titre}</p>
-                    `;
-                    
-                    card.onclick = () => {
-                        window.location.href = `asrar.html?cat=${firebasePath}`;
-                    };
-
-                    grid.appendChild(card);
-                });
-            } catch (erreur) {
-                console.error("Erreur de chargement :", erreur);
-            }
+        async function chargerGrille() {
+            const res = await fetch('data.json');
+            const data = await res.json();
+            const grid = document.getElementById('menuGrid');
+            
+            data.asrar.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'menu-item';
+                card.innerHTML = `
+                    <div class="icon-box"><img src="${item.image}"></div>
+                    <p>${item.titre}</p>
+                `;
+                // Redirige vers la page Firebase en passant le nom de la DB
+                card.onclick = () => window.location.href = `asrar.html?db=${item.db}`;
+                grid.appendChild(card);
+            });
         }
-
-        window.onload = initialiserGrille;
+        window.onload = chargerGrille;
     </script>
 </body>
 </html>
