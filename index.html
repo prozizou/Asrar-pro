@@ -153,7 +153,9 @@
                 // Les autres sont verrouillés
                 card.className = 'menu-item locked';
             }
-
+if(item.id === 2) {
+    card.onclick = () => window.location.href = 'biblio.html';
+}
             card.innerHTML += `
                 <div class="image-container">
                     <img src="${item.image}" alt="${item.titre}">
