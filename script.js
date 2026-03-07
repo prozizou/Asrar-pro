@@ -1,5 +1,5 @@
 let appData = {};
-let currentCategory = 'asrar';
+let currentCategory = 'asrar'; 
 let currentItems = [];
 
 async function init() {
@@ -9,9 +9,9 @@ async function init() {
         
         chargerCategorie(currentCategory);
         
-        // Cacher le splash après 1.5s
-        setTimeout(() => document.getElementById('splash-screen').classList.add('hidden'), 1500);
-    } catch (err) { console.error("Erreur d'initialisation", err); }
+        // Retrait du splash screen
+        setTimeout(() => document.getElementById('splash-screen').classList.add('hidden'), 1200);
+    } catch (err) { console.error("Data error", err); }
 }
 
 function chargerCategorie(nom) {
@@ -22,7 +22,7 @@ function chargerCategorie(nom) {
     if (saved) {
         const ids = JSON.parse(saved);
         currentItems = ids.map(id => base.find(i => i.id == id)).filter(i => i);
-        // Ajouter les nouveaux items du JSON non présents dans la sauvegarde
+        // Ajout des nouveaux éléments du JSON non présents en mémoire
         const news = base.filter(b => !ids.includes(b.id.toString()));
         currentItems = [...currentItems, ...news];
     } else {
@@ -39,7 +39,10 @@ function render(items) {
         el.className = 'menu-item';
         el.draggable = true;
         el.dataset.id = item.id;
-        el.innerHTML = `<div class="icon-container"><img src="${item.image}"></div><p>${item.titre}</p>`;
+        el.innerHTML = `
+            <div class="icon-container"><img src="${item.image}"></div>
+            <p>${item.titre}</p>
+        `;
         
         el.addEventListener('dragstart', () => el.classList.add('dragging'));
         el.addEventListener('dragend', () => {
@@ -74,13 +77,13 @@ function filtrerElements() {
 }
 
 function reinitialiserOrdre() {
-    if(confirm("Réinitialiser l'ordre ?")) {
+    if(confirm("Restaurer l'ordre d'origine ?")) {
         localStorage.removeItem(`ordre_${currentCategory}`);
         chargerCategorie(currentCategory);
     }
 }
 
-// PWA Service Worker Registration
+// PWA Service Worker
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js');
 }
