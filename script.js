@@ -1,27 +1,53 @@
+// Configuration Firebase réelle extraite de votre google-services.json
+const firebaseConfig = {
+    apiKey: "AIzaSyBLzPKzbiNYitUz7sv9Ftqm0oF20rA32Zk",
+    authDomain: "asrar-bc059.firebaseapp.com",
+    databaseURL: "https://asrar-bc059.firebaseio.com",
+    projectId: "asrar-bc059",
+    storageBucket: "asrar-bc059.appspot.com",
+    messagingSenderId: "199810893447",
+    appId: "1:199810893447:android:044629472e10f9eb68da22"
+};
+
+// Initialisation
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
 let appData = {};
 let currentCategory = '';
 let currentItems = [];
 const colorThief = new ColorThief();
 let deferredPrompt;
 
+// Chargement initial
 async function init() {
-    try {
-        const resp = await fetch('data.json');
-        appData = await resp.json();
-        setupSidebar();
-        const firstCat = Object.keys(appData)[0];
-        chargerCategorie(firstCat);
-        // Retrait élégant du splash screen
-        setTimeout(() => document.getElementById('splash-screen').classList.add('hidden'), 1800);
-    } catch (err) { console.error("Erreur d'initialisation", err); }
+    // Connexion en temps réel à la base de données
+    db.ref('/').on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            appData = data;
+            setupSidebar();
+            
+            // Sélection automatique de la première catégorie au démarrage
+            if (!currentCategory) {
+                const firstCat = Object.keys(appData)[0];
+                chargerCategorie(firstCat);
+            } else {
+                chargerCategorie(currentCategory);
+            }
+        }
+        // Masquer le splash screen
+        setTimeout(() => document.getElementById('splash-screen').classList.add('hidden'), 1500);
+    });
 }
 
 function setupSidebar() {
     const list = document.getElementById('category-list');
+    list.innerHTML = '';
     Object.keys(appData).forEach(cat => {
         const li = document.createElement('li');
         li.id = `nav-${cat}`;
-        li.innerText = cat.charAt(0).toUpperCase() + cat.slice(1);
+        li.innerText = cat.toUpperCase();
         li.onclick = () => { chargerCategorie(cat); toggleSidebar(); };
         list.appendChild(li);
     });
@@ -35,7 +61,14 @@ function chargerCategorie(nom) {
     document.querySelectorAll('#category-list li').forEach(el => el.classList.remove('active'));
     if(document.getElementById(`nav-${nom}`)) document.getElementById(`nav-${nom}`).classList.add('active');
 
-    let base = [...appData[nom]];
+    // Transformation des données Firebase en tableau
+    let base = [];
+    const catData = appData[nom];
+    for (let key in catData) {
+        base.push({ ...catData[key], firebaseKey: key });
+    }
+
+    // Gestion de l'ordre personnalisé local
     const saved = localStorage.getItem(`asrar_v2_order_${nom}`);
     if (saved) {
         const ids = JSON.parse(saved);
@@ -43,6 +76,7 @@ function chargerCategorie(nom) {
         const news = base.filter(b => !ids.includes(b.id.toString()));
         currentItems = [...currentItems, ...news];
     } else { currentItems = base; }
+    
     render(currentItems);
 }
 
@@ -95,18 +129,15 @@ function sauvegarder() {
 
 function filtrerElements() {
     const q = document.getElementById('searchInput').value.toLowerCase();
-    const filtered = currentItems.filter(i => i.titre.toLowerCase().includes(q));
-    render(filtered);
+    render(currentItems.filter(i => i.titre.toLowerCase().includes(q)));
 }
 
 function reinitialiserOrdre() {
-    if(confirm("Réinitialiser l'ordre de cette catégorie ?")) {
-        localStorage.removeItem(`asrar_v2_order_${currentCategory}`);
-        chargerCategorie(currentCategory);
-    }
+    localStorage.removeItem(`asrar_v2_order_${currentCategory}`);
+    chargerCategorie(currentCategory);
 }
 
-// Gestion Installation PWA
+// Installation PWA
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
