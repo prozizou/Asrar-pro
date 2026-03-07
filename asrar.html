@@ -11,36 +11,35 @@
 <body>
     <div class="asrar-layout">
         <aside class="asrar-sidebar">
-            <div class="sidebar-top">
-                <button onclick="window.location.href='index.html'" class="back-btn">⬅</button>
-                <div class="notif-badge">15</div>
+            <div class="sidebar-header">
+                <button onclick="window.location.href='index.html'" class="btn-retour">⬅</button>
+                <div class="badge-notif">15</div>
             </div>
-            <nav id="side-menu">
-                <button onclick="loadFB('db_sirr_protection', this)" id="btn-prot">Protections</button>
-                <button onclick="loadFB('db_sirr_ouverture', this)">Ouvertures</button>
-                <button onclick="loadFB('db_sirr_deblocage', this)">Déblocages</button>
-                <button onclick="loadFB('db_sirr_ilham', this)">Ilham</button>
-                <button onclick="loadFB('db_sirr_domptage', this)">Domptages</button>
+            <nav id="nav-categories">
+                <button onclick="chargerData('db_sirr_protection', this)" class="btn-nav active">Protections</button>
+                <button onclick="chargerData('db_sirr_ouverture', this)" class="btn-nav">Ouvertures</button>
+                <button onclick="chargerData('db_sirr_deblocage', this)" class="btn-nav">Déblocages</button>
+                <button onclick="chargerData('db_sirr_ilham', this)" class="btn-nav">Ilham</button>
+                <button onclick="chargerData('db_sirr_domptage', this)" class="btn-nav">Domptages</button>
             </nav>
         </aside>
 
-        <main class="asrar-content">
-            <div id="vertical-list" class="v-list">
+        <main class="asrar-main">
+            <div id="container-liste" class="vertical-feed">
                 </div>
         </main>
     </div>
 
-    <div id="modal" class="modal" onclick="closeModal()">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <div id="m-img"></div>
-            <h2 id="m-titre"></h2>
-            <p id="m-faida"></p>
-            <button class="close-btn" onclick="closeModal()">FERMER</button>
+    <div id="ma-modale" class="modal-overlay" onclick="fermerModale()">
+        <div class="modal-card" onclick="event.stopPropagation()">
+            <div id="faida-img" class="detail-img"></div>
+            <h2 id="faida-titre"></h2>
+            <div id="faida-texte" class="detail-txt"></div>
+            <button class="btn-fermer" onclick="fermerModale()">RETOUR</button>
         </div>
     </div>
 
     <script>
-        // Configuration extraite de votre google-services.json
         const firebaseConfig = {
             apiKey: "AIzaSyBLzPKzbiNYitUz7sv9Ftqm0oF20rA32Zk",
             authDomain: "asrar-bc059.firebaseapp.com",
@@ -53,57 +52,52 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        const params = new URLSearchParams(window.location.search);
-        const currentDb = params.get('db') || 'db_sirr_protection';
+        function chargerData(chemin, bouton) {
+            // Style bouton actif
+            document.querySelectorAll('.btn-nav').forEach(b => b.classList.remove('active'));
+            if(bouton) bouton.classList.add('active');
 
-        function loadFB(path, btn) {
-            // Mise à jour visuelle des boutons du menu latéral
-            document.querySelectorAll('#side-menu button').forEach(b => b.classList.remove('active'));
-            if(btn) btn.classList.add('active');
-
-            db.ref(path).on('value', (snapshot) => {
-                const list = document.getElementById('vertical-list');
-                list.innerHTML = '';
+            db.ref(chemin).on('value', (snapshot) => {
+                const feed = document.getElementById('container-liste');
+                feed.innerHTML = '';
                 const data = snapshot.val();
 
-                if(data) {
-                    Object.keys(data).forEach(key => {
-                        const item = data[key];
+                if (data) {
+                    Object.values(data).forEach(item => {
                         const card = document.createElement('div');
-                        card.className = 'asrar-card';
+                        card.className = 'secret-card';
                         
-                        // Structure respectant vos clés : 'image' et 'titre'
+                        // Utilise 'image' pour la liste et 'titre' pour le texte
                         card.innerHTML = `
-                            <div class="img-container">
-                                <img src="${item.image}" alt="chargement...">
+                            <div class="card-img-box">
+                                <img src="${item.image || ''}" alt="chargement...">
                             </div>
-                            <div class="card-title">${item.titre.toUpperCase()}</div>
+                            <div class="card-label">${(item.titre || 'SANS TITRE').toUpperCase()}</div>
                         `;
                         
-                        card.onclick = () => openDetails(item);
-                        list.appendChild(card);
+                        // Clic : ouvre le détail (clé 'faida' et 'img')
+                        card.onclick = () => ouvrirModale(item);
+                        feed.appendChild(card);
                     });
                 }
             });
         }
 
-        function openDetails(item) {
-            document.getElementById('m-titre').innerText = item.titre;
-            document.getElementById('m-faida').innerText = item.faida;
-            const imgDiv = document.getElementById('m-img');
-            imgDiv.innerHTML = item.img ? `<img src="${item.img}" style="width:100%; border-radius:10px;">` : '';
-            document.getElementById('modal').style.display = "flex";
+        function ouvrirModale(item) {
+            document.getElementById('faida-titre').innerText = item.titre || '';
+            document.getElementById('faida-texte').innerText = item.faida || 'Aucun texte disponible.';
+            const imgBox = document.getElementById('faida-img');
+            // Affiche l'image de la clé 'img' dans le détail
+            imgBox.innerHTML = item.img ? `<img src="${item.img}">` : '';
+            document.getElementById('ma-modale').style.display = 'flex';
         }
 
-        function closeModal() {
-            document.getElementById('modal').style.display = "none";
+        function fermerModale() {
+            document.getElementById('ma-modale').style.display = 'none';
         }
 
-        // Lancement initial
-        window.onload = () => {
-            const btnInitial = document.getElementById('btn-prot');
-            loadFB(currentDb, btnInitial);
-        };
+        // Chargement par défaut au démarrage
+        window.onload = () => chargerData('db_sirr_protection');
     </script>
 </body>
 </html>
