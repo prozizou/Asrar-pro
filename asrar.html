@@ -11,32 +11,36 @@
 <body>
     <div class="asrar-layout">
         <aside class="asrar-sidebar">
-            <button onclick="window.location.href='index.html'" class="back-btn">⬅</button>
+            <div class="sidebar-top">
+                <button onclick="window.location.href='index.html'" class="back-btn">⬅</button>
+                <div class="notif-badge">15</div>
+            </div>
             <nav id="side-menu">
-                <button onclick="loadFB('db_sirr_protection', this)">Protections</button>
+                <button onclick="loadFB('db_sirr_protection', this)" id="btn-prot">Protections</button>
                 <button onclick="loadFB('db_sirr_ouverture', this)">Ouvertures</button>
                 <button onclick="loadFB('db_sirr_deblocage', this)">Déblocages</button>
-                <button onclick="loadFB('db_sirr_domptage', this)">Domptages</button>
                 <button onclick="loadFB('db_sirr_ilham', this)">Ilham</button>
+                <button onclick="loadFB('db_sirr_domptage', this)">Domptages</button>
             </nav>
         </aside>
+
         <main class="asrar-content">
-            <div id="vertical-list" class="v-list"></div>
+            <div id="vertical-list" class="v-list">
+                </div>
         </main>
     </div>
 
-    <div id="faida-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeModal()">&times;</span>
-            <div class="modal-body">
-                <div id="modal-img-container" class="modal-img"></div>
-                <h2 id="modal-title"></h2>
-                <div id="modal-text" class="faida-text"></div>
-            </div>
+    <div id="modal" class="modal" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div id="m-img"></div>
+            <h2 id="m-titre"></h2>
+            <p id="m-faida"></p>
+            <button class="close-btn" onclick="closeModal()">FERMER</button>
         </div>
     </div>
 
     <script>
+        // Configuration extraite de votre google-services.json
         const firebaseConfig = {
             apiKey: "AIzaSyBLzPKzbiNYitUz7sv9Ftqm0oF20rA32Zk",
             authDomain: "asrar-bc059.firebaseapp.com",
@@ -45,62 +49,61 @@
             storageBucket: "asrar-bc059.appspot.com",
             appId: "1:199810893447:android:044629472e10f9eb68da22"
         };
+
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
         const params = new URLSearchParams(window.location.search);
-        const initialDB = params.get('db') || 'db_sirr_protection';
+        const currentDb = params.get('db') || 'db_sirr_protection';
 
         function loadFB(path, btn) {
+            // Mise à jour visuelle des boutons du menu latéral
             document.querySelectorAll('#side-menu button').forEach(b => b.classList.remove('active'));
             if(btn) btn.classList.add('active');
 
             db.ref(path).on('value', (snapshot) => {
                 const list = document.getElementById('vertical-list');
                 list.innerHTML = '';
-                const items = snapshot.val();
-                if(items) {
-                    Object.keys(items).forEach(key => {
-                        const item = items[key];
+                const data = snapshot.val();
+
+                if(data) {
+                    Object.keys(data).forEach(key => {
+                        const item = data[key];
                         const card = document.createElement('div');
                         card.className = 'asrar-card';
-                        // On affiche l'image du childkey "image" pour la miniature
-                        card.innerHTML = `<div class="img-box"><img src="${item.image}"></div><p>${item.titre}</p>`;
                         
-                        // CLIC : Ouvre la modale avec "faida" et "img"
-                        card.onclick = () => openModal(item);
+                        // Structure respectant vos clés : 'image' et 'titre'
+                        card.innerHTML = `
+                            <div class="img-container">
+                                <img src="${item.image}" alt="chargement...">
+                            </div>
+                            <div class="card-title">${item.titre.toUpperCase()}</div>
+                        `;
+                        
+                        card.onclick = () => openDetails(item);
                         list.appendChild(card);
                     });
                 }
             });
         }
 
-        function openModal(item) {
-            const modal = document.getElementById('faida-modal');
-            document.getElementById('modal-title').innerText = item.titre;
-            // Charge le texte depuis le childkey "faida"
-            document.getElementById('modal-text').innerText = item.faida || "Aucun détail disponible.";
-            
-            // Charge l'image depuis le childkey "img"
-            const imgContainer = document.getElementById('modal-img-container');
-            if(item.img) {
-                imgContainer.innerHTML = `<img src="${item.img}" style="width:100%; border-radius:10px;">`;
-            } else {
-                imgContainer.innerHTML = "";
-            }
-
-            modal.style.display = "block";
+        function openDetails(item) {
+            document.getElementById('m-titre').innerText = item.titre;
+            document.getElementById('m-faida').innerText = item.faida;
+            const imgDiv = document.getElementById('m-img');
+            imgDiv.innerHTML = item.img ? `<img src="${item.img}" style="width:100%; border-radius:10px;">` : '';
+            document.getElementById('modal').style.display = "flex";
         }
 
         function closeModal() {
-            document.getElementById('faida-modal').style.display = "none";
+            document.getElementById('modal').style.display = "none";
         }
 
-        window.onclick = (event) => {
-            if (event.target == document.getElementById('faida-modal')) closeModal();
-        }
-
-        window.onload = () => loadFB(initialDB);
+        // Lancement initial
+        window.onload = () => {
+            const btnInitial = document.getElementById('btn-prot');
+            loadFB(currentDb, btnInitial);
+        };
     </script>
 </body>
 </html>
