@@ -3,12 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASRAR PRO V2 - Liste</title>
-    <link rel="stylesheet" href="asrar.css">
+    <title>ASRAR PRO V2 - Final</title>
+    
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+    <style>
+        :root {
+            --couleur-fond: #0c0f0f;
+            --couleur-sidebar: #1d2525;
+            --couleur-accent: #2196f3;
+        }
+
+        body {
+            background-color: var(--couleur-fond);
+            color: white;
+            margin: 0; font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        .asrar-layout { display: flex; height: 100vh; }
+
+        /* Sidebar Gauche */
+        .asrar-sidebar {
+            width: 110px;
+            background: var(--couleur-sidebar);
+            display: flex; flex-direction: column;
+            align-items: center; padding-top: 20px;
+            border-right: 1px solid #222;
+        }
+
+        .btn-retour { background: none; border: none; color: #4fd1c5; font-size: 1.6rem; cursor: pointer; margin-bottom: 10px; }
+
+        .badge-notif {
+            background: #d32f2f; color: white; width: 30px; height: 30px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 0.9rem; font-weight: bold; margin-bottom: 20px;
+        }
+
+        .btn-nav {
+            width: 90px; padding: 12px 2px; margin-bottom: 10px;
+            background: #2c3636; border: none;
+            color: #90a4ae; border-radius: 6px; font-size: 0.65rem; cursor: pointer;
+        }
+
+        .btn-nav.active {
+            border-left: 4px solid var(--couleur-accent);
+            background: #3e4e4e; color: white;
+        }
+
+        /* Zone Principale */
+        .asrar-main { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+
+        .search-box {
+            width: 100%; max-width: 300px;
+            position: sticky; top: 0; z-index: 10;
+            background: var(--couleur-fond); padding-bottom: 20px;
+        }
+
+        #searchInput {
+            width: 100%; padding: 12px; border-radius: 25px;
+            border: 1px solid #333; background: #1a1a1a;
+            color: white; outline: none; text-align: center;
+        }
+
+        .vertical-feed { display: flex; flex-direction: column; align-items: center; gap: 40px; width: 100%; }
+
+        .secret-card { width: 100%; max-width: 260px; text-align: center; cursor: pointer; }
+
+        .card-img-box {
+            background: #fff; border-radius: 12px; padding: 5px;
+            border: 1px solid #666; height: 240px;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .card-img-box img { max-width: 95%; max-height: 95%; object-fit: contain; }
+
+        .card-label {
+            margin-top: 12px; font-size: 0.7rem; font-weight: bold;
+            color: #eceff1; line-height: 1.3;
+        }
+
+        /* Modale */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%; background: rgba(0,0,0,0.95);
+            z-index: 1000; align-items: center; justify-content: center;
+        }
+
+        .modal-card {
+            background: #1a1a1a; width: 90%; max-width: 450px;
+            padding: 20px; border-radius: 15px; max-height: 90vh; overflow-y: auto;
+        }
+
+        .detail-img img { width: 100%; border-radius: 10px; }
+
+        .detail-txt { color: #ccc; line-height: 1.6; font-size: 1rem; margin-top: 15px; white-space: pre-wrap; }
+
+        .btn-fermer {
+            background: var(--couleur-accent); color: white; border: none;
+            padding: 12px; border-radius: 5px; margin-top: 20px; width: 100%; cursor: pointer;
+        }
+    </style>
 </head>
 <body>
+
     <div class="asrar-layout">
         <aside class="asrar-sidebar">
             <div class="sidebar-header">
@@ -25,21 +124,25 @@
         </aside>
 
         <main class="asrar-main">
-            <div id="container-liste" class="vertical-feed">
-                </div>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="🔍 Rechercher un secret..." onkeyup="filtrerListe()">
+            </div>
+            <div id="container-liste" class="vertical-feed"></div>
         </main>
     </div>
 
     <div id="ma-modale" class="modal-overlay" onclick="fermerModale()">
         <div class="modal-card" onclick="event.stopPropagation()">
             <div id="modal-img" class="detail-img"></div>
-            <h2 id="modal-titre"></h2>
+            <h2 id="modal-title"></h2>
             <div id="modal-sirr" class="detail-txt"></div>
             <button class="btn-fermer" onclick="fermerModale()">RETOUR</button>
         </div>
     </div>
 
     <script>
+        const IMG_DE_SECOURS = "https://i.supaimg.com/2a53ec6e-056d-4b1b-9b10-28f105901a55/465d1949-acb8-4008-b88c-f6a53388fe0a.jpg";
+
         const firebaseConfig = {
             apiKey: "AIzaSyBLzPKzbiNYitUz7sv9Ftqm0oF20rA32Zk",
             authDomain: "asrar-bc059.firebaseapp.com",
@@ -51,48 +154,58 @@
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
+        let secretsActuels = [];
 
         function chargerData(chemin, bouton) {
             document.querySelectorAll('.btn-nav').forEach(b => b.classList.remove('active'));
             if(bouton) bouton.classList.add('active');
+            document.getElementById('searchInput').value = "";
 
             db.ref(chemin).on('value', (snapshot) => {
-                const feed = document.getElementById('container-liste');
-                feed.innerHTML = '';
                 const data = snapshot.val();
-
                 if (data) {
-                    Object.values(data).forEach(item => {
-                        const card = document.createElement('div');
-                        card.className = 'secret-card';
-                        
-                        // CORRECTION DES CLÉS : 'img' pour l'image et 'faida' pour le titre
-                        card.innerHTML = `
-                            <div class="card-img-box">
-                                <img src="${item.img || ''}" alt="Chargement...">
-                            </div>
-                            <div class="card-label">${(item.faida || 'SANS TITRE').toUpperCase()}</div>
-                        `;
-                        
-                        card.onclick = () => ouvrirModale(item);
-                        feed.appendChild(card);
-                    });
+                    secretsActuels = Object.values(data);
+                    afficherSecrets(secretsActuels);
                 }
             });
         }
 
+        function afficherSecrets(liste) {
+            const feed = document.getElementById('container-liste');
+            feed.innerHTML = '';
+            liste.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'secret-card';
+                
+                // Gestion de l'image de secours si 'img' est vide
+                const imageSrc = item.img && item.img !== "" ? item.img : IMG_DE_SECOURS;
+
+                card.innerHTML = `
+                    <div class="card-img-box">
+                        <img src="${imageSrc}" onerror="this.src='${IMG_DE_SECOURS}';">
+                    </div>
+                    <div class="card-label">${(item.faida || '').toUpperCase()}</div>
+                `;
+                card.onclick = () => ouvrirModale(item);
+                feed.appendChild(card);
+            });
+        }
+
+        function filtrerListe() {
+            const terme = document.getElementById('searchInput').value.toLowerCase();
+            const filtres = secretsActuels.filter(s => s.faida && s.faida.toLowerCase().includes(terme));
+            afficherSecrets(filtres);
+        }
+
         function ouvrirModale(item) {
-            // Dans la modale, on affiche le 'faida' en titre et le 'sirr' en contenu
-            document.getElementById('modal-titre').innerText = item.faida || '';
+            document.getElementById('modal-title').innerText = item.faida || '';
             document.getElementById('modal-sirr').innerText = item.sirr || '';
-            const imgBox = document.getElementById('modal-img');
-            imgBox.innerHTML = item.img ? `<img src="${item.img}">` : '';
+            const imageSrc = item.img && item.img !== "" ? item.img : IMG_DE_SECOURS;
+            document.getElementById('modal-img').innerHTML = `<img src="${imageSrc}" onerror="this.src='${IMG_DE_SECOURS}';">`;
             document.getElementById('ma-modale').style.display = 'flex';
         }
 
-        function fermerModale() {
-            document.getElementById('ma-modale').style.display = 'none';
-        }
+        function fermerModale() { document.getElementById('ma-modale').style.display = 'none'; }
 
         window.onload = () => chargerData('db_sirr_protection');
     </script>
