@@ -3,50 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ASRAR PRO V2</title>
+    <title>ASRAR PRO V2 - Accueil</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="https://i.ibb.co/JRRfdsMq/unnamed.jpg">
-    
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
 </head>
 <body>
-
     <div id="splash-screen">
         <div class="splash-content">
-            <img src="https://i.ibb.co/TMXzB50w/images-4-copy-192x192.jpg" class="splash-logo" alt="Logo">
+            <img src="https://i.ibb.co/TMXzB50w/images-4-copy-192x192.jpg" class="splash-logo">
             <div class="loader"></div>
             <h1>ASRAR PRO V2</h1>
         </div>
     </div>
 
-    <button id="menu-toggle" onclick="toggleSidebar()">☰</button>
-    <nav id="sidebar">
-        <div class="sidebar-header">
-            <h2>ASRAR PRO V2</h2>
-            <button onclick="toggleSidebar()">✕</button>
-        </div>
-        <ul id="category-list"></ul>
-        <div id="install-area" style="display: none; padding: 15px 0;">
-            <button id="btnInstall" class="install-button">📲 Installer l'App</button>
-        </div>
-    </nav>
-
     <div class="container">
         <header>
-            <h1 id="categoryTitle">Menu</h1>
-            <div class="search-area">
-                <input type="text" id="searchInput" placeholder="Rechercher..." onkeyup="filtrerElements()">
-                <button id="resetOrderBtn" onclick="reinitialiserOrdre()">Réinitialiser l'ordre</button>
-            </div>
+            <h1>Menu Principal</h1>
         </header>
-
-        <div class="menu-grid" id="menuGrid"></div>
+        <div class="menu-grid" id="menuGrid">
+            </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBLzPKzbiNYitUz7sv9Ftqm0oF20rA32Zk",
+            authDomain: "asrar-bc059.firebaseapp.com",
+            databaseURL: "https://asrar-bc059.firebaseio.com",
+            projectId: "asrar-bc059",
+            storageBucket: "asrar-bc059.appspot.com",
+            appId: "1:199810893447:android:044629472e10f9eb68da22"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        db.ref('/').on('value', (snapshot) => {
+            const data = snapshot.val();
+            const grid = document.getElementById('menuGrid');
+            grid.innerHTML = '';
+            
+            Object.keys(data).forEach(cat => {
+                const item = document.createElement('div');
+                item.className = 'menu-item';
+                item.innerHTML = `<p>${cat.toUpperCase()}</p>`;
+                // Redirection vers la page de liste avec le paramètre
+                item.onclick = () => window.location.href = `asrar.html?cat=${cat}`;
+                grid.appendChild(item);
+            });
+            setTimeout(() => document.getElementById('splash-screen').style.display = 'none', 1000);
+        });
+    </script>
 </body>
 </html>
