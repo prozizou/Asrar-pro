@@ -8,6 +8,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+
     <style>
         :root {
             --bg-parchemin: #1a1a2e; 
@@ -30,7 +32,7 @@
             display: flex;
             align-items: center;
             gap: 15px;
-            margin-bottom: 35px;
+            margin-bottom: 30px;
             border-bottom: 2px solid var(--border-grimoire);
             padding-bottom: 15px;
         }
@@ -42,6 +44,7 @@
             padding: 10px 15px;
             border-radius: 8px;
             cursor: pointer;
+            font-size: 1.2rem;
         }
 
         .grimoire-grid {
@@ -54,23 +57,25 @@
             background: var(--grimoire-couv);
             border-radius: 8px 15px 15px 8px;
             overflow: hidden;
-            transition: 0.3s;
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: var(--border-grimoire);
             cursor: pointer;
             box-shadow: 0 10px 30px rgba(0,0,0,0.6);
             position: relative;
         }
 
-        /* Effet dos de livre */
         .grimoire-card::before {
             content: "";
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 12px;
-            height: 100%;
+            top: 0; left: 0; width: 12px; height: 100%;
             background: rgba(0,0,0,0.3);
             border-right: 1px solid rgba(217, 160, 111, 0.1);
+            z-index: 1;
+        }
+
+        .grimoire-card:hover {
+            transform: scale(1.05) rotate(-1deg);
+            border-color: var(--or-vieux);
         }
 
         .grimoire-cover {
@@ -91,15 +96,20 @@
             font-weight: 700;
             color: var(--or-vieux);
             text-transform: uppercase;
+            margin-bottom: 5px;
         }
 
-        /* LECTEUR PDF PLEIN ÉCRAN */
+        .page-badge {
+            font-size: 0.65rem;
+            color: var(--texte-ancien);
+            opacity: 0.7;
+            font-style: italic;
+        }
+
+        /* LECTEUR PDF */
         .modal { 
-            display: none; 
-            position: fixed; 
-            inset: 0; 
-            background: rgba(0,0,0,0.95); 
-            z-index: 1000; 
+            display: none; position: fixed; inset: 0; 
+            background: rgba(0,0,0,0.95); z-index: 1000; 
             flex-direction: column; 
         }
         
@@ -110,6 +120,7 @@
             align-items: center;
             background: var(--grimoire-couv);
             color: var(--or-vieux);
+            border-bottom: var(--border-grimoire);
         }
         
         iframe { width: 100%; height: 100%; border: none; background: white; }
@@ -119,7 +130,7 @@
 
     <div class="header">
         <button class="back-btn" onclick="window.location.href='index.html'">📜</button>
-        <h1 style="margin:0; font-size:1.2rem; color:var(--or-vieux);">LA GRANDE BIBLIOTHÈQUE</h1>
+        <h1 style="margin:0; font-size:1.1rem; color:var(--or-vieux);">LA GRANDE BIBLIOTHÈQUE</h1>
     </div>
 
     <div class="grimoire-grid" id="grimoire-list">
@@ -134,51 +145,15 @@
     </div>
 
     <script>
+        // Configuration Firebase
         const config = { databaseURL: "https://asrar-bc059.firebaseio.com" };
         firebase.initializeApp(config);
         const db = firebase.database();
 
+        // Configuration du Robot PDF
+        const pdfjsLib = window['pdfjs-dist/build/pdf'];
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+
         function loadBooks() {
-            // Lecture de la branche "almaqtab"
-            db.ref('almaqtab').on('value', snap => {
-                const data = snap.val();
-                if(!data) return;
-                
-                const items = Object.keys(data).map(k => ({...data[k], key: k}));
-                
-                document.getElementById('grimoire-list').innerHTML = items.map(grim => `
-                    <div class="grimoire-card" onclick="openGrimoire('${grim.pdf}', '${grim.text}')">
-                        <img src="${grim.img}" class="grimoire-cover" onerror="this.src='https://via.placeholder.com/150x200?text=Grimoire'">
-                        <div class="grimoire-info">
-                            <div class="grimoire-title">${grim.text ? grim.text.replace('.pdf', '') : 'Livre'}</div>
-                            <div style="font-size:0.7rem; opacity:0.6;">Ref: ${grim.pt || 'I'}</div>
-                        </div>
-                    </div>
-                `).join('');
-            });
-        }
-
-        function openGrimoire(driveUrl, title) {
-            if(!driveUrl) return alert("Le lien PDF est manquant dans Firebase.");
-            
-            // Transformation du lien Google Drive pour l'affichage en iframe
-            let finalUrl = driveUrl;
-            if(driveUrl.includes('drive.google.com')) {
-                // On remplace /view ou /edit par /preview pour permettre l'intégration
-                finalUrl = driveUrl.replace(/\/view.*$/, '/preview').replace(/\/edit.*$/, '/preview');
-            }
-
-            document.getElementById('view-title').innerText = title;
-            document.getElementById('pdf-viewer').src = finalUrl;
-            document.getElementById('reader').style.display = 'flex';
-        }
-
-        function closeReader() {
-            document.getElementById('reader').style.display = 'none';
-            document.getElementById('pdf-viewer').src = "";
-        }
-
-        window.onload = loadBooks;
-    </script>
-</body>
-</html>
+            // Lecture de la branche almaqtab
+            db.ref('almaqtab').on('value
