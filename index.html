@@ -3,34 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kanzou Pro Dashboard</title>
+    <title>ASRAR PRO V2</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="https://i.ibb.co/JRRfdsMq/unnamed.jpg">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
 </head>
 <body>
 
     <div id="splash-screen">
         <div class="splash-content">
+            <img src="https://i.ibb.co/TMXzB50w/images-4-copy-192x192.jpg" class="splash-logo" alt="Logo">
             <div class="loader"></div>
-            <h1>KANZOU</h1>
+            <h1>ASRAR PRO V2</h1>
         </div>
     </div>
 
-    <button id="menu-toggle" onclick="toggleSidebar()">☰</button>
+    <button id="menu-toggle" aria-label="Ouvrir le menu" onclick="toggleSidebar()">☰</button>
+    
     <nav id="sidebar">
         <div class="sidebar-header">
-            <h2>Catégories</h2>
+            <h2>ASRAR PRO V2</h2>
             <button onclick="toggleSidebar()">✕</button>
         </div>
         <ul id="category-list"></ul>
+        <div id="install-area" style="display: none; padding: 20px 0;">
+            <button id="btnInstall" class="install-button">📲 Installer l'App</button>
+        </div>
     </nav>
 
     <div class="container">
         <header>
             <h1 id="categoryTitle">Menu</h1>
             <div class="search-area">
-                <input type="text" id="searchInput" placeholder="Rechercher..." onkeyup="filtrerElements()">
+                <input type="text" id="searchInput" placeholder="Rechercher un secret..." onkeyup="filtrerElements()">
                 <button id="resetOrderBtn" onclick="reinitialiserOrdre()">Réinitialiser l'ordre</button>
             </div>
         </header>
