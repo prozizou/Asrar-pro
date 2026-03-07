@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASRAR PRO V2 - Chargement Optimisé</title>
+    <title>ASRAR PRO V2 - Ultra Shimmer</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
@@ -31,12 +31,45 @@
         .vertical-feed { display: flex; flex-direction: column; align-items: center; gap: 40px; width: 100%; }
         .secret-card { width: 100%; max-width: 260px; text-align: center; cursor: pointer; }
 
-        /* Effet Glide */
-        .card-img-box { background: #fff; border-radius: 12px; padding: 5px; border: 1px solid #666; height: 240px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
-        .loading-glide::after { content: ""; position: absolute; top: 0; left: -150%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent); animation: glide 1.5s infinite; }
-        @keyframes glide { 0% { left: -150%; } 100% { left: 150%; } }
-        .card-img-box img { max-width: 95%; max-height: 95%; object-fit: contain; opacity: 0; transition: opacity 0.5s; }
+        /* EFFET SHIMMER PRONONCÉ */
+        .card-img-box {
+            border-radius: 12px; padding: 5px; border: 1px solid #666; height: 240px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
+            background: #fff; /* Fond blanc par défaut */
+        }
+
+        .loading-shimmer {
+            background-color: #f6f7f8; /* Fond légèrement grisé pour le contraste */
+            background-image: linear-gradient(90deg, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
+            background-repeat: no-repeat;
+            background-size: 800px 240px;
+            animation: shimmer 2s infinite linear; /* Animation plus lente */
+        }
+
+        /* Une bande lumineuse encore plus marquée par-dessus */
+        .loading-shimmer::after {
+            content: "";
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            /* Dégradé Ultra contrasté (0.9 opacity) */
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent);
+            animation: glide 3s infinite; /* Plus lent et prononcé */
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -468px 0; }
+            100% { background-position: 468px 0; }
+        }
+
+        @keyframes glide {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        /* Transition d'apparition de l'image */
+        .card-img-box img { max-width: 95%; max-height: 95%; object-fit: contain; opacity: 0; transition: opacity 0.7s ease-in; }
         .img-loaded { opacity: 1 !important; }
+        
         .card-label { margin-top: 12px; font-size: 0.7rem; font-weight: bold; color: #eceff1; }
 
         /* Bouton Charger Plus */
@@ -76,7 +109,7 @@
     <div id="ma-modale" class="modal-overlay" onclick="fermerModale()">
         <div class="modal-card" onclick="event.stopPropagation()">
             <div id="modal-img" class="detail-img"></div>
-            <h2 id="modal-titre"></h2>
+            <h2 id="modal-title"></h2>
             <div id="modal-sirr" class="detail-txt"></div>
             <button class="btn-fermer" onclick="fermerModale()">RETOUR</button>
         </div>
@@ -125,13 +158,9 @@
                 if (data) {
                     const keys = Object.keys(data);
                     dernierKey = keys[keys.length - 1];
-                    
                     const nouveauxSecrets = Object.values(data);
                     secretsAffiches = [...secretsAffiches, ...nouveauxSecrets];
-                    
                     afficherSecrets(nouveauxSecrets, false);
-                    
-                    // Afficher le bouton si on a reçu 10 éléments
                     document.getElementById('loadMoreBtn').style.display = (keys.length === TAILLE_PAGE) ? 'block' : 'none';
                 } else {
                     document.getElementById('loadMoreBtn').style.display = 'none';
@@ -149,14 +178,20 @@
                 const imageSrc = item.img && item.img !== "" ? item.img : IMG_DE_SECOURS;
 
                 card.innerHTML = `
-                    <div class="card-img-box loading-glide">
-                        <img src="${imageSrc}" onload="this.classList.add('img-loaded'); this.parentElement.classList.remove('loading-glide');" onerror="this.src='${IMG_DE_SECOURS}';">
+                    <div class="card-img-box loading-shimmer">
+                        <img src="${imageSrc}" onload="handleImgLoad(this)" onerror="this.src='${IMG_DE_SECOURS}'; handleImgLoad(this);">
                     </div>
                     <div class="card-label">${(item.faida || '').toUpperCase()}</div>
                 `;
                 card.onclick = () => ouvrirModale(item);
                 feed.appendChild(card);
             });
+        }
+
+        function handleImgLoad(img) {
+            img.classList.add('img-loaded'); // Apparition en fondu
+            // On retire la classe de shimmer pour afficher le fond blanc final
+            img.parentElement.classList.remove('loading-shimmer');
         }
 
         function filtrerListe() {
