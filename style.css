@@ -1,82 +1,61 @@
 :root {
-    --bg-color: #0f1717;
-    --card-bg: #1a2a2a;
-    --text-main: #ffffff;
+    --bg-color: #0a0e0e;
+    --card-bg: #151d1d;
     --accent: #4fd1c5;
-    --glow-color: rgba(255, 255, 255, 0.1);
+    --glow-color: rgba(79, 209, 197, 0.2);
 }
 
 body {
     background-color: var(--bg-color);
-    color: var(--text-main);
+    color: white;
     font-family: 'Segoe UI', system-ui, sans-serif;
-    margin: 0; padding: 20px;
-    display: flex; justify-content: center;
+    margin: 0; padding: 15px;
+    -webkit-tap-highlight-color: transparent;
 }
 
-.container { width: 100%; max-width: 500px; margin-top: 60px; }
+.container { width: 100%; max-width: 480px; margin: 65px auto 0; }
 
 /* Splash Screen */
 #splash-screen {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: var(--bg-color); z-index: 2000;
     display: flex; flex-direction: column; justify-content: center; align-items: center;
-    transition: opacity 0.5s ease, visibility 0.5s;
+    transition: opacity 0.6s ease, visibility 0.6s;
 }
 #splash-screen.hidden { opacity: 0; visibility: hidden; }
-.loader {
-    border: 3px solid var(--card-bg); border-top: 3px solid var(--accent);
-    border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite;
-}
+.splash-logo { width: 120px; height: 120px; border-radius: 28px; border: 2px solid var(--accent); box-shadow: 0 0 25px var(--glow-color); margin-bottom: 25px; }
+.loader { border: 3px solid #1a2727; border-top: 3px solid var(--accent); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
 /* Sidebar */
-#menu-toggle {
-    position: fixed; top: 15px; left: 15px; z-index: 1100;
-    background: var(--card-bg); border: none; color: white;
-    padding: 10px 15px; border-radius: 10px; cursor: pointer;
-}
-#sidebar {
-    position: fixed; top: 0; left: -280px; width: 280px; height: 100%;
-    background: #142121; z-index: 1200; transition: left 0.3s ease;
-    padding: 20px; box-sizing: border-box; box-shadow: 10px 0 30px rgba(0,0,0,0.5);
-}
+#menu-toggle { position: fixed; top: 15px; left: 15px; z-index: 1000; background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 12px 18px; border-radius: 12px; font-size: 1.2rem; cursor: pointer; }
+#sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: #0d1414; z-index: 1500; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); padding: 25px; box-sizing: border-box; box-shadow: 10px 0 40px rgba(0,0,0,0.9); }
 #sidebar.active { left: 0; }
-#category-list { list-style: none; padding: 0; }
-#category-list li {
-    padding: 15px; margin-bottom: 8px; background: var(--card-bg);
-    border-radius: 12px; cursor: pointer; transition: 0.2s;
-}
-#category-list li.active { border-left: 4px solid var(--accent); background: #243b3b; }
+#category-list li { padding: 16px; margin-bottom: 12px; background: var(--card-bg); border-radius: 14px; cursor: pointer; list-style: none; transition: 0.2s; border: 1px solid transparent; }
+#category-list li.active { border-color: var(--accent); color: var(--accent); background: #1a2727; font-weight: bold; }
 
-/* Grid & Cards */
-.menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-
+/* Grid & Cards (80% image focus) */
+.menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
 .menu-item {
-    background: var(--card-bg); border-radius: 20px; padding: 12px;
-    height: 180px; display: flex; flex-direction: column; align-items: center;
-    justify-content: space-between; cursor: grab;
+    background: var(--card-bg); border-radius: 24px; padding: 12px; height: 185px;
+    display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+    transition: transform 0.2s ease, background-color 0.4s ease;
+    animation: pulseGlow 4s infinite ease-in-out;
     border: 1px solid rgba(255,255,255,0.05);
-    transition: transform 0.3s ease, background-color 0.5s ease;
-    animation: pulseGlow 3s infinite ease-in-out;
+    cursor: grab;
 }
-.menu-item.dragging { opacity: 0.3; transform: scale(0.9); }
-
+.menu-item.dragging { opacity: 0.4; transform: scale(0.9); }
 .icon-container { flex: 1; width: 100%; display: flex; align-items: center; justify-content: center; }
-.icon-container img { width: 85%; height: 85%; object-fit: contain; border-radius: 10px; }
+.icon-container img { width: 85%; height: 85%; object-fit: contain; pointer-events: none; }
+.menu-item p { margin: 8px 0 4px; font-size: 0.85rem; font-weight: 500; text-align: center; opacity: 0.9; }
 
-.menu-item p { margin: 5px 0; font-size: 0.9rem; font-weight: 600; text-align: center; }
-
-/* Animation Pulse Glow */
 @keyframes pulseGlow {
-    0% { box-shadow: 0 5px 15px -5px var(--glow-color); }
-    50% { box-shadow: 0 15px 35px 2px var(--glow-color); }
-    100% { box-shadow: 0 5px 15px -5px var(--glow-color); }
+    0%, 100% { box-shadow: 0 5px 15px -8px var(--glow-color); }
+    50% { box-shadow: 0 12px 25px 2px var(--glow-color); }
 }
 
 /* UI Elements */
-#searchInput {
-    width: 100%; padding: 15px; border-radius: 15px; border: 1px solid var(--card-bg);
-    background: #0a1414; color: white; margin-bottom: 10px; box-sizing: border-box;
-}
-#resetOrderBtn { background: none; border: none; color: #557777; cursor: pointer; width: 100%; font-size: 0.8rem; }
+.install-button { width: 100%; padding: 14px; background: var(--accent); border: none; border-radius: 12px; font-weight: bold; color: black; cursor: pointer; }
+#searchInput { width: 100%; padding: 16px; border-radius: 14px; border: 1px solid #1a2727; background: #050707; color: white; margin-bottom: 15px; box-sizing: border-box; outline: none; transition: 0.3s; }
+#searchInput:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(79, 209, 197, 0.2); }
+#resetOrderBtn { background: none; border: none; color: #446666; width: 100%; font-size: 0.75rem; text-decoration: underline; cursor: pointer; margin-top: 5px; }
