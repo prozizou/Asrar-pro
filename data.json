@@ -1,0 +1,16 @@
+{
+  "asrar": [
+    { "id": 1, "titre": "Titre 1", "image": "https://lien1.com" },
+    { "id": 2, "titre": "Titre 2", "image": "https://lien2.com" }
+  ],
+  "bibliotheque": [
+    { "id": 3, "titre": "Livre A", "image": "https://lien3.com" }
+  ],
+  "marche": [],
+  "planetes": [],
+  "chiffres": [],
+  "abajad": [],
+  "applications": [],
+  "consultation": [],
+  "reglages": []
+}
