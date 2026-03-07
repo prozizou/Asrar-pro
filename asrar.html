@@ -13,14 +13,13 @@
         <aside class="asrar-sidebar">
             <button onclick="window.location.href='index.html'" class="back-btn">⬅</button>
             <nav id="side-menu">
-                <button onclick="loadSection('db_sirr_protection', this)">Protections</button>
-                <button onclick="loadSection('db_sirr_ouverture', this)">Ouvertures</button>
-                <button onclick="loadSection('db_sirr_deblocage', this)">Déblocages</button>
-                <button onclick="loadSection('db_sirr_domptage', this)">Domptages</button>
-                <button onclick="loadSection('db_sirr_ilham', this)">Ilham</button>
+                <button onclick="loadFB('db_sirr_protection', this)">Protections</button>
+                <button onclick="loadFB('db_sirr_ouverture', this)">Ouvertures</button>
+                <button onclick="loadFB('db_sirr_deblocage', this)">Déblocages</button>
+                <button onclick="loadFB('db_sirr_domptage', this)">Domptages</button>
+                <button onclick="loadFB('db_sirr_ilham', this)">Ilham</button>
             </nav>
         </aside>
-
         <main class="asrar-content">
             <div id="vertical-list" class="v-list"></div>
         </main>
@@ -35,43 +34,31 @@
             storageBucket: "asrar-bc059.appspot.com",
             appId: "1:199810893447:android:044629472e10f9eb68da22"
         };
-
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
         const params = new URLSearchParams(window.location.search);
-        const initialCat = params.get('cat') || 'db_sirr_protection';
+        const initialDB = params.get('db') || 'db_sirr_protection';
 
-        function loadSection(path, btn) {
-            // Style du bouton actif
+        function loadFB(path, btn) {
             document.querySelectorAll('#side-menu button').forEach(b => b.classList.remove('active'));
             if(btn) btn.classList.add('active');
-            else {
-                // Si chargé via URL, on cherche le bouton correspondant
-                const buttons = document.querySelectorAll('#side-menu button');
-                buttons.forEach(b => { if(b.getAttribute('onclick').includes(path)) b.classList.add('active'); });
-            }
 
             db.ref(path).on('value', (snapshot) => {
-                const data = snapshot.val();
                 const list = document.getElementById('vertical-list');
                 list.innerHTML = '';
-                
-                if(data) {
-                    Object.values(data).forEach(item => {
+                const items = snapshot.val();
+                if(items) {
+                    Object.values(items).forEach(item => {
                         const card = document.createElement('div');
                         card.className = 'asrar-card';
-                        card.innerHTML = `
-                            <div class="img-box"><img src="${item.image}"></div>
-                            <p>${item.titre}</p>
-                        `;
+                        card.innerHTML = `<div class="img-box"><img src="${item.image}"></div><p>${item.titre}</p>`;
                         list.appendChild(card);
                     });
                 }
             });
         }
-
-        window.onload = () => loadSection(initialCat);
+        window.onload = () => loadFB(initialDB);
     </script>
 </body>
 </html>
