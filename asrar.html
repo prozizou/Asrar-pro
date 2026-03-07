@@ -25,6 +25,17 @@
         </main>
     </div>
 
+    <div id="faida-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div class="modal-body">
+                <div id="modal-img-container" class="modal-img"></div>
+                <h2 id="modal-title"></h2>
+                <div id="modal-text" class="faida-text"></div>
+            </div>
+        </div>
+    </div>
+
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyBLzPKzbiNYitUz7sv9Ftqm0oF20rA32Zk",
@@ -49,15 +60,46 @@
                 list.innerHTML = '';
                 const items = snapshot.val();
                 if(items) {
-                    Object.values(items).forEach(item => {
+                    Object.keys(items).forEach(key => {
+                        const item = items[key];
                         const card = document.createElement('div');
                         card.className = 'asrar-card';
+                        // On affiche l'image du childkey "image" pour la miniature
                         card.innerHTML = `<div class="img-box"><img src="${item.image}"></div><p>${item.titre}</p>`;
+                        
+                        // CLIC : Ouvre la modale avec "faida" et "img"
+                        card.onclick = () => openModal(item);
                         list.appendChild(card);
                     });
                 }
             });
         }
+
+        function openModal(item) {
+            const modal = document.getElementById('faida-modal');
+            document.getElementById('modal-title').innerText = item.titre;
+            // Charge le texte depuis le childkey "faida"
+            document.getElementById('modal-text').innerText = item.faida || "Aucun détail disponible.";
+            
+            // Charge l'image depuis le childkey "img"
+            const imgContainer = document.getElementById('modal-img-container');
+            if(item.img) {
+                imgContainer.innerHTML = `<img src="${item.img}" style="width:100%; border-radius:10px;">`;
+            } else {
+                imgContainer.innerHTML = "";
+            }
+
+            modal.style.display = "block";
+        }
+
+        function closeModal() {
+            document.getElementById('faida-modal').style.display = "none";
+        }
+
+        window.onclick = (event) => {
+            if (event.target == document.getElementById('faida-modal')) closeModal();
+        }
+
         window.onload = () => loadFB(initialDB);
     </script>
 </body>
