@@ -1,20 +1,22 @@
 {
-  "short_name": "ASRAR PRO v2",
-  "name": "Application mystique",
-  "icons": [
-    {
-      "src": "https://drive.google.com/file/d/1MDTiCNY_W5EUsHJ_Bzg-U5xHA6U8lHZc/view?usp=drivesdk",
-      "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "https://drive.google.com/file/d/1J7eRmbOaZfpgcN3F6V9LDaWBlgQGZX8A/view?usp=drivesdk",
-      "type": "image/png",
-      "sizes": "512x512"
-    }
-  ],
+  "name": "ASRAR PRO v2",
+  "short_name": "ASRAR",
   "start_url": ".",
   "display": "standalone",
+  "background_color": "#0f1717",
   "theme_color": "#0f1717",
-  "background_color": "#0f1717"
+  "icons": [
+    {
+      "src": "https://i.ibb.co/TMXzB50w/images-4-copy-192x192.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "https://i.ibb.co/JRRfdsMq/unnamed.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ]
 }
