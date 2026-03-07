@@ -32,9 +32,9 @@
 
     <div id="ma-modale" class="modal-overlay" onclick="fermerModale()">
         <div class="modal-card" onclick="event.stopPropagation()">
-            <div id="faida-img" class="detail-img"></div>
-            <h2 id="faida-titre"></h2>
-            <div id="faida-texte" class="detail-txt"></div>
+            <div id="modal-img" class="detail-img"></div>
+            <h2 id="modal-titre"></h2>
+            <div id="modal-sirr" class="detail-txt"></div>
             <button class="btn-fermer" onclick="fermerModale()">RETOUR</button>
         </div>
     </div>
@@ -53,7 +53,6 @@
         const db = firebase.database();
 
         function chargerData(chemin, bouton) {
-            // Style bouton actif
             document.querySelectorAll('.btn-nav').forEach(b => b.classList.remove('active'));
             if(bouton) bouton.classList.add('active');
 
@@ -67,15 +66,14 @@
                         const card = document.createElement('div');
                         card.className = 'secret-card';
                         
-                        // Utilise 'image' pour la liste et 'titre' pour le texte
+                        // CORRECTION DES CLÉS : 'img' pour l'image et 'faida' pour le titre
                         card.innerHTML = `
                             <div class="card-img-box">
-                                <img src="${item.image || ''}" alt="chargement...">
+                                <img src="${item.img || ''}" alt="Chargement...">
                             </div>
-                            <div class="card-label">${(item.titre || 'SANS TITRE').toUpperCase()}</div>
+                            <div class="card-label">${(item.faida || 'SANS TITRE').toUpperCase()}</div>
                         `;
                         
-                        // Clic : ouvre le détail (clé 'faida' et 'img')
                         card.onclick = () => ouvrirModale(item);
                         feed.appendChild(card);
                     });
@@ -84,10 +82,10 @@
         }
 
         function ouvrirModale(item) {
-            document.getElementById('faida-titre').innerText = item.titre || '';
-            document.getElementById('faida-texte').innerText = item.faida || 'Aucun texte disponible.';
-            const imgBox = document.getElementById('faida-img');
-            // Affiche l'image de la clé 'img' dans le détail
+            // Dans la modale, on affiche le 'faida' en titre et le 'sirr' en contenu
+            document.getElementById('modal-titre').innerText = item.faida || '';
+            document.getElementById('modal-sirr').innerText = item.sirr || '';
+            const imgBox = document.getElementById('modal-img');
             imgBox.innerHTML = item.img ? `<img src="${item.img}">` : '';
             document.getElementById('ma-modale').style.display = 'flex';
         }
@@ -96,7 +94,6 @@
             document.getElementById('ma-modale').style.display = 'none';
         }
 
-        // Chargement par défaut au démarrage
         window.onload = () => chargerData('db_sirr_protection');
     </script>
 </body>
