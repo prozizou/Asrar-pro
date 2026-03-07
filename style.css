@@ -1,53 +1,73 @@
 /* Style Général */
 body {
-    background-color: #121212; /* Fond sombre comme sur la capture */
-    color: white;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #0f1717; /* Fond sombre profond */
+    color: #ffffff;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     margin: 0;
     padding: 20px;
+    display: flex;
+    justify-content: center;
 }
 
 .container {
-    max-width: 600px;
-    margin: 0 auto;
+    width: 100%;
+    max-width: 450px; /* Taille typique d'un écran mobile */
 }
 
-/* Grille de Menu */
+header h1 {
+    text-align: center;
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    color: #a0aec0;
+}
+
+/* Grille de Menu (2 colonnes) */
 .menu-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 2 colonnes */
-    gap: 15px; /* Espace entre les cartes */
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
 }
 
 /* Style de chaque Carte */
 .menu-item {
-    background-color: #2d4444; /* Couleur gris-bleu des boutons */
-    border-radius: 12px;
-    padding: 20px;
+    background-color: #2d4444; /* Couleur exacte de votre capture */
+    border-radius: 15px;
+    padding: 20px 10px;
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    transition: transform 0.2s;
     cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    border: 1px solid rgba(255,255,255,0.05);
 }
 
-.menu-item:hover {
-    transform: scale(1.03); /* Petit effet de survol */
-    background-color: #365252;
+.menu-item:active {
+    transform: scale(0.95); /* Effet de pression sur mobile */
+    background-color: #3d5a5a;
 }
 
 /* Conteneur d'image */
-.icon-container img {
-    width: 80px;
-    height: 80px;
-    object-fit: contain;
-    margin-bottom: 10px;
+.icon-container {
+    width: 100%;
+    height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
 }
 
+.icon-container img {
+    max-width: 80%;
+    max-height: 80%;
+    object-fit: contain;
+}
+
+/* Titre sous l'image */
 .menu-item p {
     margin: 0;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 500;
+    color: #e2e8f0;
 }
