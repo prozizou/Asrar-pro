@@ -1,49 +1,163 @@
-/* Styles de la Modale */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 2000;
-    left: 0; top: 0;
-    width: 100%; height: 100%;
-    background-color: rgba(0,0,0,0.9);
+:root {
+    --bg-dark: #121212;
+    --sidebar-bg: #1e2525;
+    --card-border: #ffffff;
+    --accent-blue: #2196f3;
 }
 
-.modal-content {
-    background-color: #1a1a1a;
-    margin: 5% auto;
-    padding: 20px;
-    border: 1px solid #333;
-    width: 90%;
-    max-width: 500px;
-    border-radius: 15px;
-    max-height: 85vh;
-    overflow-y: auto;
-    position: relative;
+body {
+    background-color: var(--bg-dark);
+    color: white;
+    margin: 0;
+    font-family: sans-serif;
+    overflow: hidden;
 }
 
-.close-modal {
+.asrar-layout {
+    display: flex;
+    height: 100vh;
+}
+
+/* Sidebar à gauche */
+.asrar-sidebar {
+    width: 110px;
+    background: var(--sidebar-bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+    border-right: 1px solid #333;
+}
+
+.sidebar-top {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.back-btn {
+    background: none;
+    border: none;
     color: #4fd1c5;
-    float: right;
-    font-size: 28px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+
+.notif-badge {
+    background: #ff4444;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
     font-weight: bold;
+}
+
+#side-menu button {
+    width: 90px;
+    padding: 10px 5px;
+    margin-bottom: 10px;
+    background: #2c3e3e;
+    border: 1px solid #3e4e4e;
+    color: #90a4ae;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#side-menu button.active {
+    border-left: 4px solid var(--accent-blue);
+    background: #3e4e4e;
+    color: white;
+}
+
+/* Liste de cartes à droite */
+.asrar-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.v-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+}
+
+.asrar-card {
+    width: 100%;
+    max-width: 280px;
+    text-align: center;
     cursor: pointer;
 }
 
-.modal-body h2 {
-    color: #4fd1c5;
-    text-align: center;
-    margin-top: 15px;
+.img-container {
+    background: white;
+    border-radius: 15px;
+    padding: 5px;
+    border: 2px solid var(--card-border);
+    height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
 }
 
-.faida-text {
+.img-container img {
+    max-width: 95%;
+    max-height: 95%;
+    object-fit: contain;
+}
+
+.card-title {
+    margin-top: 10px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+    line-height: 1.3;
+}
+
+/* Modale */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.9);
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: #1a1a1a;
+    width: 90%;
+    max-width: 400px;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+}
+
+#m-faida {
+    font-size: 0.9rem;
     color: #ccc;
-    line-height: 1.6;
-    font-size: 1rem;
-    margin-top: 20px;
-    white-space: pre-wrap; /* Garde les retours à la ligne */
+    line-height: 1.5;
+    margin: 15px 0;
 }
 
-.modal-img {
-    margin-bottom: 15px;
-    text-align: center;
+.close-btn {
+    background: var(--accent-blue);
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
 }
