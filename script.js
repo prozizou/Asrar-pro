@@ -1,157 +1,139 @@
-// Configuration Firebase réelle extraite de votre google-services.json
-const firebaseConfig = {
-    apiKey: "AIzaSyBLzPKzbiNYitUz7sv9Ftqm0oF20rA32Zk",
-    authDomain: "asrar-bc059.firebaseapp.com",
-    databaseURL: "https://asrar-bc059.firebaseio.com",
-    projectId: "asrar-bc059",
-    storageBucket: "asrar-bc059.appspot.com",
-    messagingSenderId: "199810893447",
-    appId: "1:199810893447:android:044629472e10f9eb68da22"
+// 1. CONFIGURATION ET CONNEXION À LA BASE DE DONNÉES
+const config = { 
+    databaseURL: "https://asrar-bc059.firebaseio.com" 
 };
-
-// Initialisation
-firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(config);
 const db = firebase.database();
 
-let appData = {};
-let currentCategory = '';
-let currentItems = [];
-const colorThief = new ColorThief();
-let deferredPrompt;
+// 2. ÉTAT LOCAL ET MÉMOIRE DE L'APPAREIL
+let currentCat = 'db_sirr_protection';
+let currentID = null;
 
-// Chargement initial
-async function init() {
-    // Connexion en temps réel à la base de données
-    db.ref('/').on('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-            appData = data;
-            setupSidebar();
-            
-            // Sélection automatique de la première catégorie au démarrage
-            if (!currentCategory) {
-                const firstCat = Object.keys(appData)[0];
-                chargerCategorie(firstCat);
-            } else {
-                chargerCategorie(currentCategory);
-            }
-        }
-        // Masquer le splash screen
-        setTimeout(() => document.getElementById('splash-screen').classList.add('hidden'), 1500);
-    });
-}
+// On identifie l'utilisateur pour le chat et on récupère ses likes passés
+const user = JSON.parse(localStorage.getItem('asrar_user')) || { 
+    name: "Disciple_" + Math.floor(Math.random() * 999) 
+};
+let userLikes = JSON.parse(localStorage.getItem('asrar_user_likes')) || {};
 
-function setupSidebar() {
-    const list = document.getElementById('category-list');
-    list.innerHTML = '';
-    Object.keys(appData).forEach(cat => {
-        const li = document.createElement('li');
-        li.id = `nav-${cat}`;
-        li.innerText = cat.toUpperCase();
-        li.onclick = () => { chargerCategorie(cat); toggleSidebar(); };
-        list.appendChild(li);
-    });
-}
-
-function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
-
-function chargerCategorie(nom) {
-    currentCategory = nom;
-    document.getElementById('categoryTitle').innerText = nom.toUpperCase();
-    document.querySelectorAll('#category-list li').forEach(el => el.classList.remove('active'));
-    if(document.getElementById(`nav-${nom}`)) document.getElementById(`nav-${nom}`).classList.add('active');
-
-    // Transformation des données Firebase en tableau
-    let base = [];
-    const catData = appData[nom];
-    for (let key in catData) {
-        base.push({ ...catData[key], firebaseKey: key });
-    }
-
-    // Gestion de l'ordre personnalisé local
-    const saved = localStorage.getItem(`asrar_v2_order_${nom}`);
-    if (saved) {
-        const ids = JSON.parse(saved);
-        currentItems = ids.map(id => base.find(i => i.id == id)).filter(i => i);
-        const news = base.filter(b => !ids.includes(b.id.toString()));
-        currentItems = [...currentItems, ...news];
-    } else { currentItems = base; }
+// 3. NAVIGATION ENTRE LES 5 CATÉGORIES
+function switchCat(cat, btn) {
+    const view = document.getElementById('main-view');
+    view.classList.add('fade-out'); // Effet visuel de transition
     
-    render(currentItems);
+    setTimeout(() => {
+        document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        currentCat = cat;
+        loadData(); // Charge les données Firebase de la catégorie choisie
+        view.classList.remove('fade-out');
+    }, 300);
 }
 
-function render(items) {
-    const grid = document.getElementById('menuGrid');
-    grid.innerHTML = '';
-    items.forEach(item => {
-        const el = document.createElement('div');
-        el.className = 'menu-item';
-        el.draggable = true;
-        el.dataset.id = item.id;
-        
-        const img = new Image();
-        img.crossOrigin = "Anonymous";
-        img.src = item.image;
-        img.onload = () => {
-            const rgb = colorThief.getColor(img);
-            const colorStr = `${rgb[0]}, ${rgb[1]}, ${rgb[2]}`;
-            el.style.backgroundColor = `rgba(${colorStr}, 0.12)`;
-            el.style.borderColor = `rgba(${colorStr}, 0.3)`;
-            el.style.setProperty('--glow-color', `rgba(${colorStr}, 0.5)`);
-        };
+// 4. RÉCUPÉRATION DES DONNÉES DEPUIS FIREBASE
+function loadData() {
+    // Écoute en temps réel : si quelqu'un d'autre like, votre écran se met à jour
+    db.ref(currentCat).on('value', snap => {
+        const data = snap.val(); 
+        if (!data) { 
+            document.getElementById('feed').innerHTML = ""; 
+            document.getElementById('podium').innerHTML = "";
+            return; 
+        }
 
-        el.innerHTML = `<div class="icon-container"></div><p>${item.titre}</p>`;
-        el.querySelector('.icon-container').appendChild(img);
+        // Conversion et tri par nombre de likes (du plus aimé au moins aimé)
+        const items = Object.keys(data).map(k => ({...data[k], key: k}))
+                      .sort((a,b) => (b.likes || 0) - (a.likes || 0));
         
-        el.addEventListener('dragstart', () => el.classList.add('dragging'));
-        el.addEventListener('dragend', () => { el.classList.remove('dragging'); sauvegarder(); });
-        grid.appendChild(el);
+        // Affichage du Podium (Les 3 premiers)
+        document.getElementById('podium').innerHTML = items.slice(0,3).map((it, i) => `
+            <div class="p-circle" onclick="openModal('${it.key}')">
+                <img src="${it.img || ''}" onerror="this.style.display='none'">
+                <div class="p-rank">${i+1}</div>
+            </div>
+        `).join('');
+
+        // Affichage de la liste avec la Barre de Puissance
+        document.getElementById('feed').innerHTML = items.map(it => `
+            <div class="card" onclick="openModal('${it.key}')">
+                <img src="${it.img || ''}" class="card-img" onerror="this.style.display='none'">
+                <div style="flex:1">
+                    <div class="card-title">${it.faida}</div>
+                    <div class="power-line">
+                        <div class="power-fill" style="width:${Math.min((it.likes || 0) * 5, 100)}%"></div>
+                    </div>
+                </div>
+                <div style="font-size:0.75rem; font-weight:bold;">${it.likes || 0} ❤️</div>
+            </div>
+        `).join('');
     });
-    setupDragAndDrop(grid);
 }
 
-function setupDragAndDrop(grid) {
-    grid.ondragover = e => {
-        e.preventDefault();
-        const dragging = document.querySelector('.dragging');
-        const after = [...grid.querySelectorAll('.menu-item:not(.dragging)')].find(el => {
-            const box = el.getBoundingClientRect();
-            return e.clientY < box.top + box.height / 2;
-        });
-        after ? grid.insertBefore(dragging, after) : grid.appendChild(dragging);
-    };
-}
+// 5. GESTION DES LIKES DANS FIREBASE (Action unique)
+function toggleLike() {
+    if (!currentID) return;
+    const path = `${currentCat}/${currentID}/likes`;
 
-function sauvegarder() {
-    const ids = [...document.querySelectorAll('.menu-item')].map(el => el.dataset.id);
-    localStorage.setItem(`asrar_v2_order_${currentCategory}`, JSON.stringify(ids));
-}
-
-function filtrerElements() {
-    const q = document.getElementById('searchInput').value.toLowerCase();
-    render(currentItems.filter(i => i.titre.toLowerCase().includes(q)));
-}
-
-function reinitialiserOrdre() {
-    localStorage.removeItem(`asrar_v2_order_${currentCategory}`);
-    chargerCategorie(currentCategory);
-}
-
-// Installation PWA
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    document.getElementById('install-area').style.display = 'block';
-});
-
-document.getElementById('btnInstall').addEventListener('click', () => {
-    if (deferredPrompt) {
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then(() => {
-            document.getElementById('install-area').style.display = 'none';
-            deferredPrompt = null;
-        });
+    if (!userLikes[currentID]) {
+        // AJOUT DANS FIREBASE : Utilise une transaction pour éviter les erreurs de calcul
+        db.ref(path).transaction(c => (c || 0) + 1);
+        userLikes[currentID] = true;
+    } else {
+        // RETRAIT DANS FIREBASE (Dislike)
+        db.ref(path).transaction(c => Math.max((c || 0) - 1, 0));
+        delete userLikes[currentID];
     }
-});
 
-window.onload = init;
+    // Sauvegarde locale pour que l'utilisateur ne puisse pas liker 100 fois le même secret
+    localStorage.setItem('asrar_user_likes', JSON.stringify(userLikes));
+    updateHeartUI();
+}
+
+// 6. SYSTÈME DE DISCUSSION (CHAT) DANS FIREBASE
+function send() {
+    const inp = document.getElementById('chatInput');
+    if (!inp.value || !currentID) return;
+
+    // Ajoute le message dans la branche 'discussions' de Firebase
+    db.ref('discussions/' + currentID).push({ 
+        user: user.name, 
+        text: inp.value,
+        timestamp: Date.now()
+    });
+    inp.value = '';
+}
+
+// 7. OUVERTURE DE LA MODALE ET CHARGEMENT DU CHAT
+function openModal(id) {
+    currentID = id;
+    db.ref(`${currentCat}/${id}`).once('value', snap => {
+        const it = snap.val();
+        document.getElementById('m-title').innerText = it.faida.toUpperCase();
+        document.getElementById('m-sirr').innerText = it.sirr;
+        document.getElementById('m-img').src = it.img || '';
+        document.getElementById('modal').style.display = 'flex';
+        updateHeartUI();
+    });
+
+    // Écoute les nouveaux commentaires en temps réel pour ce secret
+    db.ref('discussions/' + id).on('value', snap => {
+        const msgs = snap.val();
+        document.getElementById('m-chat').innerHTML = msgs ? Object.values(msgs).map(m => `
+            <div class="bubble"><b>${m.user}</b>${m.text}</div>
+        `).join('') : '';
+        document.getElementById('m-scroll').scrollTop = 99999;
+    });
+}
+
+function updateHeartUI() {
+    const btn = document.getElementById('heart-btn');
+    btn.style.color = userLikes[currentID] ? "#f87171" : "white";
+}
+
+function closeModal() {
+    document.getElementById('modal').style.display = 'none';
+    db.ref('discussions/' + currentID).off(); // Coupe la connexion pour économiser les données
+    currentID = null;
+}
+
+window.onload = loadData;
