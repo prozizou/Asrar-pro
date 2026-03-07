@@ -7,46 +7,39 @@
     
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
 
     <style>
         :root {
-            --bg-parchemin: #1a1a2e; 
-            --grimoire-couv: #3a1c0b; 
-            --or-vieux: #d9a06f; 
-            --texte-ancien: #f1e4c3; 
-            --border-grimoire: 2px solid #5d3a1a;
+            --bg-mystique: #0f172a; 
+            --cuir-grimoire: #3a1c0b; 
+            --or-terni: #d9a06f; 
+            --page-vieille: #f1e4c3; 
+            --bordure-livre: 2px solid #5d3a1a;
         }
 
         body {
-            background-color: var(--bg-parchemin);
-            color: var(--texte-ancien);
+            background-color: var(--bg-mystique);
+            color: var(--page-vieille);
             font-family: 'Garamond', serif;
-            margin: 0;
-            padding: 20px;
+            margin: 0; padding: 20px;
             background-image: url('https://www.transparenttextures.com/patterns/parchment.png');
         }
 
+        /* En-tête */
         .header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 30px;
-            border-bottom: 2px solid var(--border-grimoire);
+            display: flex; align-items: center; gap: 15px;
+            margin-bottom: 30px; border-bottom: var(--bordure-livre);
             padding-bottom: 15px;
         }
 
         .back-btn {
-            background: var(--grimoire-couv);
-            border: var(--border-grimoire);
-            color: var(--or-vieux);
-            padding: 10px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1.2rem;
+            background: var(--cuir-grimoire); border: var(--bordure-livre);
+            color: var(--or-terni); padding: 10px 15px;
+            border-radius: 8px; cursor: pointer; font-size: 1.2rem;
         }
 
+        /* Grille des Livres */
         .grimoire-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -54,73 +47,43 @@
         }
 
         .grimoire-card {
-            background: var(--grimoire-couv);
-            border-radius: 8px 15px 15px 8px;
-            overflow: hidden;
-            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: var(--border-grimoire);
-            cursor: pointer;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            background: var(--cuir-grimoire);
+            border-radius: 5px 15px 15px 5px;
+            overflow: hidden; border: var(--bordure-livre);
+            cursor: pointer; transition: 0.3s;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.7);
             position: relative;
         }
 
+        /* Effet de tranche de livre */
         .grimoire-card::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; width: 12px; height: 100%;
-            background: rgba(0,0,0,0.3);
+            content: ""; position: absolute; top: 0; left: 0; 
+            width: 10px; height: 100%; background: rgba(0,0,0,0.3);
             border-right: 1px solid rgba(217, 160, 111, 0.1);
-            z-index: 1;
         }
 
-        .grimoire-card:hover {
-            transform: scale(1.05) rotate(-1deg);
-            border-color: var(--or-vieux);
+        .grimoire-card:hover { transform: translateY(-5px) rotate(-1deg); border-color: var(--or-terni); }
+
+        .grimoire-cover { width: 100%; height: 180px; object-fit: cover; opacity: 0.8; }
+
+        .grimoire-info { padding: 12px; text-align: center; background: rgba(0,0,0,0.2); }
+
+        .grimoire-title { 
+            font-size: 0.8rem; font-weight: 700; color: var(--or-terni); 
+            text-transform: uppercase; margin-bottom: 5px;
         }
 
-        .grimoire-cover {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-            opacity: 0.8;
-        }
+        .page-count { font-size: 0.65rem; opacity: 0.7; font-style: italic; }
 
-        .grimoire-info {
-            padding: 12px;
-            text-align: center;
-            background: rgba(0,0,0,0.2);
-        }
-
-        .grimoire-title {
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: var(--or-vieux);
-            text-transform: uppercase;
-            margin-bottom: 5px;
-        }
-
-        .page-badge {
-            font-size: 0.65rem;
-            color: var(--texte-ancien);
-            opacity: 0.7;
-            font-style: italic;
-        }
-
-        /* LECTEUR PDF */
+        /* Lecteur PDF (Modal) */
         .modal { 
             display: none; position: fixed; inset: 0; 
-            background: rgba(0,0,0,0.95); z-index: 1000; 
-            flex-direction: column; 
+            background: rgba(0,0,0,0.95); z-index: 1000; flex-direction: column; 
         }
         
         .modal-header {
-            padding: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--grimoire-couv);
-            color: var(--or-vieux);
-            border-bottom: var(--border-grimoire);
+            padding: 15px; display: flex; justify-content: space-between;
+            align-items: center; background: var(--cuir-grimoire); color: var(--or-terni);
         }
         
         iframe { width: 100%; height: 100%; border: none; background: white; }
@@ -130,7 +93,7 @@
 
     <div class="header">
         <button class="back-btn" onclick="window.location.href='index.html'">📜</button>
-        <h1 style="margin:0; font-size:1.1rem; color:var(--or-vieux);">LA GRANDE BIBLIOTHÈQUE</h1>
+        <h1 style="margin:0; font-size:1.1rem; letter-spacing:1px;">LA GRANDE BIBLIOTHÈQUE</h1>
     </div>
 
     <div class="grimoire-grid" id="grimoire-list">
@@ -138,22 +101,75 @@
 
     <div id="reader" class="modal">
         <div class="modal-header">
-            <span id="view-title">Lecture</span>
+            <span id="v-title">Lecture</span>
             <button onclick="closeReader()" style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;">✕</button>
         </div>
         <iframe id="pdf-viewer" src=""></iframe>
     </div>
 
     <script>
-        // Configuration Firebase
+        // --- CONFIGURATION FIREBASE ---
         const config = { databaseURL: "https://asrar-bc059.firebaseio.com" };
         firebase.initializeApp(config);
         const db = firebase.database();
 
-        // Configuration du Robot PDF
+        // --- CONFIGURATION ROBOT PDF.js ---
         const pdfjsLib = window['pdfjs-dist/build/pdf'];
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
+        // --- CHARGEMENT DE LA BRANCHE ALMAQTAB ---
         function loadBooks() {
-            // Lecture de la branche almaqtab
-            db.ref('almaqtab').on('value
+            db.ref('almaqtab').on('value', snap => {
+                const data = snap.val();
+                if(!data) return;
+                
+                const items = Object.keys(data).map(k => ({...data[k], key: k}));
+                
+                document.getElementById('grimoire-list').innerHTML = items.map(grim => `
+                    <div class="grimoire-card" onclick="openGrimoire('${grim.pdf}', '${grim.text}')">
+                        <img src="${grim.img}" class="grimoire-cover" onerror="this.src='https://via.placeholder.com/150x200?text=Livre'">
+                        <div class="grimoire-info">
+                            <div class="grimoire-title">${grim.text ? grim.text.replace('.pdf', '') : 'Manuscrit'}</div>
+                            <div id="p-${grim.key}" class="page-count">Calcul des pages...</div>
+                        </div>
+                    </div>
+                `).join('');
+
+                // Demander au robot de compter pour chaque livre
+                items.forEach(grim => {
+                    if(grim.pdf) countPages(grim.pdf, `p-${grim.key}`);
+                });
+            });
+        }
+
+        // --- FONCTION DU ROBOT POUR COMPTER LES PAGES ---
+        async function countPages(url, elementId) {
+            try {
+                // Transformation pour lecture directe du PDF sur Drive
+                const streamUrl = url.replace('/view', '/preview').replace('/edit', '/preview');
+                const loadingTask = pdfjsLib.getDocument(streamUrl);
+                const pdf = await loadingTask.promise;
+                document.getElementById(elementId).innerText = "📖 " + pdf.numPages + " pages";
+            } catch (e) {
+                document.getElementById(elementId).innerText = "📖 Grimoire précieux";
+            }
+        }
+
+        // --- GESTION DU LECTEUR ---
+        function openGrimoire(url, title) {
+            if(!url) return alert("Lien introuvable.");
+            let finalUrl = url.replace('/view', '/preview').replace('/edit', '/preview');
+            document.getElementById('v-title').innerText = title;
+            document.getElementById('pdf-viewer').src = finalUrl;
+            document.getElementById('reader').style.display = 'flex';
+        }
+
+        function closeReader() {
+            document.getElementById('reader').style.display = 'none';
+            document.getElementById('pdf-viewer').src = "";
+        }
+
+        window.onload = loadBooks;
+    </script>
+</body>
+</html>
