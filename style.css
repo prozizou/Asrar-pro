@@ -1,0 +1,53 @@
+/* Style Général */
+body {
+    background-color: #121212; /* Fond sombre comme sur la capture */
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Grille de Menu */
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 colonnes */
+    gap: 15px; /* Espace entre les cartes */
+}
+
+/* Style de chaque Carte */
+.menu-item {
+    background-color: #2d4444; /* Couleur gris-bleu des boutons */
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+    cursor: pointer;
+}
+
+.menu-item:hover {
+    transform: scale(1.03); /* Petit effet de survol */
+    background-color: #365252;
+}
+
+/* Conteneur d'image */
+.icon-container img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    margin-bottom: 10px;
+}
+
+.menu-item p {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
