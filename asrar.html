@@ -3,67 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#0c0f0f">
-    <title>ASRAR PRO V2 - Notifications Push</title>
+    <title>ASRAR PRO V2 - Social Edition</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-messaging-compat.js"></script>
 
     <style>
         :root {
-            --couleur-fond: #0c0f0f;
-            --couleur-sidebar: #1d2525;
-            --couleur-accent: #2196f3;
-            --bulle-me: #064e3b;
-            --bulle-other: #1e293b;
-            --safe-top: env(safe-area-inset-top);
-            --safe-bottom: env(safe-area-inset-bottom);
+            --bg: #0c0f0f; --sidebar: #1d2525; --text: #ffffff;
+            --accent: #2196f3; --card: #1a1a1a; --chat-me: #064e3b;
+            --chat-other: #1e293b; --input-bg: #0c0f0f;
         }
 
-        body { background-color: var(--couleur-fond); color: white; margin: 0; font-family: Arial, sans-serif; overflow: hidden; position: fixed; width: 100%; height: 100%; }
-        .asrar-layout { display: flex; height: 100vh; padding-top: var(--safe-top); padding-bottom: var(--safe-bottom); }
+        /* --- MODE CLAIR --- */
+        body.light-mode {
+            --bg: #f0f2f5; --sidebar: #ffffff; --text: #1a1a1a;
+            --accent: #2196f3; --card: #ffffff; --chat-me: #dcf8c6;
+            --chat-other: #ffffff; --input-bg: #f0f2f5;
+        }
 
-        /* Sidebar */
-        .asrar-sidebar { width: 110px; background: var(--couleur-sidebar); display: flex; flex-direction: column; align-items: center; padding-top: 20px; border-right: 1px solid #222; }
-        .btn-nav { width: 90px; padding: 12px 2px; margin-bottom: 10px; background: #2c3636; border: none; color: #90a4ae; border-radius: 6px; font-size: 0.65rem; cursor: pointer; }
-        .btn-nav.active { border-left: 4px solid var(--couleur-accent); background: #3e4e4e; color: white; }
+        body { 
+            background-color: var(--bg); color: var(--text); margin: 0; 
+            font-family: 'Segoe UI', Arial, sans-serif; transition: 0.3s;
+            overflow: hidden; position: fixed; width: 100%; height: 100%; 
+        }
 
-        /* Main */
-        .asrar-main { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .asrar-main::-webkit-scrollbar { display: none; }
-        .vertical-feed { display: flex; flex-direction: column; align-items: center; gap: 40px; width: 100%; }
-        .secret-card { width: 100%; max-width: 260px; text-align: center; cursor: pointer; }
-        .card-img-box { border-radius: 12px; height: 240px; background: #fff; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid #444; }
-        .card-img-box img { max-width: 95%; max-height: 95%; object-fit: contain; }
-        .card-label { margin-top: 12px; font-size: 0.75rem; font-weight: bold; color: #eceff1; }
+        .asrar-layout { display: flex; height: 100vh; padding-top: env(safe-area-inset-top); }
 
-        /* Modale Discussion */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; flex-direction: column; }
-        .modal-header { background: #1d2525; padding: 15px; display: flex; align-items: center; border-bottom: 2px solid var(--couleur-accent); }
-        .btn-back { background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; margin-right: 15px; }
-        #modal-title { font-size: 0.85rem; font-weight: bold; text-transform: uppercase; flex: 1; text-align: center; }
-        .modal-body { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; background: #0c0f0f; }
+        /* --- SIDEBAR --- */
+        .asrar-sidebar { 
+            width: 100px; background: var(--sidebar); display: flex; 
+            flex-direction: column; align-items: center; padding-top: 20px; border-right: 1px solid rgba(0,0,0,0.1); 
+        }
+        .theme-toggle { font-size: 1.5rem; cursor: pointer; margin-bottom: 20px; }
+        .btn-nav { 
+            width: 85px; padding: 10px 2px; margin-bottom: 8px; background: rgba(0,0,0,0.1); 
+            border: none; color: #90a4ae; border-radius: 8px; font-size: 0.6rem; cursor: pointer; 
+        }
+        .btn-nav.active { border-left: 4px solid var(--accent); background: var(--accent); color: white; }
+
+        /* --- LISTE DES SECRETS --- */
+        .asrar-main { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; align-items: center; }
+        .vertical-feed { display: flex; flex-direction: column; gap: 30px; width: 100%; max-width: 400px; }
+        
+        .secret-card { 
+            background: var(--card); border-radius: 15px; overflow: hidden; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); position: relative;
+        }
+        .card-img-box { height: 250px; background: #eee; display: flex; align-items: center; justify-content: center; }
+        .card-img-box img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* Badge Nouveauté & Likes */
+        .badge-new { position: absolute; top: 10px; left: 10px; width: 12px; height: 12px; background: #2196f3; border-radius: 50%; border: 2px solid white; display: none; }
+        .like-overlay { 
+            position: absolute; bottom: 50px; right: 15px; background: rgba(0,0,0,0.6); 
+            padding: 5px 12px; border-radius: 20px; display: flex; align-items: center; gap: 5px; color: white; 
+        }
+        .card-footer { padding: 12px; font-size: 0.8rem; font-weight: bold; text-align: center; }
+
+        /* --- MODALE DISCUSSION --- */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 1000; flex-direction: column; }
+        .modal-header { background: var(--sidebar); padding: 15px; display: flex; align-items: center; border-bottom: 1px solid rgba(0,0,0,0.1); }
+        .modal-body { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; }
         
         /* Bulles Chat */
-        .chat-bubble { max-width: 85%; padding: 10px 15px; border-radius: 12px; font-size: 0.9rem; margin-bottom: 12px; position: relative; }
-        .bubble-me { align-self: flex-end; background: var(--bulle-me); border-bottom-right-radius: 2px; }
-        .bubble-other { align-self: flex-start; background: var(--bulle-other); border-bottom-left-radius: 2px; }
-        .msg-user { font-size: 0.7rem; color: #4fd1c5; font-weight: bold; display: block; margin-bottom: 3px; }
-        .msg-date { font-size: 0.6rem; color: rgba(255,255,255,0.4); text-align: right; margin-top: 5px; }
+        .chat-bubble { max-width: 80%; padding: 10px; border-radius: 12px; margin-bottom: 10px; position: relative; color: #1a1a1a; }
+        body:not(.light-mode) .chat-bubble { color: white; }
+        .bubble-me { align-self: flex-end; background: var(--chat-me); }
+        .bubble-other { align-self: flex-start; background: var(--chat-other); border: 1px solid rgba(0,0,0,0.05); }
+        .user-info-chat { display: flex; align-items: center; gap: 8px; font-size: 0.7rem; margin-bottom: 4px; font-weight: bold; }
+        .user-avatar { width: 25px; height: 25px; border-radius: 50%; object-fit: cover; }
 
-        /* Input Bar */
-        .chat-input-bar { background: #1d2525; padding: 10px; display: flex; align-items: center; gap: 10px; border-top: 1px solid #333; }
-        #chatInput { flex: 1; background: #0c0f0f; border: 1px solid #444; color: white; padding: 12px; border-radius: 25px; outline: none; }
-        .btn-send { background: none; border: none; cursor: pointer; }
-        .btn-send img { width: 35px; }
+        .chat-input-bar { background: var(--sidebar); padding: 10px; display: flex; gap: 10px; align-items: center; }
+        #chatInput { flex: 1; background: var(--input-bg); border: 1px solid rgba(0,0,0,0.1); color: var(--text); padding: 12px; border-radius: 25px; outline: none; }
+
+        /* --- CONFIG PROFIL --- */
+        #profile-setup { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; display: none; align-items: center; justify-content: center; text-align: center; }
     </style>
 </head>
 <body>
 
+    <div id="profile-setup">
+        <div style="background: white; padding: 30px; border-radius: 20px; width: 80%; max-width: 300px; color: #1a1a1a;">
+            <h3>Bienvenue sur ASRAR</h3>
+            <p style="font-size: 0.8rem;">Choisissez votre nom spirituel</p>
+            <input type="text" id="userPseudo" placeholder="Votre Pseudo..." style="width: 100%; padding: 10px; margin-bottom: 15px;">
+            <select id="userAvatar" style="width: 100%; padding: 10px; margin-bottom: 20px;">
+                <option value="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">Avatar Homme</option>
+                <option value="https://cdn-icons-png.flaticon.com/512/3135/3135789.png">Avatar Femme</option>
+            </select>
+            <button onclick="sauverProfil()" style="background: #2196f3; color: white; border: none; padding: 10px 20px; border-radius: 10px; width: 100%;">COMMENCER</button>
+        </div>
+    </div>
+
     <div class="asrar-layout">
         <aside class="asrar-sidebar">
-            <button onclick="window.location.href='index.html'" style="background:none; border:none; color:#4fd1c5; font-size:1.8rem; margin-bottom:25px;">⬅</button>
+            <div class="theme-toggle" onclick="toggleTheme()">🌙</div>
+            <button onclick="window.location.href='index.html'" style="background:none; border:none; color:#4fd1c5; font-size:1.5rem; margin-bottom:20px;">⬅</button>
             <nav id="nav-categories">
                 <button onclick="changerCategorie('db_sirr_protection', this)" class="btn-nav active">Protections</button>
                 <button onclick="changerCategorie('db_sirr_ouverture', this)" class="btn-nav">Ouvertures</button>
@@ -78,129 +114,139 @@
 
     <div id="ma-modale" class="modal-overlay">
         <div class="modal-header">
-            <button class="btn-back" onclick="fermerModale()">←</button>
-            <div id="modal-title">TITRE DU SECRET</div>
+            <button onclick="fermerModale()" style="background:none; border:none; font-size:1.5rem; color:var(--text);">←</button>
+            <div id="modal-title" style="flex:1; text-align:center; font-weight:bold;"></div>
+            <div onclick="likerSecret()" style="cursor:pointer; font-size:1.4rem;">❤️</div>
         </div>
         <div id="modal-body-scroll" class="modal-body">
-            <div id="modal-img" style="text-align:center; margin-bottom:15px;"></div>
-            <div id="modal-sirr" style="color:#ccc; font-size:1rem; margin-bottom:20px;"></div>
-            <div id="chat-messages" style="display: flex; flex-direction: column;"></div>
+            <div id="modal-img" style="border-radius:15px; overflow:hidden; margin-bottom:15px;"></div>
+            <div id="modal-sirr" style="font-size:0.95rem; line-height:1.6; margin-bottom:25px; opacity:0.8;"></div>
+            <div id="chat-messages" style="display:flex; flex-direction:column;"></div>
         </div>
         <div class="chat-input-bar">
-            <input type="text" id="chatInput" placeholder="Commenter ici...">
-            <button class="btn-send" onclick="envoyerMessage()">
-                <img src="https://www.gstatic.com/images/branding/product/2x/play_prism_64dp.png">
-            </button>
+            <input type="text" id="chatInput" placeholder="Écrire un message...">
+            <button onclick="envoyerMessage()" style="background:none; border:none; color:var(--accent); font-weight:bold;">ENVOYER</button>
         </div>
     </div>
 
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyBLzPKzbiNYitUz7sv9Ftqm0oF20rA32Zk",
-            authDomain: "asrar-bc059.firebaseapp.com",
             databaseURL: "https://asrar-bc059.firebaseio.com",
             projectId: "asrar-bc059",
-            storageBucket: "asrar-bc059.appspot.com",
-            messagingSenderId: "199810893447",
             appId: "1:199810893447:android:044629472e10f9eb68da22"
         };
-
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-        const messaging = firebase.messaging();
 
-        let cheminActuel = 'db_sirr_protection';
-        let secretActuelKey = null;
+        let userProfile = JSON.parse(localStorage.getItem('asrar_user'));
+        let currentCat = 'db_sirr_protection';
+        let currentSecretKey = null;
 
-        // --- GESTION NOTIFICATIONS (AVEC VOTRE CLÉ VAPID) ---
-        function activerNotifications() {
-            // Enregistrement obligatoire du Service Worker
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('firebase-messaging-sw.js')
-                .then((registration) => {
-                    messaging.useServiceWorker(registration);
-                    
-                    // Demande de jeton
-                    messaging.getToken({ 
-                        vapidKey: 'BJscYEjrmr7rnAyq2Y8vneHH7izAAKHIlIcHqK5q3Z5z1gV9ugoLQFacKMeGVzgovJO8lYG5Y2rJ7kZp7uJgNHI' 
-                    }).then((token) => {
-                        if (token) {
-                            const cleanToken = token.replace(/[.#$\[\]]/g, "_");
-                            db.ref('user_tokens/' + cleanToken).set(token);
-                            console.log("Notification prête !");
-                        }
-                    });
-                });
-            }
+        // --- THEME & PROFIL ---
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            const icon = document.querySelector('.theme-toggle');
+            icon.innerText = document.body.classList.contains('light-mode') ? '☀️' : '🌙';
         }
 
-        // --- LOGIQUE CHAT & SECRETS ---
-        function changerCategorie(chemin, bouton) {
+        function sauverProfil() {
+            const pseudo = document.getElementById('userPseudo').value;
+            const avatar = document.getElementById('userAvatar').value;
+            if(!pseudo) return alert("Entrez un pseudo");
+            userProfile = { pseudo, avatar };
+            localStorage.setItem('asrar_user', JSON.stringify(userProfile));
+            document.getElementById('profile-setup').style.display = 'none';
+        }
+
+        // --- LOGIQUE SECRETS ---
+        function changerCategorie(chemin, btn) {
             document.querySelectorAll('.btn-nav').forEach(b => b.classList.remove('active'));
-            if(bouton) bouton.classList.add('active');
-            cheminActuel = chemin;
+            btn.classList.add('active');
+            currentCat = chemin;
             document.getElementById('container-liste').innerHTML = '';
             chargerData();
         }
 
         function chargerData() {
-            db.ref(cheminActuel).limitToFirst(20).once('value', (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    Object.keys(data).forEach(k => {
-                        const item = data[k];
+            db.ref(currentCat).on('value', (snap) => {
+                const data = snap.val();
+                const feed = document.getElementById('container-liste');
+                feed.innerHTML = '';
+                if(data) {
+                    Object.keys(data).forEach(key => {
+                        const s = data[key];
                         const card = document.createElement('div');
                         card.className = 'secret-card';
-                        card.innerHTML = `<div class="card-img-box"><img src="${item.img || ''}"></div><div class="card-label">${(item.faida || '').toUpperCase()}</div>`;
-                        card.onclick = () => ouvrirDiscussion({...item, db_key: k});
-                        document.getElementById('container-liste').appendChild(card);
+                        card.innerHTML = `
+                            <div class="badge-new" id="badge-${key}"></div>
+                            <div class="card-img-box"><img src="${s.img || ''}"></div>
+                            <div class="like-overlay">❤️ <span id="likes-${key}">${s.likes || 0}</span></div>
+                            <div class="card-footer">${s.faida.toUpperCase()}</div>
+                        `;
+                        card.onclick = () => ouvrirSecret(key, s);
+                        feed.appendChild(card);
                     });
                 }
             });
         }
 
-        function ouvrirDiscussion(item) {
-            secretActuelKey = item.db_key;
-            document.getElementById('modal-title').innerText = item.faida || "DÉTAIL";
-            document.getElementById('modal-sirr').innerText = item.sirr || "";
-            document.getElementById('modal-img').innerHTML = `<img src="${item.img || ''}" style="width:100%; border-radius:10px;">`;
+        // --- LIKES & CHAT ---
+        function ouvrirSecret(key, item) {
+            currentSecretKey = key;
+            document.getElementById('modal-title').innerText = item.faida;
+            document.getElementById('modal-sirr').innerText = item.sirr;
+            document.getElementById('modal-img').innerHTML = `<img src="${item.img}" style="width:100%">`;
             document.getElementById('ma-modale').style.display = 'flex';
-
-            db.ref('discussions/' + secretActuelKey).on('value', (snapshot) => {
-                const msgs = snapshot.val();
+            
+            // Charger messages
+            db.ref('discussions/' + key).on('value', (snap) => {
                 const container = document.getElementById('chat-messages');
-                container.innerHTML = "";
+                container.innerHTML = '';
+                const msgs = snap.val();
                 if(msgs) {
                     Object.values(msgs).forEach(m => {
+                        const isMe = m.pseudo === userProfile.pseudo;
                         const div = document.createElement('div');
-                        const isMe = m.user === "Moi"; 
                         div.className = `chat-bubble ${isMe ? 'bubble-me' : 'bubble-other'}`;
-                        div.innerHTML = `<span class="msg-user">${m.user}</span>${m.text}<div class="msg-date">${m.date}</div>`;
+                        div.innerHTML = `
+                            <div class="user-info-chat">
+                                <img src="${m.avatar}" class="user-avatar"> ${m.pseudo}
+                            </div>
+                            ${m.text}
+                        `;
                         container.appendChild(div);
                     });
-                    document.getElementById('modal-body-scroll').scrollTop = document.getElementById('modal-body-scroll').scrollHeight;
+                    document.getElementById('modal-body-scroll').scrollTop = 99999;
                 }
             });
+        }
+
+        function likerSecret() {
+            const ref = db.ref(`${currentCat}/${currentSecretKey}/likes`);
+            ref.transaction(current => (current || 0) + 1);
         }
 
         function envoyerMessage() {
             const input = document.getElementById('chatInput');
-            if(!input.value.trim()) return;
-            const msg = {
-                user: "utilisateur@gmail.com", 
+            if(!input.value) return;
+            db.ref('discussions/' + currentSecretKey).push({
+                ...userProfile,
                 text: input.value,
-                date: new Date().toLocaleString('fr-FR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' }).replace(',', ' à')
-            };
-            db.ref('discussions/' + secretActuelKey).push(msg);
-            input.value = "";
+                date: Date.now()
+            });
+            input.value = '';
         }
 
-        function fermerModale() {
-            db.ref('discussions/' + secretActuelKey).off();
-            document.getElementById('ma-modale').style.display = 'none';
+        function fermerModale() { 
+            db.ref('discussions/' + currentSecretKey).off();
+            document.getElementById('ma-modale').style.display = 'none'; 
         }
 
-        window.onload = () => { chargerData(); activerNotifications(); };
+        window.onload = () => {
+            if(!userProfile) document.getElementById('profile-setup').style.display = 'flex';
+            chargerData();
+        };
     </script>
 </body>
 </html>
