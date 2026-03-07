@@ -3,33 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASRAR PRO V2 - Menu</title>
+    <title>ASRAR PRO V2 - Accueil</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
     <div class="container">
-        <header><h1>ASRAR PRO V2</h1></header>
+        <header>
+            <h1>ASRAR PRO V2</h1>
+        </header>
+
         <div class="menu-grid" id="menuGrid"></div>
     </div>
 
     <script>
-        async function init() {
+        async function initialiserAccueil() {
             try {
+                // 1. Lire le fichier local data.json
                 const response = await fetch('data.json');
                 const data = await response.json();
                 const grid = document.getElementById('menuGrid');
                 
-                Object.keys(data).forEach(key => {
+                grid.innerHTML = ''; // On vide la grille avant de remplir
+
+                // 2. Parcourir chaque catégorie du JSON
+                Object.keys(data).forEach(cle => {
+                    const categorie = data[cle];
+                    
+                    // Création de la carte (item)
                     const card = document.createElement('div');
                     card.className = 'menu-item';
-                    card.innerHTML = `<p>${data[key].titre}</p>`;
-                    // Envoie la clé Firebase (ex: db_sirr_protection) dans l'URL
-                    card.onclick = () => window.location.href = `asrar.html?cat=${key}`;
+                    
+                    // On affiche le titre (ex: Protections)
+                    card.innerHTML = `<p>${categorie.titre.toUpperCase()}</p>`;
+                    
+                    // ACTION AU CLIC : Rediriger vers asrar.html avec la clé Firebase
+                    // Exemple : asrar.html?cat=db_sirr_protection
+                    card.onclick = () => {
+                        window.location.href = `asrar.html?cat=${cle}`;
+                    };
+
                     grid.appendChild(card);
                 });
-            } catch (e) { console.error("Erreur chargement JSON", e); }
+            } catch (erreur) {
+                console.error("Erreur lors du chargement de data.json :", erreur);
+            }
         }
-        window.onload = init;
+
+        // Lancer la fonction au chargement de la page
+        window.onload = initialiserAccueil;
     </script>
 </body>
 </html>
