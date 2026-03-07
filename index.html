@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASRAR PRO V2 - Accueil</title>
+    <title>ASRAR PRO V2 - Menu</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,23 +13,23 @@
     </div>
 
     <script>
-        async function loadMenu() {
+        async function init() {
             try {
                 const response = await fetch('data.json');
                 const data = await response.json();
                 const grid = document.getElementById('menuGrid');
                 
-                Object.keys(data).forEach(cat => {
-                    const item = document.createElement('div');
-                    item.className = 'menu-item';
-                    item.innerHTML = `<p>${cat.toUpperCase()}</p>`;
-                    // Redirige vers asrar.html avec le nom de la catégorie
-                    item.onclick = () => window.location.href = `asrar.html?cat=${cat}`;
-                    grid.appendChild(item);
+                Object.keys(data).forEach(key => {
+                    const card = document.createElement('div');
+                    card.className = 'menu-item';
+                    card.innerHTML = `<p>${data[key].titre}</p>`;
+                    // Envoie la clé Firebase (ex: db_sirr_protection) dans l'URL
+                    card.onclick = () => window.location.href = `asrar.html?cat=${key}`;
+                    grid.appendChild(card);
                 });
-            } catch (e) { console.error("Erreur data.json", e); }
+            } catch (e) { console.error("Erreur chargement JSON", e); }
         }
-        window.onload = loadMenu;
+        window.onload = init;
     </script>
 </body>
 </html>
