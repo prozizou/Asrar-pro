@@ -1,49 +1,52 @@
-// Variable pour stocker les données une fois chargées
-let donneesApp = {};
+let appData = {};
 
-// 1. Fonction pour charger le JSON au démarrage
-async function initialiserApplication() {
+// Fonction pour charger les données
+async function loadAppData() {
     try {
-        const reponse = await fetch('data.json');
-        if (!reponse.ok) throw new Error("Erreur de chargement du fichier JSON");
+        // Chargement du fichier JSON
+        const response = await fetch('data.json');
+        if (!response.ok) throw new Error("Impossible de lire data.json");
         
-        donneesApp = await reponse.json();
-        console.log("Application prête !");
+        appData = await response.json();
         
-        // Par défaut, on affiche par exemple la catégorie 'asrar'
-        afficherGrille('asrar');
+        // On affiche toutes les catégories sur la page d'accueil par exemple
+        // Ou une catégorie spécifique au choix
+        renderCategory('asrar'); 
         
-    } catch (erreur) {
-        console.error("Erreur :", erreur);
-        document.getElementById('menuGrid').innerHTML = "<p>Erreur de chargement des données.</p>";
+    } catch (error) {
+        console.error("Erreur de chargement:", error);
+        document.getElementById('menuGrid').innerHTML = "Erreur de connexion aux données.";
     }
 }
 
-// 2. Fonction pour créer les cartes dans la grille HTML
-function afficherGrille(nomCategorie) {
-    const grille = document.getElementById('menuGrid');
-    grille.innerHTML = ''; // Efface le contenu actuel
+// Fonction pour injecter le HTML
+function renderCategory(catName) {
+    const grid = document.getElementById('menuGrid');
+    const title = document.getElementById('categoryTitle');
+    
+    grid.innerHTML = ''; // Nettoyage
+    title.innerText = catName.charAt(0).toUpperCase() + catName.slice(1);
 
-    const items = donneesApp[nomCategorie];
+    const items = appData[catName];
 
     if (items) {
         items.forEach(item => {
-            // Création de l'élément HTML pour chaque carte
-            const carte = document.createElement('div');
-            carte.className = 'menu-item';
-            
-            carte.innerHTML = `
+            const card = document.createElement('div');
+            card.className = 'menu-item';
+            card.innerHTML = `
                 <div class="icon-container">
                     <img src="${item.image}" alt="${item.titre}">
                 </div>
                 <p>${item.titre}</p>
             `;
-
-            // On ajoute la carte à la grille
-            grille.appendChild(carte);
+            
+            // Action au clic
+            card.onclick = () => alert("Vous avez cliqué sur : " + item.titre);
+            
+            grid.appendChild(card);
         });
     }
 }
 
-// Lancer l'initialisation quand la page est chargée
-window.onload = initialiserApplication;
+// Initialisation
+window.onload = loadAppData;
