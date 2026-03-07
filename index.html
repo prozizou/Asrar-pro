@@ -13,45 +13,55 @@
             <h1>ASRAR PRO V2</h1>
         </header>
 
-        <div class="menu-grid" id="menuGrid"></div>
+        <div class="menu-grid" id="menuGrid">
+            </div>
     </div>
 
     <script>
-        async function initialiserAccueil() {
+        async function initialiserGrille() {
             try {
-                // 1. Lire le fichier local data.json
                 const response = await fetch('data.json');
                 const data = await response.json();
                 const grid = document.getElementById('menuGrid');
                 
-                grid.innerHTML = ''; // On vide la grille avant de remplir
+                grid.innerHTML = '';
 
-                // 2. Parcourir chaque catégorie du JSON
-                Object.keys(data).forEach(cle => {
-                    const categorie = data[cle];
-                    
-                    // Création de la carte (item)
+                // On parcourt le tableau contenu dans "asrar"
+                data.asrar.forEach(item => {
                     const card = document.createElement('div');
                     card.className = 'menu-item';
                     
-                    // On affiche le titre (ex: Protections)
-                    card.innerHTML = `<p>${categorie.titre.toUpperCase()}</p>`;
+                    // On définit ici vers quel chemin Firebase chaque bouton doit envoyer
+                    // J'associe les ID aux noms de vos bases Firebase
+                    let firebasePath = "";
+                    switch(item.id) {
+                        case 1: firebasePath = "db_sirr_protection"; break;
+                        case 2: firebasePath = "db_sirr_ouverture"; break;
+                        case 3: firebasePath = "db_sirr_deblocage"; break;
+                        case 4: firebasePath = "db_sirr_domptage"; break;
+                        case 5: firebasePath = "db_sirr_ilham"; break;
+                        default: firebasePath = "db_sirr_protection";
+                    }
+
+                    card.innerHTML = `
+                        <div class="icon-container">
+                            <img src="${item.image}" alt="${item.titre}">
+                        </div>
+                        <p>${item.titre}</p>
+                    `;
                     
-                    // ACTION AU CLIC : Rediriger vers asrar.html avec la clé Firebase
-                    // Exemple : asrar.html?cat=db_sirr_protection
                     card.onclick = () => {
-                        window.location.href = `asrar.html?cat=${cle}`;
+                        window.location.href = `asrar.html?cat=${firebasePath}`;
                     };
 
                     grid.appendChild(card);
                 });
             } catch (erreur) {
-                console.error("Erreur lors du chargement de data.json :", erreur);
+                console.error("Erreur de chargement :", erreur);
             }
         }
 
-        // Lancer la fonction au chargement de la page
-        window.onload = initialiserAccueil;
+        window.onload = initialiserGrille;
     </script>
 </body>
 </html>
