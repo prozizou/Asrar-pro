@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ASRAR PRO V2 - L'Elite</title>
+    <title>ASRAR PRO - Final Fix</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
@@ -12,131 +12,97 @@
         :root {
             --bg: #0c0f0f; --sidebar: #1d2525; --text: #ffffff;
             --accent: #2196f3; --card: #1a1a1a; --gold: #ffd700;
-            --chat-me: #064e3b; --chat-other: #1e293b;
+            --fire: linear-gradient(90deg, #ff8a00, #e52e71);
+            --input-bg: #0c0f0f;
         }
 
         body.light-mode {
             --bg: #f0f2f5; --sidebar: #ffffff; --text: #1a1a1a;
-            --accent: #2196f3; --card: #ffffff;
-            --chat-me: #dcf8c6; --chat-other: #ffffff;
+            --accent: #2196f3; --card: #ffffff; --input-bg: #f0f2f5;
         }
 
-        body { 
-            background-color: var(--bg); color: var(--text); margin: 0; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            transition: 0.3s; overflow: hidden; position: fixed; width: 100%; height: 100%; 
-        }
-
+        body { background-color: var(--bg); color: var(--text); margin: 0; font-family: 'Segoe UI', sans-serif; transition: 0.3s; overflow: hidden; position: fixed; width: 100%; height: 100%; }
         .asrar-layout { display: flex; height: 100vh; padding-top: env(safe-area-inset-top); }
 
-        /* --- SIDEBAR --- */
-        .asrar-sidebar { 
-            width: 90px; background: var(--sidebar); display: flex; 
-            flex-direction: column; align-items: center; padding-top: 20px; border-right: 1px solid rgba(0,0,0,0.1); 
-        }
-        .theme-toggle { font-size: 1.5rem; cursor: pointer; margin-bottom: 25px; }
-        .btn-nav { 
-            width: 75px; padding: 12px 2px; margin-bottom: 10px; background: rgba(0,0,0,0.05); 
-            border: none; color: #90a4ae; border-radius: 10px; font-size: 0.55rem; cursor: pointer; 
-        }
+        /* SIDEBAR */
+        .asrar-sidebar { width: 85px; background: var(--sidebar); display: flex; flex-direction: column; align-items: center; padding-top: 20px; border-right: 1px solid rgba(0,0,0,0.1); }
+        .theme-toggle { font-size: 1.4rem; cursor: pointer; margin-bottom: 25px; }
+        .btn-nav { width: 70px; padding: 12px 2px; margin-bottom: 10px; background: rgba(0,0,0,0.05); border: none; color: #90a4ae; border-radius: 10px; font-size: 0.55rem; cursor: pointer; }
         .btn-nav.active { border-left: 4px solid var(--accent); background: var(--accent); color: white; }
 
-        /* --- CONTENU PRINCIPAL --- */
+        /* MAIN & FEED */
         .asrar-main { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; align-items: center; }
-        .asrar-main::-webkit-scrollbar { display: none; }
+        .podium-section { width: 100%; max-width: 380px; margin-bottom: 25px; padding: 15px; background: rgba(33, 150, 243, 0.05); border-radius: 20px; border: 1px solid rgba(33, 150, 243, 0.1); }
+        .podium-grid { display: flex; justify-content: space-around; align-items: flex-end; }
+        .podium-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; width: 30%; }
+        .podium-img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid #ccc; }
+        .rank-1 .podium-img { width: 90px; height: 90px; border-color: var(--gold); }
 
-        /* PODIUM */
-        .podium-section { 
-            width: 100%; max-width: 380px; margin-bottom: 25px; padding: 15px; 
-            background: linear-gradient(145deg, rgba(33, 150, 243, 0.1), transparent);
-            border-radius: 20px; border: 1px solid rgba(33, 150, 243, 0.2);
-        }
-        .podium-grid { display: flex; justify-content: space-around; align-items: flex-end; padding-top: 10px; }
-        .podium-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; text-align: center; width: 30%; }
-        .podium-img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 3px solid #ccc; }
-        .rank-1 .podium-img { width: 90px; height: 90px; border-color: var(--gold); box-shadow: 0 0 20px rgba(255, 215, 0, 0.4); }
-        .medal-icon { margin-top: -15px; font-size: 1.2rem; background: var(--sidebar); border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; }
+        .vertical-feed { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 380px; padding-bottom: 80px; }
+        .secret-card { background: var(--card); border-radius: 15px; padding: 12px; display: flex; align-items: center; gap: 12px; cursor: pointer; }
+        .card-thumb { width: 60px; height: 60px; border-radius: 10px; object-fit: cover; }
 
-        /* LISTE */
-        .vertical-feed { display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 380px; padding-bottom: 50px; }
-        .secret-card { 
-            background: var(--card); border-radius: 18px; padding: 12px; 
-            display: flex; align-items: center; gap: 15px; cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        }
-        .card-thumb { width: 65px; height: 65px; border-radius: 12px; object-fit: cover; }
-        .card-info h4 { margin: 0; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
-        .card-meta { font-size: 0.7rem; color: #90a4ae; margin-top: 4px; display: flex; gap: 10px; }
+        /* POWER BAR */
+        .p-bar-bg { width: 100%; height: 5px; background: rgba(255,255,255,0.1); border-radius: 10px; margin-top: 5px; overflow: hidden; }
+        .p-bar-fill { height: 100%; background: var(--fire); transition: width 0.8s ease; }
 
-        /* --- MODALE CHAT --- */
+        /* MODALE CHAT */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 1000; flex-direction: column; }
-        .modal-header { background: var(--sidebar); padding: 15px; display: flex; align-items: center; border-bottom: 1px solid rgba(0,0,0,0.1); }
+        .modal-header { background: var(--sidebar); padding: 15px; display: flex; align-items: center; justify-content: space-between; }
         .modal-body { flex: 1; overflow-y: auto; padding: 15px; }
+        .chat-input-box { background: var(--sidebar); padding: 12px; display: flex; gap: 10px; }
+        #chatInput { flex: 1; background: var(--input-bg); border: 1px solid rgba(128,128,128,0.3); color: var(--text); padding: 12px; border-radius: 25px; outline: none; }
         
-        .chat-bubble { max-width: 85%; padding: 12px; border-radius: 15px; margin-bottom: 12px; position: relative; line-height: 1.4; font-size: 0.9rem; }
-        .bubble-me { align-self: flex-end; background: var(--chat-me); border-bottom-right-radius: 2px; color: white; }
-        .bubble-other { align-self: flex-start; background: var(--chat-other); border-bottom-left-radius: 2px; }
-        .chat-u-info { display: flex; align-items: center; gap: 6px; font-size: 0.7rem; font-weight: bold; margin-bottom: 4px; color: var(--accent); }
-        
-        .input-area { background: var(--sidebar); padding: 12px; display: flex; gap: 10px; align-items: center; }
-        #chatInput { flex: 1; background: var(--input-bg); border: 1px solid rgba(128,128,128,0.2); color: var(--text); padding: 12px 18px; border-radius: 30px; outline: none; }
+        .bubble { background: rgba(33,150,243,0.1); padding: 10px; border-radius: 10px; margin-bottom: 8px; font-size: 0.85rem; }
+        .bubble b { color: var(--accent); display: block; font-size: 0.7rem; }
 
-        /* PROFIL SETUP */
-        #profile-box { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 3000; display: none; align-items: center; justify-content: center; }
-        .setup-card { background: white; padding: 30px; border-radius: 25px; width: 85%; max-width: 320px; text-align: center; color: #333; }
+        /* SETUP PROFIL */
+        #profile-setup { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; display: none; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
 
-    <div id="profile-box">
-        <div class="setup-card">
-            <h2 style="margin-top:0">ASRAR PRO</h2>
-            <p style="font-size:0.8rem; color:#666">Choisissez votre identité pour rejoindre la communauté</p>
-            <input type="text" id="p_name" placeholder="Votre Pseudo..." style="width:100%; padding:12px; margin:15px 0; border-radius:10px; border:1px solid #ddd;">
-            <select id="p_avatar" style="width:100%; padding:12px; margin-bottom:20px; border-radius:10px;">
-                <option value="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">Avatar Homme</option>
-                <option value="https://cdn-icons-png.flaticon.com/512/3135/3135789.png">Avatar Femme</option>
-                <option value="https://cdn-icons-png.flaticon.com/512/149/149071.png">Anonyme</option>
-            </select>
-            <button onclick="saveProfile()" style="width:100%; padding:15px; background:#2196f3; color:white; border:none; border-radius:12px; font-weight:bold;">ENTRER</button>
+    <div id="profile-setup">
+        <div style="background: white; padding: 25px; border-radius: 20px; width: 280px; text-align: center; color: #333;">
+            <h3>ASRAR PRO</h3>
+            <input type="text" id="p_pseudo" placeholder="Votre Pseudo..." style="width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #ddd;">
+            <button onclick="saveUser()" style="width:100%; padding:12px; background:#2196f3; color:white; border:none; border-radius:8px;">COMMENCER</button>
         </div>
     </div>
 
     <div class="asrar-layout">
         <aside class="asrar-sidebar">
             <div class="theme-toggle" onclick="toggleMode()">🌙</div>
-            <nav id="nav-categories">
-                <button onclick="switchCat('db_sirr_protection', this)" class="btn-nav active">Protections</button>
-                <button onclick="switchCat('db_sirr_ouverture', this)" class="btn-nav">Ouvertures</button>
-                <button onclick="switchCat('db_sirr_deblocage', this)" class="btn-nav">Déblocages</button>
-                <button onclick="switchCat('db_sirr_ilham', this)" class="btn-nav">Ilham</button>
+            <button onclick="window.location.href='index.html'" style="background:none; border:none; color:var(--accent); font-size:1.5rem; margin-bottom:20px;">⬅</button>
+            <nav>
+                <button onclick="changeCat('db_sirr_protection', this)" class="btn-nav active">Protections</button>
+                <button onclick="changeCat('db_sirr_ouverture', this)" class="btn-nav">Ouvertures</button>
+                <button onclick="changeCat('db_sirr_deblocage', this)" class="btn-nav">Déblocages</button>
             </nav>
         </aside>
 
         <main class="asrar-main">
             <div class="podium-section">
-                <div style="text-align:center; font-size:0.7rem; font-weight:bold; color:var(--accent); margin-bottom:10px;">🏆 LES PLUS PUISSANTS</div>
-                <div id="podium-container" class="podium-grid"></div>
+                <div id="podium-box" class="podium-grid"></div>
             </div>
-
-            <div id="main-feed" class="vertical-feed"></div>
+            <div id="feed-box" class="vertical-feed"></div>
         </main>
     </div>
 
-    <div id="chat-modal" class="modal-overlay">
+    <div id="modal-view" class="modal-overlay">
         <div class="modal-header">
-            <button onclick="closeChat()" style="background:none; border:none; color:var(--text); font-size:1.5rem;">←</button>
-            <div id="m-title" style="flex:1; text-align:center; font-weight:bold; font-size:0.8rem;"></div>
-            <div onclick="doLike()" style="cursor:pointer; font-size:1.3rem;">❤️</div>
+            <button onclick="closeModal()" style="background:none; border:none; color:var(--text); font-size:1.6rem;">✕</button>
+            <div id="m-faida" style="font-weight:bold; font-size:0.8rem;"></div>
+            <div onclick="addLike()" style="cursor:pointer; font-size:1.5rem;">❤️</div>
         </div>
-        <div id="chat-scroll" class="modal-body">
-            <div id="m-img" style="border-radius:15px; overflow:hidden; margin-bottom:15px;"></div>
-            <div id="m-sirr" style="font-size:0.95rem; line-height:1.6; margin-bottom:30px; opacity:0.9;"></div>
-            <div id="chat-list" style="display:flex; flex-direction:column;"></div>
+        <div class="modal-body" id="m-scroll">
+            <div id="m-img" style="margin-bottom:15px;"></div>
+            <div id="m-sirr" style="line-height:1.6; font-size:0.95rem; margin-bottom:25px; border-bottom:1px solid rgba(128,128,128,0.2); padding-bottom:15px;"></div>
+            <div id="m-chat-list"></div>
         </div>
-        <div class="input-area">
-            <input type="text" id="chatInput" placeholder="Votre commentaire...">
-            <button onclick="sendMsg()" style="background:none; border:none; color:var(--accent); font-weight:bold;">PUBLIER</button>
+        <div class="chat-input-box">
+            <input type="text" id="chatInput" placeholder="Votre message...">
+            <button onclick="pushMsg()" style="background:none; border:none; color:var(--accent); font-weight:bold;">ENVOYER</button>
         </div>
     </div>
 
@@ -149,7 +115,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        let userData = JSON.parse(localStorage.getItem('asrar_user'));
+        let user = JSON.parse(localStorage.getItem('asrar_user'));
         let currentCat = 'db_sirr_protection';
         let currentID = null;
 
@@ -158,124 +124,117 @@
             document.querySelector('.theme-toggle').innerText = document.body.classList.contains('light-mode') ? '☀️' : '🌙';
         }
 
-        function saveProfile() {
-            const name = document.getElementById('p_name').value;
-            const avat = document.getElementById('p_avatar').value;
-            if(!name) return alert("Pseudo requis");
-            userData = { name, avat };
-            localStorage.setItem('asrar_user', JSON.stringify(userData));
-            document.getElementById('profile-box').style.display = 'none';
+        function saveUser() {
+            const p = document.getElementById('p_pseudo').value;
+            if(!p) return;
+            user = { name: p };
+            localStorage.setItem('asrar_user', JSON.stringify(user));
+            document.getElementById('profile-setup').style.display = 'none';
         }
 
-        function loadAll() {
+        function changeCat(cat, btn) {
+            document.querySelectorAll('.btn-nav').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentCat = cat;
+            loadSecrets();
+        }
+
+        function loadSecrets() {
             db.ref(currentCat).on('value', (snap) => {
                 const data = snap.val();
                 if(!data) return;
                 const items = Object.keys(data).map(k => ({...data[k], key: k}));
                 items.sort((a,b) => (b.likes || 0) - (a.likes || 0));
                 
-                renderPodium(items.slice(0, 3));
-                renderList(items.slice(3));
+                // Podium (3 premiers)
+                const podium = document.getElementById('podium-box');
+                podium.innerHTML = '';
+                [items[1], items[0], items[2]].forEach((it, i) => {
+                    if(!it) return;
+                    const d = document.createElement('div');
+                    d.className = `podium-item ${i==1?'rank-1':''}`;
+                    d.innerHTML = `<img src="${it.img}" class="podium-img">
+                                   <div style="font-size:0.6rem; margin-top:5px;">${it.likes||0} ❤️</div>`;
+                    d.onclick = () => openModal(it);
+                    podium.appendChild(d);
+                });
+
+                // Liste (le reste)
+                const feed = document.getElementById('feed-box');
+                feed.innerHTML = '';
+                items.slice(3).forEach(it => {
+                    const card = document.createElement('div');
+                    card.className = 'secret-card';
+                    const power = Math.min((it.likes||0), 100) + '%';
+                    card.innerHTML = `
+                        <img src="${it.img}" class="card-thumb">
+                        <div style="flex:1">
+                            <h4 style="margin:0; font-size:0.8rem;">${it.faida}</h4>
+                            <div class="p-bar-bg"><div class="p-bar-fill" style="width:${power}"></div></div>
+                        </div>
+                    `;
+                    card.onclick = () => openModal(it);
+                    feed.appendChild(card);
+                });
             });
         }
 
-        function renderPodium(tops) {
-            const container = document.getElementById('podium-container');
-            container.innerHTML = '';
-            // Ordonner : Argent(1), Or(0), Bronze(2)
-            const order = [tops[1], tops[0], tops[2]];
-            const medals = ["🥈", "🥇", "🥉"];
-            const classes = ["rank-2", "rank-1", "rank-3"];
+        function openModal(it) {
+            currentID = it.key;
+            document.getElementById('m-faida').innerText = it.faida.toUpperCase();
+            document.getElementById('m-sirr').innerText = it.sirr;
+            document.getElementById('m-img').innerHTML = `<img src="${it.img}" style="width:100%; border-radius:15px;">`;
+            document.getElementById('modal-view').style.display = 'flex';
+            
+            // Gestion Historique pour bouton retour Android
+            window.history.pushState({modal: true}, "");
 
-            order.forEach((item, i) => {
-                if(!item) return;
-                const div = document.createElement('div');
-                div.className = `podium-item ${classes[i]}`;
-                div.innerHTML = `
-                    <img src="${item.img}" class="podium-img">
-                    <div class="medal-icon">${medals[i]}</div>
-                    <div style="font-size:0.6rem; margin-top:5px;">${item.likes || 0} ❤️</div>
-                `;
-                div.onclick = () => openChat(item);
-                container.appendChild(div);
-            });
-        }
-
-        function renderList(reste) {
-            const feed = document.getElementById('main-feed');
-            feed.innerHTML = '';
-            reste.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'secret-card';
-                card.innerHTML = `
-                    <img src="${item.img}" class="card-thumb">
-                    <div class="card-info">
-                        <h4>${item.faida}</h4>
-                        <div class="card-meta"><span>❤️ ${item.likes || 0}</span> <span>💬 ${item.comments_count || 0}</span></div>
-                    </div>
-                `;
-                card.onclick = () => openChat(item);
-                feed.appendChild(card);
-            });
-        }
-
-        function openChat(item) {
-            currentID = item.key;
-            document.getElementById('m-title').innerText = item.faida.toUpperCase();
-            document.getElementById('m-sirr').innerText = item.sirr;
-            document.getElementById('m-img').innerHTML = `<img src="${item.img}" style="width:100%">`;
-            document.getElementById('chat-modal').style.display = 'flex';
-
+            // Charger Chat
             db.ref('discussions/' + currentID).on('value', (snap) => {
-                const list = document.getElementById('chat-list');
+                const list = document.getElementById('m-chat-list');
                 list.innerHTML = '';
                 const msgs = snap.val();
                 if(msgs) {
                     Object.values(msgs).forEach(m => {
-                        const isMe = m.user === userData.name;
                         const d = document.createElement('div');
-                        d.className = `chat-bubble ${isMe ? 'bubble-me' : 'bubble-other'}`;
-                        d.innerHTML = `
-                            <div class="chat-u-info"><img src="${m.avat}" style="width:15px; border-radius:50%"> ${m.user}</div>
-                            ${m.text}
-                        `;
+                        d.className = 'bubble';
+                        d.innerHTML = `<b>${m.user}</b> ${m.text}`;
                         list.appendChild(d);
                     });
-                    document.getElementById('chat-scroll').scrollTop = 99999;
+                    document.getElementById('m-scroll').scrollTop = 99999;
                 }
             });
         }
 
-        function doLike() {
+        function addLike() {
+            if(!currentID) return;
             db.ref(`${currentCat}/${currentID}/likes`).transaction(c => (c || 0) + 1);
         }
 
-        function sendMsg() {
+        function pushMsg() {
             const inp = document.getElementById('chatInput');
-            if(!inp.value) return;
+            if(!inp.value || !currentID) return;
             db.ref('discussions/' + currentID).push({
-                user: userData.name, avat: userData.avat, text: inp.value, time: Date.now()
-            });
-            // Incrémenter compteur
-            db.ref(`${currentCat}/${currentID}/comments_count`).transaction(c => (c || 0) + 1);
-            inp.value = '';
+                user: user.name,
+                text: inp.value,
+                time: Date.now()
+            }).then(() => { inp.value = ''; });
         }
 
-        function switchCat(cat, btn) {
-            document.querySelectorAll('.btn-nav').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            currentCat = cat;
-            loadAll();
-        }
-
-        function closeChat() {
+        function closeModal() {
             db.ref('discussions/' + currentID).off();
-            document.getElementById('chat-modal').style.display = 'none';
+            document.getElementById('modal-view').style.display = 'none';
+            currentID = null;
         }
+
+        // Intercepter le bouton retour du téléphone
+        window.onpopstate = function() {
+            document.getElementById('modal-view').style.display = 'none';
+        };
 
         window.onload = () => {
-            if(!userData) document.getElementById('profile-box').style.display = 'flex';
-            loadAll();
+            if(!user) document.getElementById('profile-setup').style.display = 'flex';
+            loadSecrets();
         };
     </script>
 </body>
