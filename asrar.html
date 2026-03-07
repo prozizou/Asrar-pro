@@ -1,49 +1,106 @@
-/* Styles de la Modale */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 2000;
-    left: 0; top: 0;
-    width: 100%; height: 100%;
-    background-color: rgba(0,0,0,0.9);
-}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASRAR PRO V2 - Liste</title>
+    <link rel="stylesheet" href="asrar.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+</head>
+<body>
+    <div class="asrar-layout">
+        <aside class="asrar-sidebar">
+            <button onclick="window.location.href='index.html'" class="back-btn">⬅</button>
+            <nav id="side-menu">
+                <button onclick="loadFB('db_sirr_protection', this)">Protections</button>
+                <button onclick="loadFB('db_sirr_ouverture', this)">Ouvertures</button>
+                <button onclick="loadFB('db_sirr_deblocage', this)">Déblocages</button>
+                <button onclick="loadFB('db_sirr_domptage', this)">Domptages</button>
+                <button onclick="loadFB('db_sirr_ilham', this)">Ilham</button>
+            </nav>
+        </aside>
+        <main class="asrar-content">
+            <div id="vertical-list" class="v-list"></div>
+        </main>
+    </div>
 
-.modal-content {
-    background-color: #1a1a1a;
-    margin: 5% auto;
-    padding: 20px;
-    border: 1px solid #333;
-    width: 90%;
-    max-width: 500px;
-    border-radius: 15px;
-    max-height: 85vh;
-    overflow-y: auto;
-    position: relative;
-}
+    <div id="faida-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div class="modal-body">
+                <div id="modal-img-container" class="modal-img"></div>
+                <h2 id="modal-title"></h2>
+                <div id="modal-text" class="faida-text"></div>
+            </div>
+        </div>
+    </div>
 
-.close-modal {
-    color: #4fd1c5;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBLzPKzbiNYitUz7sv9Ftqm0oF20rA32Zk",
+            authDomain: "asrar-bc059.firebaseapp.com",
+            databaseURL: "https://asrar-bc059.firebaseio.com",
+            projectId: "asrar-bc059",
+            storageBucket: "asrar-bc059.appspot.com",
+            appId: "1:199810893447:android:044629472e10f9eb68da22"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
-.modal-body h2 {
-    color: #4fd1c5;
-    text-align: center;
-    margin-top: 15px;
-}
+        const params = new URLSearchParams(window.location.search);
+        const initialDB = params.get('db') || 'db_sirr_protection';
 
-.faida-text {
-    color: #ccc;
-    line-height: 1.6;
-    font-size: 1rem;
-    margin-top: 20px;
-    white-space: pre-wrap; /* Garde les retours à la ligne */
-}
+        function loadFB(path, btn) {
+            document.querySelectorAll('#side-menu button').forEach(b => b.classList.remove('active'));
+            if(btn) btn.classList.add('active');
 
-.modal-img {
-    margin-bottom: 15px;
-    text-align: center;
-}
+            db.ref(path).on('value', (snapshot) => {
+                const list = document.getElementById('vertical-list');
+                list.innerHTML = '';
+                const items = snapshot.val();
+                if(items) {
+                    Object.keys(items).forEach(key => {
+                        const item = items[key];
+                        const card = document.createElement('div');
+                        card.className = 'asrar-card';
+                        // On affiche l'image du childkey "image" pour la miniature
+                        card.innerHTML = `<div class="img-box"><img src="${item.image}"></div><p>${item.titre}</p>`;
+                        
+                        // CLIC : Ouvre la modale avec "faida" et "img"
+                        card.onclick = () => openModal(item);
+                        list.appendChild(card);
+                    });
+                }
+            });
+        }
+
+        function openModal(item) {
+            const modal = document.getElementById('faida-modal');
+            document.getElementById('modal-title').innerText = item.titre;
+            // Charge le texte depuis le childkey "faida"
+            document.getElementById('modal-text').innerText = item.faida || "Aucun détail disponible.";
+            
+            // Charge l'image depuis le childkey "img"
+            const imgContainer = document.getElementById('modal-img-container');
+            if(item.img) {
+                imgContainer.innerHTML = `<img src="${item.img}" style="width:100%; border-radius:10px;">`;
+            } else {
+                imgContainer.innerHTML = "";
+            }
+
+            modal.style.display = "block";
+        }
+
+        function closeModal() {
+            document.getElementById('faida-modal').style.display = "none";
+        }
+
+        window.onclick = (event) => {
+            if (event.target == document.getElementById('faida-modal')) closeModal();
+        }
+
+        window.onload = () => loadFB(initialDB);
+    </script>
+</body>
+</html>
