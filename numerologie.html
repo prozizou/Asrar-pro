@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Numérologie Avancée - ASRAR PRO</title>
+    <title>Numérologie & Zodiaque - ASRAR PRO</title>
     <style>
         :root { 
             --bg: #0a0e17; 
@@ -12,6 +12,7 @@
             --text: #ffffff; 
             --border: #232d42;
             --muted: #8899a6;
+            --pink: #e91e63;
         }
         
         body { 
@@ -35,7 +36,7 @@
 
         .container { width: 100%; max-width: 500px; }
 
-        /* Saisie du Chiffre X */
+        /* Saisie de la valeur X */
         .input-box { 
             background: var(--card); padding: 30px; border-radius: 20px; 
             border: 1px solid var(--border); text-align: center; margin-bottom: 25px;
@@ -44,7 +45,7 @@
         label { display: block; font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 15px; }
         input { 
             width: 90%; background: transparent; border: none; border-bottom: 2px solid var(--accent); 
-            color: white; font-size: 2.5rem; text-align: center; outline: none; font-weight: 900;
+            color: white; font-size: 2.8rem; text-align: center; outline: none; font-weight: 900;
         }
 
         /* Liste des résultats */
@@ -53,31 +54,36 @@
             background: var(--card); padding: 18px; border-radius: 12px; 
             border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;
         }
-        .res-label { font-size: 0.85rem; color: var(--muted); font-weight: 500; }
-        .res-val { font-size: 1.05rem; font-weight: 700; letter-spacing: 0.5px; }
+        .res-label { font-size: 0.8rem; color: var(--muted); font-weight: 600; text-transform: uppercase; }
+        .res-val { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.5px; }
 
-        /* Couleurs Thématiques */
-        .meditation { color: #e91e63; } /* Rose Mystique */
-        .zodiaque { color: #9c27b0; }  /* Violet Astral */
+        /* Styles spécifiques */
+        .meditation-box { text-align: right; }
+        .meditation-val { color: var(--pink); display: block; }
+        .link-inter { font-size: 0.6rem; color: var(--pink); text-decoration: none; font-weight: bold; opacity: 0.8; }
+        .zodiaque-val { color: #9c27b0; }
         
-        /* Badges Éléments */
-        .nature-badge { padding: 4px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 900; }
-        .eau { background: rgba(66, 153, 225, 0.2); color: #4299e1; border: 1px solid #4299e1; }
-        .feu { background: rgba(245, 101, 101, 0.2); color: #f56565; border: 1px solid #f56565; }
-        .terre { background: rgba(237, 137, 54, 0.2); color: #ed8936; border: 1px solid #ed8936; }
-        .air { background: rgba(160, 174, 192, 0.2); color: #cbd5e0; border: 1px solid #cbd5e0; }
+        /* Badges Éléments Nature */
+        .nature-badge { padding: 5px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 900; letter-spacing: 1px; }
+        .eau { background: rgba(66, 153, 225, 0.15); color: #4299e1; border: 1px solid #4299e1; }
+        .feu { background: rgba(245, 101, 101, 0.15); color: #f56565; border: 1px solid #f56565; }
+        .terre { background: rgba(237, 137, 54, 0.15); color: #ed8936; border: 1px solid #ed8936; }
+        .air { background: rgba(160, 174, 192, 0.15); color: #cbd5e0; border: 1px solid #cbd5e0; }
+
+        /* Footer de calcul */
+        .math-section { margin-top: 15px; border-top: 1px solid var(--border); padding-top: 15px; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <a href="index.html" class="back-btn">← RETOUR HUB</a>
+        <a href="index.html" class="back-btn">← HUB ASRAR PRO</a>
     </div>
 
     <div class="container">
         <div class="input-box">
-            <label>Valeur d'entrée (X)</label>
-            <input type="number" id="X" value="644" oninput="updateCalculs()">
+            <label>Valeur d'Entrée (X)</label>
+            <input type="number" id="X" value="644" oninput="calculerTout()">
         </div>
 
         <div class="res-list">
@@ -92,18 +98,23 @@
 
             <div class="res-item">
                 <span class="res-label">Chiffre Méditation</span>
-                <span class="res-val meditation" id="meditation">-</span>
-            </div>
-            <div class="res-item">
-                <span class="res-label">Ordre Zodiaque</span>
-                <span class="res-val zodiaque" id="zodiaque">-</span>
-            </div>
-            <div class="res-item">
-                <span class="res-label">Nature Élémentaire</span>
-                <div id="nature-box"></div>
+                <div class="meditation-box">
+                    <span class="res-val meditation-val" id="meditation">-</span>
+                    <a href="interpretation.html" class="link-inter">VOIR SIGNIFICATION →</a>
+                </div>
             </div>
 
             <div class="res-item">
+                <span class="res-label">Ordre Zodiaque</span>
+                <span class="res-val zodiaque-val" id="zodiaque">-</span>
+            </div>
+
+            <div class="res-item">
+                <span class="res-label">Nature</span>
+                <div id="nature-box"></div>
+            </div>
+
+            <div class="res-item math-section">
                 <span class="res-label">Chiffre Rouwhanique</span>
                 <span class="res-val" id="rouwhanique">-</span>
             </div>
@@ -115,55 +126,54 @@
     </div>
 
     <script>
-        // Table de correspondance du Zodiaque
-        const zodiaqueMap = {
+        // Table des Signes du Zodiaque
+        const zodiaqueLabels = {
             1: "Bélier", 2: "Taureau", 3: "Gémeaux", 4: "Cancer",
             5: "Lion", 6: "Vierge", 7: "Balance", 8: "Scorpion",
             9: "Sagittaire", 10: "Capricorne", 11: "Verseau", 0: "Poissons"
         };
 
-        function updateCalculs() {
+        function calculerTout() {
             const x = parseInt(document.getElementById('X').value);
             if (isNaN(x)) return;
 
             // 1. Face Apparente
             document.getElementById('apparent').innerText = x;
 
-            // 2. Face Cachée (Inverse)
-            const inverseTxt = x.toString().split('').reverse().join('');
-            const inverse = parseInt(inverseTxt);
-            document.getElementById('cachee').innerText = inverse;
+            // 2. Face Cachée (Inversement)
+            const inverseStr = x.toString().split('').reverse().join('');
+            const inverseVal = parseInt(inverseStr);
+            document.getElementById('cachee').innerText = inverseVal;
 
-            // 3. Méditation : (x + inversé) * 9
-            const resMeditation = (x + inverse) * 9;
-            document.getElementById('meditation').innerText = resMeditation.toLocaleString();
+            // 3. Chiffre Méditation : (x + inversé) * 9
+            const meditation = (x + inverseVal) * 9;
+            document.getElementById('meditation').innerText = meditation.toLocaleString();
 
-            // 4. Zodiaque : x % 12
-            const resteZodiaque = x % 12;
-            document.getElementById('zodiaque').innerText = `${resteZodiaque} — ${zodiaqueMap[resteZodiaque]}`;
+            // 4. Ordre Zodiaque : x % 12
+            const resteZod = x % 12;
+            document.getElementById('zodiaque').innerText = `${resteZod} — ${zodiaqueLabels[resteZod]}`;
 
             // 5. Nature : x % 4
-            const resteNature = x % 4;
+            const resteNat = x % 4;
             const nBox = document.getElementById('nature-box');
-            let label = ""; let css = "";
+            let label = ""; let style = "";
             
-            switch(resteNature) {
-                case 0: label = "EAU"; css = "eau"; break;
-                case 1: label = "FEU"; css = "feu"; break;
-                case 2: label = "TERRE"; css = "terre"; break;
-                case 3: label = "AIR"; css = "air"; break;
-            }
-            nBox.innerHTML = `<span class="nature-badge ${css}">${label} (${resteNature})</span>`;
+            if(resteNat === 0) { label = "EAU"; style = "eau"; }
+            else if(resteNat === 1) { label = "FEU"; style = "feu"; }
+            else if(resteNat === 2) { label = "TERRE"; style = "terre"; }
+            else if(resteNat === 3) { label = "AIR"; style = "air"; }
+            
+            nBox.innerHTML = `<span class="nature-badge ${style}">${label} (${resteNat})</span>`;
 
-            // 6. Rouwhanique : x * x
+            // 6. Chiffre Rouwhanique : x * x
             document.getElementById('rouwhanique').innerText = (x * x).toLocaleString();
 
-            // 7. Lumineux : (x * (x+1)) / 2
+            // 7. Chiffre Lumineux : (x * (x+1)) / 2
             document.getElementById('lumineux').innerText = ((x * (x + 1)) / 2).toLocaleString();
         }
 
-        // Lancement initial
-        window.onload = updateCalculs;
+        // Initialisation au chargement
+        window.onload = calculerTout;
     </script>
 </body>
 </html>
