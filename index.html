@@ -3,17 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ASRAR PRO - Accueil</title>
+    <title>ASRAR PRO - Hub</title>
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8198863698846619" crossorigin="anonymous"></script>
 
     <style>
         :root {
-            --bg: #0f172a; 
-            --cuir: #3a1c0b; 
-            --or: #d9a06f; 
-            --texte: #f1e4c3;
-            --bordure: 1px solid #5d3a1a;
+            --bg: #0f172a; --cuir: #3a1c0b; --or: #d9a06f; --texte: #f1e4c3;
         }
 
         body {
@@ -21,147 +17,136 @@
             color: var(--texte);
             font-family: 'Segoe UI', serif;
             margin: 0;
-            padding: 20px;
+            padding: 15px;
             background-image: url('https://www.transparenttextures.com/patterns/parchment.png');
+        }
+
+        .header-main {
             text-align: center;
+            margin: 20px 0 30px;
         }
 
-        .logo-container {
-            margin: 30px 0;
-        }
+        h1 { color: var(--or); letter-spacing: 2px; text-transform: uppercase; margin: 0; }
 
-        .logo-main {
-            width: 120px;
-            filter: drop-shadow(0 0 10px var(--or));
-        }
-
-        h1 {
-            color: var(--or);
-            font-size: 1.8rem;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            margin-bottom: 5px;
-        }
-
-        .subtitle {
-            font-size: 0.9rem;
-            opacity: 0.8;
-            margin-bottom: 40px;
-        }
-
-        /* Grille de Navigation */
+        /* Grille dynamique */
         .menu-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            max-width: 500px;
+            gap: 15px;
+            max-width: 600px;
             margin: 0 auto;
         }
 
-        .menu-item {
+        .menu-card {
             background: var(--cuir);
-            border: var(--bordure);
-            padding: 25px 15px;
-            border-radius: 15px;
+            border: 1px solid #5d3a1a;
+            border-radius: 12px;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
             box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            cursor: pointer;
+            transition: transform 0.2s;
         }
 
-        .menu-item:active {
-            transform: scale(0.95);
+        .menu-card:active { transform: scale(0.96); }
+
+        /* Wrapper d'image avec effet Glide */
+        .img-box {
+            width: 100%;
+            height: 100px;
+            background: #1a1a1a;
+            overflow: hidden;
         }
 
-        .icon-circle {
-            width: 50px;
-            height: 50px;
-            background: rgba(217, 160, 111, 0.1);
-            border: 1px solid var(--or);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
+        .img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.4s;
         }
 
-        .label {
-            font-weight: bold;
+        .label-box {
+            padding: 12px 5px;
+            text-align: center;
+            background: rgba(0,0,0,0.2);
+        }
+
+        .label-text {
             font-size: 0.85rem;
+            font-weight: bold;
             color: var(--or);
-            text-transform: uppercase;
         }
 
         /* Zone Pub */
-        .ad-banner {
-            margin-top: 50px;
-            padding: 10px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 10px;
-            min-height: 100px;
+        .ad-footer {
+            margin-top: 30px;
+            min-height: 80px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
 
-    <div class="logo-container">
-        <img src="https://cdn-icons-png.flaticon.com/512/3342/3342137.png" class="logo-main" alt="Logo">
+    <div class="header-main">
         <h1>ASRAR PRO</h1>
-        <div class="subtitle">L'Art des Grimoires Sacrés</div>
+        <p style="font-size: 0.7rem; opacity: 0.6;">VOTRE GUIDE MYSTIQUE</p>
     </div>
 
-    <div class="menu-grid">
-        <div class="menu-item" onclick="navigateTo('biblio.html')">
-            <div class="icon-circle">📚</div>
-            <div class="label">Bibliothèque</div>
+    <div class="menu-grid" id="main-menu">
         </div>
 
-        <div class="menu-item" onclick="navigateTo('Market.html')">
-            <div class="icon-circle">🛒</div>
-            <div class="label">Marché</div>
-        </div>
-
-        <div class="menu-item" onclick="navigateTo('biblio.html?filter=fav')">
-            <div class="icon-circle">⭐</div>
-            <div class="label">Favoris</div>
-        </div>
-
-        <div class="menu-item" onclick="alert('Bientôt disponible !')">
-            <div class="icon-circle">👤</div>
-            <div class="label">Profil</div>
-        </div>
-    </div>
-
-    <div class="ad-banner">
+    <div class="ad-footer">
         <ins class="adsbygoogle"
              style="display:block"
              data-ad-client="ca-pub-8198863698846619"
              data-ad-slot="votre-slot-id"
              data-ad-format="auto"
              data-full-width-responsive="true"></ins>
-        <script>
-             (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
 
     <script>
-        function navigateTo(page) {
-            // Effet sonore ou vibration (optionnel)
-            if (window.navigator.vibrate) {
-                window.navigator.vibrate(20);
-            }
-            
-            // Redirection vers la page demandée
-            window.location.href = page;
+        // Vos données JSON intégrées directement
+        const menuData = {
+          "asrar": [
+            { "id": 1, "titre": "Asrar", "image": "https://i.ibb.co/mryjJvhR/40688297-mystique-alchimique-cercle-secret-la-magie-cercle-pour-breloques-vectoriel.jpg" },
+            { "id": 2, "titre": "Bibliothèque", "image": "https://i.ibb.co/zWf4zhFR/pile-livres-colores-1308-171741.jpg" },
+            { "id": 3, "titre": "Marché & Services", "image": "https://i.ibb.co/933WytbF/a-shop-logo-little-town-market-11042322-png-sw800.png" },
+            { "id": 4, "titre": "Planètes", "image": "https://i.ibb.co/5XHS58hc/saatan-ornament.png" },
+            { "id": 5, "titre": "Chiffres", "image": "https://i.ibb.co/nqwHmSPh/61y8x3rk-XAL-AC-UF1000-1000-QL80.jpg" },
+            { "id": 6, "titre": "Abajad", "image": "https://i.ibb.co/G35RKtJ7/9b0701045eeefb2a23fc82c027b80636-fgraphic.png" },
+            { "id": 7, "titre": "Applications", "image": "https://i.ibb.co/xSWbhgYZ/What-Google-is-telling-app-developers-to-do-will-make-the-Play-Store-look-better.png" },
+            { "id": 8, "titre": "Consultation", "image": "https://i.ibb.co/Rkc7wGWj/symbole-medical-plat-23-2149496593.jpg" }
+          ]
+        };
+
+        function renderMenu() {
+            const grid = document.getElementById('main-menu');
+            grid.innerHTML = menuData.asrar.map(item => `
+                <div class="menu-card" onclick="handleNavigation('${item.titre}')">
+                    <div class="img-box">
+                        <img src="${item.image}" alt="${item.titre}" loading="lazy">
+                    </div>
+                    <div class="label-box">
+                        <div class="label-text">${item.titre}</div>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        // Initialisation AdSense une fois le DOM chargé
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log("ASRAR PRO prêt - Status Publicitaire: Autorisé");
-        });
+        function handleNavigation(titre) {
+            // Logique de redirection automatique
+            if (titre === "Marché & Services") {
+                window.location.href = 'Market.html';
+            } else if (titre === "Bibliothèque") {
+                window.location.href = 'biblio.html';
+            } else {
+                alert("La section " + titre + " sera bientôt disponible.");
+            }
+        }
+
+        window.onload = renderMenu;
     </script>
 </body>
 </html>
