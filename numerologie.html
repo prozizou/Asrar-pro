@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Numérologie - ASRAR PRO</title>
+    <title>Numérologie & Nature - ASRAR PRO</title>
     <style>
         :root { --bg: #0a0e17; --card-bg: #1e2530; --accent: #00bcd4; --text: #ffffff; --border: #303742; }
         body { background-color: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
@@ -13,76 +13,115 @@
         
         .container { width: 100%; max-width: 500px; }
         
-        /* Zone de saisie */
-        .input-section { background: var(--card-bg); padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--border); text-align: center; }
-        label { display: block; font-size: 0.7rem; color: #8899a6; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px; }
-        input { width: 80%; background: transparent; border: none; border-bottom: 2px solid var(--accent); color: white; font-size: 2rem; text-align: center; outline: none; }
+        .input-section { background: var(--card-bg); padding: 25px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--border); text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        label { display: block; font-size: 0.7rem; color: #8899a6; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 2px; }
+        input { width: 85%; background: transparent; border: none; border-bottom: 2px solid var(--accent); color: white; font-size: 2.2rem; text-align: center; outline: none; font-weight: bold; }
 
-        /* Tableau de calculs */
+        .result-group { margin-top: 20px; }
         .result-row { 
-            background: var(--card-bg); padding: 15px; border-radius: 8px; margin-bottom: 8px; 
+            background: var(--card-bg); padding: 15px; border-radius: 8px; margin-bottom: 10px; 
             display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border);
+            transition: 0.3s;
         }
-        .label { font-size: 0.9rem; font-weight: 600; }
-        .value { font-size: 1.1rem; font-weight: 700; color: #f0f0f0; }
+        .result-row:hover { border-color: var(--accent); }
+        
+        .label { font-size: 0.85rem; color: #a0aec0; font-weight: 500; }
+        .value { font-size: 1.1rem; font-weight: 800; color: #ffffff; text-align: right; }
+        
+        .element-badge { padding: 4px 10px; border-radius: 4px; font-size: 0.9rem; font-weight: bold; text-transform: uppercase; }
+        .eau { color: #4299e1; }
+        .feu { color: #f56565; }
+        .terre { color: #ed8936; }
+        .air { color: #cbd5e0; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <a href="index.html" class="back-btn">← Retour</a>
+        <a href="index.html" class="back-btn">← Hub Principal</a>
     </div>
 
     <div class="container">
         <div class="input-section">
-            <label>Nombre à déterminer</label>
-            <input type="number" id="inputX" value="644" oninput="calculer()">
+            <label>Valeur d'entrée (X)</label>
+            <input type="number" id="inputX" value="644" oninput="calculerToutesValeurs()">
         </div>
 
-        <div id="results">
+        <div class="result-group" id="results">
             <div class="result-row">
                 <span class="label">Face apparent</span>
-                <span class="value" id="face-apparent">644</span>
+                <span class="value" id="face-apparent">-</span>
             </div>
             <div class="result-row">
                 <span class="label">Face cachée</span>
-                <span class="value" id="face-cachee">446</span>
+                <span class="value" id="face-cachee">-</span>
+            </div>
+            
+            <div class="result-row">
+                <span class="label">Chiffre Méditation</span>
+                <span class="value" id="chiffre-meditation" style="color:var(--accent);">-</span>
             </div>
             <div class="result-row">
-                <span class="label">Chiffre rouwhanique</span>
-                <span class="value" id="chiffre-rouwhanique">414 736</span>
+                <span class="label">Ordre Zodiaque (Reste /12)</span>
+                <span class="value" id="ordre-zodiaque">-</span>
             </div>
             <div class="result-row">
-                <span class="label">Chiffre lumineux</span>
-                <span class="value" id="chiffre-lumineux">207 690</span>
+                <span class="label">Nature (Élément)</span>
+                <span class="value" id="nature-valeur">-</span>
+            </div>
+
+            <div class="result-row">
+                <span class="label">Chiffre Rouwhanique</span>
+                <span class="value" id="chiffre-rouwhanique">-</span>
+            </div>
+            <div class="result-row">
+                <span class="label">Chiffre Lumineux</span>
+                <span class="value" id="chiffre-lumineux">-</span>
             </div>
         </div>
     </div>
 
     <script>
-        function calculer() {
+        function calculerToutesValeurs() {
             const x = parseInt(document.getElementById('inputX').value);
-            
             if (isNaN(x)) return;
 
-            // 1. Face apparent = x
+            // 1. Face Apparent
             document.getElementById('face-apparent').innerText = x;
 
-            // 2. Face cachée = inverse de x (ex: 644 -> 446)
-            const inverse = x.toString().split('').reverse().join('');
+            // 2. Face Cachée (Inverse)
+            const inverse = parseInt(x.toString().split('').reverse().join(''));
             document.getElementById('face-cachee').innerText = inverse;
 
-            // 3. Chiffre rouwhanique = x * x
-            const rouwhanique = x * x;
-            document.getElementById('chiffre-rouwhanique').innerText = rouwhanique.toLocaleString();
+            // 3. Chiffre Méditation : (x + inverse) * 9
+            const meditation = (x + inverse) * 9;
+            document.getElementById('chiffre-meditation').innerText = meditation.toLocaleString();
 
-            // 4. Chiffre lumineux = (n*(n+1))/2
-            const lumineux = (x * (x + 1)) / 2;
-            document.getElementById('chiffre-lumineux').innerText = lumineux.toLocaleString();
+            // 4. Ordre Zodiaque : x % 12
+            document.getElementById('ordre-zodiaque').innerText = (x % 12);
+
+            // 5. Nature : x % 4
+            const resteNature = x % 4;
+            const displayNature = document.getElementById('nature-valeur');
+            
+            if (resteNature === 0) {
+                displayNature.innerHTML = '<span class="element-badge eau">EAU (0)</span>';
+            } else if (resteNature === 1) {
+                displayNature.innerHTML = '<span class="element-badge feu">FEU (1)</span>';
+            } else if (resteNature === 2) {
+                displayNature.innerHTML = '<span class="element-badge terre">TERRE (2)</span>';
+            } else if (resteNature === 3) {
+                displayNature.innerHTML = '<span class="element-badge air">AIR (3)</span>';
+            }
+
+            // 6. Chiffre Rouwhanique : x * x
+            document.getElementById('chiffre-rouwhanique').innerText = (x * x).toLocaleString();
+
+            // 7. Chiffre Lumineux : (x * (x + 1)) / 2
+            document.getElementById('chiffre-lumineux').innerText = ((x * (x + 1)) / 2).toLocaleString();
         }
 
-        // Lancer le calcul au chargement
-        window.onload = calculer;
+        window.onload = calculerToutesValeurs;
     </script>
 </body>
 </html>
