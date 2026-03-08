@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - ASRAR PRO</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
+
+    <style>
+        :root { --bg: #0a0e17; --card: #161b2a; --accent: #00bcd4; --text: #ffffff; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; padding: 20px; display: flex; justify-content: center; }
+        
+        .admin-card {
+            background: var(--card);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid #232d42;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        h2 { font-size: 1.2rem; margin-bottom: 20px; color: var(--accent); text-align: center; }
+
+        .input-group { margin-bottom: 20px; }
+        label { display: block; font-size: 0.8rem; color: #8899a6; margin-bottom: 8px; }
+        
+        input[type="text"], input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            background: #0d1117;
+            border: 1px solid #232d42;
+            border-radius: 8px;
+            color: white;
+            box-sizing: border-box;
+        }
+
+        .btn-add {
+            width: 100%;
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-add:disabled { background: #232d42; color: #555; }
+
+        #status { font-size: 0.75rem; text-align: center; margin-top: 15px; color: var(--accent); }
+    </style>
+</head>
+<body>
+
+    <div class="admin-card">
+        <h2>Ajouter au Menu</h2>
+        
+        <div class="input-group">
+            <label>Titre de la section</label>
+            <input type="text" id="menu-title" placeholder="Ex: Rituels Lunaire">
+        </div>
+
+        <div class="input-group">
+            <label>Image (Depuis votre téléphone)</label>
+            <input type="file" id="menu-image" accept="image/*">
+        </div>
+
+        <button class="btn-add" id="upload-btn" onclick="uploadData()">ENREGISTRER DANS LE HUB</button>
+        
+        <div id="status">Prêt</div>
+    </div>
+
+    <script>
+        // Configuration Firebase identique à votre index.html
+        const firebaseConfig = {
+            databaseURL: "https://asrar-bc059.firebaseio.com",
+            storageBucket: "asrar-bc059.appspot.com"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const storage = firebase.storage();
+
+        async function uploadData() {
+            const title = document.getElementById('menu-title').value;
+            const file = document.getElementById('menu-image').files[0];
+            const btn = document.getElementById('upload-btn');
+            const status = document.getElementById('status');
+
+            if (!title || !file) {
+                alert("Veuillez remplir tous les champs.");
+                return;
+            }
+
+            btn.disabled = true;
+            status.innerText = "Téléchargement de l'image...";
+
+            try {
+                // 1. Upload de l'image vers Storage
+                const storageRef = storage.ref('menu_images/' + Date.now() + "_" + file.name);
+                const snapshot = await storageRef.put(file);
+                const downloadURL = await snapshot.ref.getDownloadURL();
+
+                status.innerText = "Enregistrement en base de données...";
+
+                // 2. Enregistrement dans le nœud menu_AsrarPro
+                const newMenuRef = db.ref('menu_AsrarPro').push();
+                await newMenuRef.set({
+                    titre: title,
+                    image: downloadURL,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                });
+
+                status.innerText = "Succès ! Section ajoutée.";
+                document.getElementById('menu-title').value = "";
+                document.getElementById('menu-image').value = "";
+            } catch (error) {
+                console.error(error);
+                status.innerText = "Erreur : " + error.message;
+            } finally {
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
