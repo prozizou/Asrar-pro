@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASRAR PRO EXPERT</title>
+    <style>
+        :root { --bg: #0a0e17; --card: #161b2a; --accent: #00bcd4; --text: #ffffff; --purple: #9c27b0; }
+        body { background: var(--bg); color: var(--text); font-family: sans-serif; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .card { background: var(--card); border: 1px solid #232d42; padding: 25px; border-radius: 20px; width: 100%; max-width: 400px; margin-bottom: 20px; text-align: center; }
+        input { background: none; border: none; border-bottom: 2px solid var(--accent); color: white; font-size: 2.5rem; width: 100%; text-align: center; outline: none; margin-bottom: 20px; }
+        .res-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #232d42; }
+        .astral-detail { color: var(--purple); font-size: 0.75rem; font-weight: bold; display: block; margin-top: 5px; }
+        #comp-result { margin-top: 15px; padding: 15px; border-radius: 10px; border: 1px dashed var(--accent); font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h2 style="color:var(--accent)">MODE EXPERT ACTIF</h2>
+
+    <div class="card">
+        <label style="font-size: 0.7rem; color: #8899a6;">NOMBRE X</label>
+        <input type="number" id="X" value="308" oninput="calculer()">
+        
+        <div class="res-item">
+            <span>Zodiaque</span>
+            <div style="text-align: right;">
+                <span id="zod-name" style="font-weight: bold;">-</span>
+                <span id="zod-meta" class="astral-detail">-</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <label style="font-size: 0.7rem; color: #8899a6;">TEST COMPATIBILITÉ</label>
+        <input type="number" id="X2" placeholder="Entrez 2ème nombre" oninput="calculer()">
+        <div id="comp-result">En attente...</div>
+    </div>
+
+    <script>
+        const zodiac = {
+            1: ["Bélier", "Mars", "Est"], 2: ["Taureau", "Vénus", "S-Est"], 3: ["Gémeaux", "Mercure", "N-Est"],
+            4: ["Cancer", "Lune", "Nord"], 5: ["Lion", "Soleil", "N-Ouest"], 6: ["Vierge", "Mercure", "S-Ouest"],
+            7: ["Balance", "Vénus", "Ouest"], 8: ["Scorpion", "Mars", "Sud"], 9: ["Sagittaire", "Jupiter", "Est"],
+            10: ["Capricorne", "Saturne", "Sud"], 11: ["Verseau", "Saturne", "Ouest"], 0: ["Poissons", "Jupiter", "Nord"]
+        };
+
+        function calculer() {
+            const x1 = parseInt(document.getElementById('X').value);
+            const x2 = parseInt(document.getElementById('X2').value);
+            
+            if (!isNaN(x1)) {
+                const rZ = x1 % 12;
+                document.getElementById('zod-name').innerText = rZ + " — " + zodiac[rZ][0];
+                // AFFICHAGE DES DÉTAILS ASTRAUX
+                document.getElementById('zod-meta').innerText = "Planète: " + zodiac[rZ][1] + " | Dir: " + zodiac[rZ][2];
+
+                if (!isNaN(x2)) {
+                    const rN1 = x1 % 4; const rN2 = x2 % 4;
+                    const nats = ["EAU", "FEU", "TERRE", "AIR"];
+                    document.getElementById('comp-result').innerText = nats[rN1] + " + " + nats[rN2] + " : ANALYSE OK";
+                }
+            }
+        }
+        window.onload = calculer;
+    </script>
+</body>
+</html>
