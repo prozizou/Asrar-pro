@@ -3,28 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Numérologie & Zodiaque - ASRAR PRO</title>
+    <title>Numérologie Dynamique - ASRAR PRO</title>
     <style>
         :root { 
-            --bg: #0a0e17; 
-            --card: #161b2a; 
-            --accent: #00bcd4; 
-            --text: #ffffff; 
-            --border: #232d42;
-            --muted: #8899a6;
-            --pink: #e91e63;
+            --bg: #0a0e17; --card: #161b2a; --accent: #00bcd4; --text: #ffffff; 
+            --border: #232d42; --muted: #8899a6; --pink: #e91e63;
         }
         
         body { 
-            background-color: var(--bg); 
-            color: var(--text); 
-            font-family: 'Inter', sans-serif; 
-            margin: 0; 
-            padding: 20px; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            min-height: 100vh;
+            background-color: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; 
+            margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh;
         }
 
         .header { width: 100%; max-width: 500px; margin-bottom: 20px; }
@@ -36,7 +24,6 @@
 
         .container { width: 100%; max-width: 500px; }
 
-        /* Saisie de la valeur X */
         .input-box { 
             background: var(--card); padding: 30px; border-radius: 20px; 
             border: 1px solid var(--border); text-align: center; margin-bottom: 25px;
@@ -48,7 +35,6 @@
             color: white; font-size: 2.8rem; text-align: center; outline: none; font-weight: 900;
         }
 
-        /* Liste des résultats */
         .res-list { display: flex; flex-direction: column; gap: 12px; }
         .res-item { 
             background: var(--card); padding: 18px; border-radius: 12px; 
@@ -57,20 +43,17 @@
         .res-label { font-size: 0.8rem; color: var(--muted); font-weight: 600; text-transform: uppercase; }
         .res-val { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.5px; }
 
-        /* Styles spécifiques */
         .meditation-box { text-align: right; }
         .meditation-val { color: var(--pink); display: block; }
         .link-inter { font-size: 0.6rem; color: var(--pink); text-decoration: none; font-weight: bold; opacity: 0.8; }
-        .zodiaque-val { color: #9c27b0; }
+        .zodiaque-val { color: #9c27b0; transition: 0.3s; }
         
-        /* Badges Éléments Nature */
-        .nature-badge { padding: 5px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 900; letter-spacing: 1px; }
+        .nature-badge { padding: 5px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 900; transition: 0.5s; }
         .eau { background: rgba(66, 153, 225, 0.15); color: #4299e1; border: 1px solid #4299e1; }
         .feu { background: rgba(245, 101, 101, 0.15); color: #f56565; border: 1px solid #f56565; }
         .terre { background: rgba(237, 137, 54, 0.15); color: #ed8936; border: 1px solid #ed8936; }
         .air { background: rgba(160, 174, 192, 0.15); color: #cbd5e0; border: 1px solid #cbd5e0; }
 
-        /* Footer de calcul */
         .math-section { margin-top: 15px; border-top: 1px solid var(--border); padding-top: 15px; }
     </style>
 </head>
@@ -89,18 +72,18 @@
         <div class="res-list">
             <div class="res-item">
                 <span class="res-label">Face Apparente</span>
-                <span class="res-val" id="apparent">-</span>
+                <span class="res-val" id="apparent">0</span>
             </div>
             <div class="res-item">
                 <span class="res-label">Face Cachée</span>
-                <span class="res-val" id="cachee">-</span>
+                <span class="res-val" id="cachee">0</span>
             </div>
 
             <div class="res-item">
                 <span class="res-label">Chiffre Méditation</span>
                 <div class="meditation-box">
-                    <span class="res-val meditation-val" id="meditation">-</span>
-                    <a href="interpretation.html" class="link-inter">VOIR SIGNIFICATION →</a>
+                    <span class="res-val meditation-val" id="meditation">0</span>
+                    <a href="interpretation.html" class="link-inter">SIGNIFICATION →</a>
                 </div>
             </div>
 
@@ -116,63 +99,80 @@
 
             <div class="res-item math-section">
                 <span class="res-label">Chiffre Rouwhanique</span>
-                <span class="res-val" id="rouwhanique">-</span>
+                <span class="res-val" id="rouwhanique">0</span>
             </div>
             <div class="res-item">
                 <span class="res-label">Chiffre Lumineux</span>
-                <span class="res-val" id="lumineux">-</span>
+                <span class="res-val" id="lumineux">0</span>
             </div>
         </div>
     </div>
 
     <script>
-        // Table des Signes du Zodiaque
         const zodiaqueLabels = {
             1: "Bélier", 2: "Taureau", 3: "Gémeaux", 4: "Cancer",
             5: "Lion", 6: "Vierge", 7: "Balance", 8: "Scorpion",
             9: "Sagittaire", 10: "Capricorne", 11: "Verseau", 0: "Poissons"
         };
 
+        // Fonction d'animation de compteur
+        function animateValue(id, start, end, duration) {
+            if (start === end) return;
+            const obj = document.getElementById(id);
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const current = Math.floor(progress * (end - start) + start);
+                obj.innerHTML = current.toLocaleString();
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // Stocker les anciennes valeurs pour l'effet de transition
+        let lastValues = { apparent: 0, cachee: 0, meditation: 0, rouwhanique: 0, lumineux: 0 };
+
         function calculerTout() {
             const x = parseInt(document.getElementById('X').value);
             if (isNaN(x)) return;
 
-            // 1. Face Apparente
-            document.getElementById('apparent').innerText = x;
+            // 1 & 2. Faces
+            const inverseVal = parseInt(x.toString().split('').reverse().join(''));
+            
+            animateValue("apparent", lastValues.apparent, x, 400);
+            animateValue("cachee", lastValues.cachee, inverseVal, 400);
 
-            // 2. Face Cachée (Inversement)
-            const inverseStr = x.toString().split('').reverse().join('');
-            const inverseVal = parseInt(inverseStr);
-            document.getElementById('cachee').innerText = inverseVal;
-
-            // 3. Chiffre Méditation : (x + inversé) * 9
+            // 3. Méditation
             const meditation = (x + inverseVal) * 9;
-            document.getElementById('meditation').innerText = meditation.toLocaleString();
+            animateValue("meditation", lastValues.meditation, meditation, 500);
 
-            // 4. Ordre Zodiaque : x % 12
+            // 4. Zodiaque
             const resteZod = x % 12;
             document.getElementById('zodiaque').innerText = `${resteZod} — ${zodiaqueLabels[resteZod]}`;
 
-            // 5. Nature : x % 4
+            // 5. Nature
             const resteNat = x % 4;
             const nBox = document.getElementById('nature-box');
-            let label = ""; let style = "";
-            
+            let label = "", style = "";
             if(resteNat === 0) { label = "EAU"; style = "eau"; }
             else if(resteNat === 1) { label = "FEU"; style = "feu"; }
             else if(resteNat === 2) { label = "TERRE"; style = "terre"; }
             else if(resteNat === 3) { label = "AIR"; style = "air"; }
-            
             nBox.innerHTML = `<span class="nature-badge ${style}">${label} (${resteNat})</span>`;
 
-            // 6. Chiffre Rouwhanique : x * x
-            document.getElementById('rouwhanique').innerText = (x * x).toLocaleString();
+            // 6 & 7. Math
+            const rouw = x * x;
+            const lumi = (x * (x + 1)) / 2;
+            animateValue("rouwhanique", lastValues.rouwhanique, rouw, 600);
+            animateValue("lumineux", lastValues.lumineux, lumi, 600);
 
-            // 7. Chiffre Lumineux : (x * (x+1)) / 2
-            document.getElementById('lumineux').innerText = ((x * (x + 1)) / 2).toLocaleString();
+            // Mise à jour des anciennes valeurs
+            lastValues = { apparent: x, cachee: inverseVal, meditation: meditation, rouwhanique: rouw, lumineux: lumi };
         }
 
-        // Initialisation au chargement
         window.onload = calculerTout;
     </script>
 </body>
