@@ -1,78 +1,17 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASRAR PRO EXPERT</title>
-    <style>
-        body { background: #0a0e17; color: white; font-family: sans-serif; padding: 20px; text-align: center; }
-        .card { background: #161b2a; padding: 20px; border-radius: 15px; border: 1px solid #232d42; margin-bottom: 15px; }
-        input { background: none; border: none; border-bottom: 2px solid #00bcd4; color: white; font-size: 2rem; width: 80%; text-align: center; outline: none; }
-        .label { color: #8899a6; font-size: 0.7rem; text-transform: uppercase; margin-bottom: 10px; display: block; }
-        .valeur { font-size: 1.2rem; font-weight: bold; display: block; margin-top: 5px; }
-        .astral { color: #9c27b0; font-size: 0.8rem; font-weight: bold; margin-top: 5px; display: block; }
-        .nature { padding: 5px 15px; border-radius: 5px; display: inline-block; margin-top: 10px; font-weight: bold; border: 1px solid; }
-        #comp-box { padding: 15px; border-radius: 10px; margin-top: 10px; border: 1px dashed #444; font-weight: bold; }
-    </style>
-</head>
-<body>
-
-    <div class="card">
-        <span class="label">Valeur Principale</span>
-        <input type="number" id="X" value="308" oninput="calculer()">
-        
-        <div style="margin-top:20px; border-top: 1px solid #232d42; padding-top:20px;">
-            <span class="label">Zodiaque & Détails Astraux</span>
-            <span class="valeur" id="nomZod">-</span>
-            <span class="astral" id="detailsZod">-</span>
-        </div>
-
-        <div id="natureBox"></div>
-    </div>
-
-    <div class="card">
-        <span class="label">Test de Compatibilité</span>
-        <input type="number" id="X2" placeholder="2ème nombre" oninput="calculer()">
-        <div id="comp-box">Entrez un nombre pour comparer</div>
-    </div>
+<body style="background:#0a0e17; color:white; text-align:center; padding:50px;">
+    <h1>TEST MISE À JOUR</h1>
+    <input type="number" id="X" value="308" oninput="test()">
+    <div id="resultat" style="color:#00bcd4; font-size:2rem; margin-top:20px;">---</div>
+    <div id="astral" style="color:#9c27b0; font-size:1.5rem; margin-top:20px;">---</div>
 
     <script>
-        const dataZod = {
-            1: ["Bélier", "Mars", "Est"], 2: ["Taureau", "Vénus", "S-Est"], 3: ["Gémeaux", "Mercure", "N-Est"],
-            4: ["Cancer", "Lune", "Nord"], 5: ["Lion", "Soleil", "N-Ouest"], 6: ["Vierge", "Mercure", "S-Ouest"],
-            7: ["Balance", "Vénus", "Ouest"], 8: ["Scorpion", "Mars", "Sud"], 9: ["Sagittaire", "Jupiter", "Est"],
-            10: ["Capricorne", "Saturne", "Sud"], 11: ["Verseau", "Saturne", "Ouest"], 0: ["Poissons", "Jupiter", "Nord"]
-        };
-
-        function calculer() {
-            const x1 = parseInt(document.getElementById('X').value);
-            const x2 = parseInt(document.getElementById('X2').value);
-            
-            if (!isNaN(x1)) {
-                // Détails Astraux
-                const r12 = x1 % 12;
-                const info = dataZod[r12];
-                document.getElementById('nomZod').innerText = r12 + " — " + info[0];
-                document.getElementById('detailsZod').innerText = "Planète: " + info[1] + " | Direction: " + info[2];
-
-                // Nature
-                const r4 = x1 % 4;
-                const nats = ["EAU", "FEU", "TERRE", "AIR"];
-                const cols = ["#4299e1", "#f56565", "#ed8936", "#cbd5e0"];
-                document.getElementById('natureBox').innerHTML = `<span class="nature" style="color:${cols[r4]}; border-color:${cols[r4]}">${nats[r4]}</span>`;
-
-                // Compatibilité
-                if (!isNaN(x2)) {
-                    const r4_2 = x2 % 4;
-                    let msg = nats[r4] + " + " + nats[r4_2] + " : ";
-                    if (r4 === r4_2) msg += "Parfait !";
-                    else if ((r4==1 && r4_2==3) || (r4==3 && r4_2==1)) msg += "Excellent !";
-                    else msg += "Stable";
-                    document.getElementById('comp-box').innerText = msg;
-                }
-            }
+        function test() {
+            let x = document.getElementById('X').value;
+            document.getElementById('resultat').innerText = "Nombre: " + x;
+            // CECI DOIT S'AFFICHER EN VIOLET
+            document.getElementById('astral').innerText = "Détails Astraux Activés !";
         }
-        window.onload = calculer;
+        window.onload = test;
     </script>
 </body>
-</html>
