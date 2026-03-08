@@ -24,31 +24,41 @@
 
         .grimoire-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
             gap: 20px;
         }
 
         .grimoire-card {
             background: var(--cuir); border-radius: 5px 15px 15px 5px;
             overflow: hidden; border: 1px solid #5d3a1a;
-            cursor: pointer; transition: 0.2s;
             box-shadow: 0 8px 20px rgba(0,0,0,0.6);
-            position: relative;
+            position: relative; display: flex; flex-direction: column;
         }
 
-        .grimoire-card:active { transform: scale(0.95); }
+        .grimoire-cover { width: 100%; height: 160px; object-fit: cover; opacity: 0.9; cursor: pointer; }
 
-        .grimoire-cover { width: 100%; height: 170px; object-fit: cover; opacity: 0.9; }
-
-        .grimoire-info { padding: 10px; text-align: center; background: rgba(0,0,0,0.3); }
+        .grimoire-info { padding: 10px; text-align: center; background: rgba(0,0,0,0.3); flex-grow: 1; }
 
         .grimoire-title { 
             font-size: 0.75rem; font-weight: 700; color: var(--or); 
-            text-transform: uppercase; line-height: 1.2;
+            text-transform: uppercase; margin-bottom: 10px;
             display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
         }
 
-        .page-badge { font-size: 0.6rem; opacity: 0.7; margin-top: 4px; }
+        /* Boutons d'action */
+        .actions { display: flex; flex-direction: column; gap: 5px; }
+        
+        .btn-view { 
+            background: rgba(217, 160, 111, 0.1); border: 1px solid var(--or); 
+            color: var(--or); font-size: 0.65rem; padding: 5px; border-radius: 4px; 
+            cursor: pointer; text-decoration: none;
+        }
+        
+        .btn-full { 
+            background: var(--or); border: none; color: #000; 
+            font-size: 0.65rem; padding: 5px; border-radius: 4px; 
+            cursor: pointer; font-weight: bold;
+        }
 
         /* Lecteur PDF */
         .modal { 
@@ -62,33 +72,26 @@
         }
         
         iframe { width: 100%; height: 100%; border: none; }
-        
-        /* Animation de chargement */
-        .loader { border: 3px solid #f3f3f3; border-top: 3px solid var(--or); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-right: 5px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
     <div class="header">
         <button class="back-btn" onclick="window.location.href='index.html'">📜</button>
-        <h1 style="margin:0; font-size:1rem;">BIBLIOTHÈQUE</h1>
+        <h1 style="margin:0; font-size:1rem;">ASRAR BIBLIO</h1>
     </div>
 
-    <div class="grimoire-grid" id="grimoire-list">
-        </div>
+    <div class="grimoire-grid" id="grimoire-list"></div>
 
     <div id="reader" class="modal">
         <div class="modal-header">
-            <span id="v-title" style="font-size: 0.8rem;">Lecture...</span>
+            <span id="v-title" style="font-size: 0.7rem;">...</span>
             <button onclick="closeReader()" style="background:none; border:none; color:white; font-size:1.2rem;">✕</button>
         </div>
-        <div id="loading-msg" style="text-align:center; padding: 20px; color: var(--or);"><div class="loader"></div> Ouverture du grimoire...</div>
-        <iframe id="pdf-viewer" src="" onload="document.getElementById('loading-msg').style.display='none'"></iframe>
+        <iframe id="pdf-viewer" src=""></iframe>
     </div>
 
     <script>
-        // Configuration simple
         const config = { databaseURL: "https://asrar-bc059.firebaseio.com" };
         firebase.initializeApp(config);
         const db = firebase.database();
@@ -101,27 +104,33 @@
                 const items = Object.keys(data).map(k => ({...data[k], key: k}));
                 
                 document.getElementById('grimoire-list').innerHTML = items.map(grim => `
-                    <div class="grimoire-card" onclick="openGrimoire('${grim.pdf}', '${grim.text.replace(/'/g, "\\'")}')">
-                        <img src="${grim.img}" class="grimoire-cover" loading="lazy">
+                    <div class="grimoire-card">
+                        <img src="${grim.img}" class="grimoire-cover" onclick="openPreview('${grim.pdf}', '${grim.text}')">
                         <div class="grimoire-info">
                             <div class="grimoire-title">${grim.text ? grim.text.replace('.pdf', '') : 'Grimoire'}</div>
-                            <div class="page-badge">📖 Consulter</div>
+                            <div class="actions">
+                                <button class="btn-view" onclick="openPreview('${grim.pdf}', '${grim.text}')">👁 Aperçu</button>
+                                <button class="btn-full" onclick="openFull('${grim.pdf}')">🚀 Plein Écran</button>
+                            </div>
                         </div>
                     </div>
                 `).join('');
             });
         }
 
-        function openGrimoire(url, title) {
-            if(!url) return alert("Lien introuvable.");
-            
+        // Option 1 : Aperçu rapide (Iframe)
+        function openPreview(url, title) {
+            if(!url) return;
             document.getElementById('reader').style.display = 'flex';
-            document.getElementById('loading-msg').style.display = 'block';
             document.getElementById('v-title').innerText = title;
-            
-            // Transformation du lien Drive
-            let finalUrl = url.replace('/view', '/preview').replace('/edit', '/preview');
-            document.getElementById('pdf-viewer').src = finalUrl;
+            document.getElementById('pdf-viewer').src = url.replace('/view', '/preview');
+        }
+
+        // Option 2 : Plein écran (Ouverture propre via Google Drive)
+        function openFull(url) {
+            if(!url) return;
+            const fullUrl = url.replace('/preview', '/view').replace('/edit', '/view');
+            window.open(fullUrl, '_blank');
         }
 
         function closeReader() {
