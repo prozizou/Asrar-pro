@@ -4,53 +4,91 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>ASRAR PRO - Hub</title>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8198863698846619" crossorigin="anonymous"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
     <style>
-        :root { --bg: #0a0e17; --card: #161b2a; --text: #ffffff; --accent: #00bcd4; }
-        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .header { text-align: center; margin: 30px 0; }
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; width: 100%; max-width: 480px; }
-        .card { background: var(--card); border-radius: 12px; border: 1px solid #232d42; overflow: hidden; cursor: pointer; transition: 0.2s; position: relative; }
-        .card:active { transform: scale(0.96); }
-        .img-box { width: 100%; height: 100px; background: #000; }
-        .img-box img { width: 100%; height: 100%; object-fit: cover; }
-        .info { padding: 12px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #232d42; }
-        .title { font-size: 0.8rem; font-weight: 700; margin: 0; }
-        .btn-go { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--accent); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; box-shadow: 0 0 10px rgba(0,188,212,0.3); }
+        :root { --bg: #0a0e17; --card-bg: #161b2a; --text: #ffffff; --accent: #00bcd4; }
+        body { background-color: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        .header-pro { text-align: center; margin: 40px 0 50px; }
+        .main-title { font-size: 2.2rem; font-weight: 900; letter-spacing: -1.5px; text-transform: uppercase; background: linear-gradient(180deg, #fff 0%, #555 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0; }
+        .grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; width: 100%; max-width: 480px; }
+        .card-pro { background: var(--card-bg); border-radius: 16px; border: 1px solid #232d42; overflow: hidden; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; }
+        .card-pro:active { transform: scale(0.96); }
+        .img-wrapper { width: 100%; height: 110px; background: #000; }
+        .img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+        .card-info { padding: 15px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #232d42; }
+        .card-title { font-size: 0.85rem; font-weight: 700; margin: 0; }
+        .btn-glow { width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--accent); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; box-shadow: 0 0 10px rgba(0, 188, 212, 0.3); }
+        #loader { margin-top: 50px; color: var(--accent); font-size: 0.9rem; letter-spacing: 2px; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1 style="letter-spacing:-1px; margin:0;">ASRAR PRO</h1>
-        <p style="font-size:0.7rem; color:#8899a6; text-transform:uppercase; letter-spacing:2px;">Intelligence Mystique</p>
+
+    <div class="header-pro">
+        <h1 class="main-title">ASRAR PRO</h1>
+        <p style="font-size:0.7rem; color:#8899a6; text-transform:uppercase; letter-spacing:3px; margin-top:8px;">Le Hub Sacré</p>
     </div>
-    <div class="grid" id="main-grid"></div>
+
+    <div id="loader">SYNCHRONISATION...</div>
+    <div class="grid-container" id="hub-grid"></div>
+
     <script>
-        const menu = { "asrar": [
-            { "id": 1, "titre": "Asrar", "image": "https://i.ibb.co/mryjJvhR/40688297-mystique-alchimique-cercle-secret-la-magie-cercle-pour-breloques-vectoriel.jpg" },
-            { "id": 2, "titre": "Bibliothèque", "image": "https://i.ibb.co/zWf4zhFR/pile-livres-colores-1308-171741.jpg" },
-            { "id": 3, "titre": "Marché & Services", "image": "https://i.ibb.co/933WytbF/a-shop-logo-little-town-market-11042322-png-sw800.png" },
-            { "id": 4, "titre": "Planètes", "image": "https://i.ibb.co/5XHS58hc/saatan-ornament.png" },
-            { "id": 5, "titre": "Chiffres", "image": "https://i.ibb.co/nqwHmSPh/61y8x3rk-XAL-AC-UF1000-1000-QL80.jpg" },
-            { "id": 6, "titre": "Abajad", "image": "https://i.ibb.co/G35RKtJ7/9b0701045eeefb2a23fc82c027b80636-fgraphic.png" },
-            { "id": 7, "titre": "Applications", "image": "https://i.ibb.co/xSWbhgYZ/What-Google-is-telling-app-developers-to-do-will-make-the-Play-Store-look-better.png" },
-            { "id": 8, "titre": "Consultation", "image": "https://i.ibb.co/Rkc7wGWj/symbole-medical-plat-23-2149496593.jpg" }
-        ]};
-        function render() {
-            document.getElementById('main-grid').innerHTML = menu.asrar.map(item => `
-                <div class="card" onclick="nav('${item.titre}')">
-                    <div class="img-box"><img src="${item.image}"></div>
-                    <div class="info"><h3 class="title">${item.titre}</h3><div class="btn-go">→</div></div>
-                </div>
-            `).join('');
+        // Configuration Firebase
+        const firebaseConfig = {
+            databaseURL: "https://asrar-bc059.firebaseio.com"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        function loadDynamicMenu() {
+            const grid = document.getElementById('hub-grid');
+            const loader = document.getElementById('loader');
+            
+            // On écoute le nouveau nœud 'menu_AsrarPro'
+            db.ref('menu_AsrarPro').on('value', (snapshot) => {
+                const data = snapshot.val();
+                loader.style.display = 'none';
+                
+                if (!data) {
+                    grid.innerHTML = "<p style='grid-column: span 2; text-align:center; opacity:0.5;'>Le menu est vide. Utilisez l'interface admin pour ajouter des sections.</p>";
+                    return;
+                }
+
+                // Transformation des données Firebase en tableau
+                const items = Object.keys(data).map(key => ({
+                    id: key,
+                    ...data[key]
+                }));
+
+                grid.innerHTML = items.map(item => `
+                    <div class="card-pro" onclick="navigate('${item.titre}')">
+                        <div class="img-wrapper">
+                            <img src="${item.image}" alt="${item.titre}">
+                        </div>
+                        <div class="card-info">
+                            <h3 class="card-title">${item.titre}</h3>
+                            <div class="btn-glow">→</div>
+                        </div>
+                    </div>
+                `).join('');
+            });
         }
-        function nav(t) {
-            if(t==="Asrar") location.href="Asrar.html";
-            else if(t==="Marché & Services") location.href="Market.html";
-            else if(t==="Bibliothèque") location.href="biblio.html";
-            else alert(t + " bientôt disponible.");
+
+        function navigate(titre) {
+            // Logique de redirection basée sur le nom de la section
+            const t = titre.toLowerCase();
+            if (t.includes("asrar")) window.location.href = 'Asrar.html';
+            else if (t.includes("marché") || t.includes("market") || t.includes("service")) window.location.href = 'Market.html';
+            else if (t.includes("biblio")) window.location.href = 'biblio.html';
+            else {
+                alert("La section '" + titre + "' a été créée avec succès, mais sa page de destination n'est pas encore configurée.");
+            }
         }
-        window.onload = render;
+
+        window.onload = loadDynamicMenu;
     </script>
 </body>
 </html>
