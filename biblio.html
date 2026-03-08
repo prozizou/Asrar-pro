@@ -3,114 +3,223 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ASRAR PRO - Bibliothèque Digitale</title>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8198863698846619" crossorigin="anonymous"></script>
+    <title>ASRAR PRO - Bibliothèque</title>
+
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
     <style>
-        :root { --bg: #0a0e17; --card-bg: #161b2a; --text: #e0e6ed; --accent: #00bcd4; }
-        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding: 15px; }
-        
-        .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; border-bottom: 1px solid #2d3748; padding-bottom: 15px; }
-        .back-btn { background: none; border: 1px solid var(--accent); color: var(--accent); padding: 5px 15px; border-radius: 20px; cursor: pointer; font-size: 0.8rem; }
-
-        .grid-pro { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        
-        .card-pro { 
-            background: var(--card-bg); border-radius: 12px; border: 1px solid #2d3748; overflow: hidden; 
-            transition: all 0.3s; position: relative; display: flex; flex-direction: column;
+        :root {
+            --bg: #0a0e17; 
+            --card-bg: #161b2a; 
+            --text: #e0e6ed; 
+            --accent: #00bcd4;
         }
 
-        .img-container { width: 100%; height: 160px; background: #000; overflow: hidden; }
-        .img-container img { width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.5s; }
-        .img-container img.loaded { opacity: 1; }
-
-        .info-pro { padding: 12px; }
-        .title-pro { font-size: 0.8rem; font-weight: 600; color: #fff; margin-bottom: 10px; height: 32px; overflow: hidden; }
-        
-        .btn-read { 
-            width: 100%; background: transparent; border: 1px solid var(--glow-color, var(--accent)); 
-            color: var(--glow-color, var(--accent)); padding: 8px; border-radius: 6px; 
-            font-size: 0.7rem; font-weight: bold; cursor: pointer;
-            box-shadow: 0 0 8px var(--glow-alpha, rgba(0,188,212,0.2));
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', -apple-system, sans-serif;
+            margin: 0;
+            padding: 15px;
+            min-height: 100vh;
         }
 
-        /* Modal Lecteur */
-        .modal { display: none; position: fixed; inset: 0; background: #000; z-index: 2000; flex-direction: column; }
-        iframe { width: 100%; height: 100%; border: none; }
+        /* En-tête Moderne */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #232d42;
+        }
+
+        .back-btn {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        h2 {
+            font-size: 1rem;
+            letter-spacing: 1.5px;
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        /* Grille de livres */
+        .grid-biblio {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .book-card {
+            background: var(--card-bg);
+            border: 1px solid #232d42;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s;
+        }
+
+        .book-card:active {
+            transform: scale(0.97);
+        }
+
+        .book-img {
+            width: 100%;
+            height: 150px;
+            background: #000;
+            object-fit: cover;
+        }
+
+        .book-info {
+            padding: 12px;
+        }
+
+        .book-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            height: 34px;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .btn-read {
+            width: 100%;
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-read:active {
+            background: var(--accent);
+            color: #000;
+        }
+
+        /* Lecteur PDF plein écran */
+        #pdf-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 1000;
+            flex-direction: column;
+        }
+
+        .modal-tools {
+            padding: 15px;
+            background: #161b2a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        iframe {
+            flex: 1;
+            border: none;
+        }
     </style>
 </head>
 <body>
 
     <div class="header">
         <button class="back-btn" onclick="location.href='index.html'">← Retour</button>
-        <h2 style="margin:0; font-size:1rem; letter-spacing:1px;">BIBLIOTHÈQUE</h2>
+        <h2>Bibliothèque</h2>
+        <div style="width:70px;"></div>
     </div>
 
-    <div class="grid-pro" id="book-list"></div>
-
-    <div id="reader" class="modal">
-        <div style="padding:15px; display:flex; justify-content:space-between; background:#161b2a;">
-            <span id="v-title" style="font-size:0.8rem; color:var(--accent);">Lecture</span>
-            <button onclick="closeReader()" style="background:none; border:none; color:#fff; font-size:1.2rem;">✕</button>
+    <div class="grid-biblio" id="book-container">
         </div>
-        <iframe id="pdf-viewer"></iframe>
+
+    <div id="pdf-modal">
+        <div class="modal-tools">
+            <span id="current-book-title" style="font-size:0.8rem; font-weight:bold;">Lecture</span>
+            <button onclick="closePDF()" style="background:#ff4444; color:#fff; border:none; padding:5px 12px; border-radius:5px; font-weight:bold;">Quitter</button>
+        </div>
+        <iframe id="pdf-frame"></iframe>
     </div>
 
     <script>
-        const config = { databaseURL: "https://asrar-bc059.firebaseio.com" };
-        firebase.initializeApp(config);
-        const db = firebase.database();
+        // --- LOGIQUE JAVASCRIPT UNIFIÉE ---
 
-        function loadBooks() {
-            db.ref('almaqtab').on('value', snap => {
-                const data = snap.val();
-                if(!data) return;
-                const items = Object.keys(data).map(k => ({...data[k], key: k}));
-                
-                document.getElementById('book-list').innerHTML = items.map(grim => `
-                    <div class="card-pro" id="card-${grim.key}">
-                        <div class="img-container">
-                            <img src="${grim.img}" id="img-${grim.key}" crossorigin="anonymous" onload="extractColor(this, '${grim.key}')">
+        // Configuration Firebase (Assurez-vous que l'URL est correcte)
+        const firebaseConfig = {
+            databaseURL: "https://asrar-bc059.firebaseio.com"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Fonction pour charger les livres depuis Firebase
+        function loadAlmaqtab() {
+            const container = document.getElementById('book-container');
+            
+            database.ref('almaqtab').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (!data) {
+                    container.innerHTML = "<p style='text-align:center; grid-column:span 2;'>Aucun livre trouvé.</p>";
+                    return;
+                }
+
+                const keys = Object.keys(data);
+                container.innerHTML = keys.map(key => {
+                    const book = data[key];
+                    // On enlève crossorigin pour éviter les erreurs d'affichage
+                    return `
+                        <div class="book-card">
+                            <img src="${book.img}" class="book-img" alt="Couverture">
+                            <div class="book-info">
+                                <div class="book-title">${book.text ? book.text.replace('.pdf', '') : 'Livre Sans Titre'}</div>
+                                <button class="btn-read" onclick="openPDF('${book.pdf}', '${book.text}')">LIRE LE PDF</button>
+                            </div>
                         </div>
-                        <div class="info-pro">
-                            <div class="title-pro">${grim.text ? grim.text.replace('.pdf', '') : 'Grimoire'}</div>
-                            <button class="btn-read" id="btn-${grim.key}" onclick="openPDF('${grim.pdf}', '${grim.text}')">LIRE LE PDF</button>
-                        </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             });
         }
 
-        function extractColor(img, key) {
-            img.classList.add('loaded');
-            try {
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                canvas.width = 1; canvas.height = 1;
-                ctx.drawImage(img, 0, 0, 1, 1);
-                const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data;
-                const color = `rgb(${r}, ${g}, ${b})`;
-                const card = document.getElementById('card-' + key);
-                card.style.setProperty('--glow-color', color);
-                card.style.setProperty('--glow-alpha', `rgba(${r}, ${g}, ${b}, 0.4)`);
-                card.style.boxShadow = `0 4px 15px rgba(${r}, ${g}, ${b}, 0.2)`;
-            } catch(e) {}
-        }
-
+        // Fonction pour ouvrir le PDF
         function openPDF(url, title) {
-            document.getElementById('reader').style.display = 'flex';
-            document.getElementById('v-title').innerText = title;
-            document.getElementById('pdf-viewer').src = url.replace('/view', '/preview');
+            const modal = document.getElementById('pdf-modal');
+            const frame = document.getElementById('pdf-frame');
+            const titleSpan = document.getElementById('current-book-title');
+
+            titleSpan.innerText = title ? title.replace('.pdf', '') : "Lecture";
+            modal.style.display = 'flex';
+            
+            // Conversion du lien Google Drive pour l'affichage direct
+            const previewUrl = url.replace('/view', '/preview');
+            frame.src = previewUrl;
         }
 
-        function closeReader() {
-            document.getElementById('reader').style.display = 'none';
-            document.getElementById('pdf-viewer').src = "";
+        // Fonction pour fermer le PDF
+        function closePDF() {
+            const modal = document.getElementById('pdf-modal');
+            const frame = document.getElementById('pdf-frame');
+            modal.style.display = 'none';
+            frame.src = ""; // Stop le chargement
         }
 
-        window.onload = loadBooks;
+        // Lancement au chargement de la page
+        window.onload = loadAlmaqtab;
     </script>
 </body>
 </html>
