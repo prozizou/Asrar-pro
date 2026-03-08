@@ -20,140 +20,92 @@
         body {
             background-color: var(--bg);
             color: var(--texte);
-            font-family: 'Garamond', serif;
+            font-family: 'serif';
             margin: 0;
             padding: 15px;
             background-image: url('https://www.transparenttextures.com/patterns/parchment.png');
         }
 
-        /* En-tête */
         .header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 25px;
-            border-bottom: 2px solid #5d3a1a;
-            padding-bottom: 10px;
+            display: flex; align-items: center; gap: 15px;
+            margin-bottom: 25px; border-bottom: 2px solid #5d3a1a; padding-bottom: 10px;
         }
 
         .back-btn {
-            background: var(--cuir);
-            border: var(--bordure);
-            color: var(--or);
-            padding: 8px 12px;
-            border-radius: 8px;
-            cursor: pointer;
+            background: var(--cuir); border: var(--bordure);
+            color: var(--or); padding: 8px 12px; border-radius: 8px; cursor: pointer;
         }
 
-        /* Grille optimisée pour 2 colonnes (comme sur capture) */
+        /* Grille à 2 colonnes */
         .grimoire-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 15px;
         }
 
-        /* Carte Grimoire */
         .grimoire-card {
-            background: var(--cuir);
-            border-radius: 5px 15px 15px 5px;
-            overflow: hidden;
-            border: var(--bordure);
+            background: var(--cuir); border-radius: 5px 15px 15px 5px;
+            overflow: hidden; border: var(--bordure);
             box-shadow: 0 8px 20px rgba(0,0,0,0.6);
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.2s;
+            display: flex; flex-direction: column;
         }
 
-        .grimoire-card:active { transform: scale(0.98); }
+        /* --- EFFET GLIDE (SKELETON) --- */
+        @keyframes glide {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
 
-        /* Conteneur Image (Anti-Bug de chargement) */
         .image-wrapper {
-            width: 100%;
-            height: 160px;
+            width: 100%; height: 160px;
+            position: relative; overflow: hidden;
             background: #2a1508;
-            overflow: hidden;
-            position: relative;
+        }
+
+        .image-wrapper.loading {
+            background: linear-gradient(90deg, #2a1508 25%, #4a2b1a 50%, #2a1508 75%);
+            background-size: 200% 100%;
+            animation: glide 1.5s infinite linear;
         }
 
         .grimoire-cover {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0;
-            transition: opacity 0.4s ease-in;
+            width: 100%; height: 100%; object-fit: cover;
+            opacity: 0; transition: opacity 0.5s ease;
         }
 
-        /* Info et Titre */
-        .grimoire-info {
-            padding: 10px;
-            text-align: center;
-            background: rgba(0,0,0,0.3);
-            flex-grow: 1;
-        }
+        .grimoire-cover.loaded { opacity: 1; }
+
+        /* Infos et Boutons */
+        .grimoire-info { padding: 10px; text-align: center; background: rgba(0,0,0,0.3); flex-grow: 1; }
 
         .grimoire-title {
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: var(--or);
-            text-transform: uppercase;
-            margin-bottom: 8px;
-            height: 32px; /* Garde l'alignement */
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
+            font-size: 0.75rem; font-weight: bold; color: var(--or);
+            text-transform: uppercase; margin-bottom: 10px;
+            height: 35px; overflow: hidden; display: -webkit-box;
+            -webkit-line-clamp: 2; -webkit-box-orient: vertical;
         }
 
-        /* Boutons d'action */
-        .actions {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
+        .actions { display: flex; flex-direction: column; gap: 6px; }
 
         .btn-view, .btn-full {
-            font-size: 0.65rem;
-            padding: 6px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
+            font-size: 0.65rem; padding: 7px; border-radius: 5px;
+            cursor: pointer; font-weight: bold; border: none;
         }
 
-        .btn-view {
-            background: rgba(217, 160, 111, 0.1);
-            border: 1px solid var(--or);
-            color: var(--or);
-        }
-
-        .btn-full {
-            background: var(--or);
-            border: none;
-            color: #000;
-        }
+        .btn-view { background: rgba(217, 160, 111, 0.1); border: 1px solid var(--or); color: var(--or); }
+        .btn-full { background: var(--or); color: #000; }
 
         /* Modal Lecteur */
-        .modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: #000;
-            z-index: 1000;
-            flex-direction: column;
+        .modal { 
+            display: none; position: fixed; inset: 0; 
+            background: #000; z-index: 1000; flex-direction: column; 
         }
-
+        
         .modal-header {
-            padding: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--cuir);
-            color: var(--or);
+            padding: 12px; display: flex; justify-content: space-between;
+            align-items: center; background: var(--cuir); color: var(--or);
         }
-
+        
         iframe { width: 100%; height: 100%; border: none; background: white; }
     </style>
 </head>
@@ -161,29 +113,26 @@
 
     <div class="header">
         <button class="back-btn" onclick="window.location.href='index.html'">📜</button>
-        <h1 style="margin:0; font-size:1rem; letter-spacing:1px;">ASRAR PRO</h1>
+        <h1 style="margin:0; font-size:1rem;">ASRAR PRO</h1>
     </div>
 
-    <div class="grimoire-grid" id="grimoire-list">
-        </div>
+    <div class="grimoire-grid" id="grimoire-list"></div>
 
     <div id="reader" class="modal">
         <div class="modal-header">
-            <span id="v-title" style="font-size: 0.75rem; font-weight: bold;">...</span>
+            <span id="v-title" style="font-size: 0.7rem;">Lecture</span>
             <button onclick="closeReader()" style="background:none; border:none; color:white; font-size:1.5rem;">✕</button>
         </div>
         <iframe id="pdf-viewer" src=""></iframe>
     </div>
 
     <script>
-        // --- CONFIGURATION FIREBASE ---
+        // Configuration Firebase
         const config = { databaseURL: "https://asrar-bc059.firebaseio.com" };
         firebase.initializeApp(config);
         const db = firebase.database();
 
-        // --- CHARGEMENT DES DONNÉES ---
         function loadBooks() {
-            // Lecture de la branche 'almaqtab'
             db.ref('almaqtab').on('value', snap => {
                 const data = snap.val();
                 if(!data) return;
@@ -192,17 +141,17 @@
                 
                 document.getElementById('grimoire-list').innerHTML = items.map(grim => `
                     <div class="grimoire-card">
-                        <div class="image-wrapper">
+                        <div class="image-wrapper loading" id="wrap-${grim.key}">
                             <img src="${grim.img}" 
                                  class="grimoire-cover" 
                                  loading="lazy" 
-                                 onload="this.style.opacity='1'"
+                                 onload="revealImage(this, '${grim.key}')"
                                  onerror="this.src='https://via.placeholder.com/150x200?text=Grimoire'">
                         </div>
                         <div class="grimoire-info">
-                            <div class="grimoire-title">${grim.text ? grim.text.replace('.pdf', '') : 'Livre'}</div>
+                            <div class="grimoire-title">${grim.text ? grim.text.replace('.pdf', '') : 'Grimoire'}</div>
                             <div class="actions">
-                                <button class="btn-view" onclick="openPreview('${grim.pdf}', '${grim.text}')">👁 Aperçu</button>
+                                <button class="btn-view" onclick="openPreview('${grim.pdf}', '${grim.text.replace(/'/g, "\\'")}')">👁 Aperçu</button>
                                 <button class="btn-full" onclick="openFull('${grim.pdf}')">🚀 Plein Écran</button>
                             </div>
                         </div>
@@ -211,18 +160,23 @@
             });
         }
 
-        // --- FONCTIONS DE LECTURE ---
+        // --- GESTION DES IMAGES ET GLIDE ---
+        function revealImage(img, key) {
+            const wrapper = document.getElementById('wrap-' + key);
+            if(wrapper) wrapper.classList.remove('loading');
+            img.classList.add('loaded');
+        }
+
+        // --- GESTION DE LA LECTURE ---
         function openPreview(url, title) {
-            if(!url) return alert("Lien absent.");
+            if(!url) return;
             document.getElementById('reader').style.display = 'flex';
             document.getElementById('v-title').innerText = title;
-            // Transformation du lien pour l'aperçu
             document.getElementById('pdf-viewer').src = url.replace('/view', '/preview');
         }
 
         function openFull(url) {
             if(!url) return;
-            // Ouverture forcée en mode complet pour éviter le bug des 2 pages
             const fullUrl = url.replace('/preview', '/view').replace('/edit', '/view');
             window.open(fullUrl, '_blank');
         }
