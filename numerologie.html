@@ -3,125 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Numérologie & Nature - ASRAR PRO</title>
+    <title>Numérologie Avancée - ASRAR PRO</title>
     <style>
-        :root { --bg: #0a0e17; --card-bg: #1e2530; --accent: #00bcd4; --text: #ffffff; --border: #303742; }
-        body { background-color: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        
-        .header { width: 100%; max-width: 500px; display: flex; align-items: center; margin-bottom: 25px; }
-        .back-btn { background: none; border: 1px solid var(--accent); color: var(--accent); padding: 5px 15px; border-radius: 20px; cursor: pointer; text-decoration: none; font-size: 0.8rem; }
-        
-        .container { width: 100%; max-width: 500px; }
-        
-        .input-section { background: var(--card-bg); padding: 25px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--border); text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        label { display: block; font-size: 0.7rem; color: #8899a6; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 2px; }
-        input { width: 85%; background: transparent; border: none; border-bottom: 2px solid var(--accent); color: white; font-size: 2.2rem; text-align: center; outline: none; font-weight: bold; }
-
-        .result-group { margin-top: 20px; }
-        .result-row { 
-            background: var(--card-bg); padding: 15px; border-radius: 8px; margin-bottom: 10px; 
-            display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border);
-            transition: 0.3s;
+        :root { 
+            --bg: #0a0e17; 
+            --card: #161b2a; 
+            --accent: #00bcd4; 
+            --text: #ffffff; 
+            --border: #232d42;
+            --muted: #8899a6;
         }
-        .result-row:hover { border-color: var(--accent); }
         
-        .label { font-size: 0.85rem; color: #a0aec0; font-weight: 500; }
-        .value { font-size: 1.1rem; font-weight: 800; color: #ffffff; text-align: right; }
+        body { 
+            background-color: var(--bg); 
+            color: var(--text); 
+            font-family: 'Inter', sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-height: 100vh;
+        }
+
+        .header { width: 100%; max-width: 500px; margin-bottom: 20px; }
+        .back-btn { 
+            background: rgba(0, 188, 212, 0.1); border: 1px solid var(--accent); 
+            color: var(--accent); padding: 8px 18px; border-radius: 20px; 
+            cursor: pointer; text-decoration: none; font-size: 0.75rem; font-weight: bold;
+        }
+
+        .container { width: 100%; max-width: 500px; }
+
+        /* Saisie du Chiffre X */
+        .input-box { 
+            background: var(--card); padding: 30px; border-radius: 20px; 
+            border: 1px solid var(--border); text-align: center; margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        label { display: block; font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 15px; }
+        input { 
+            width: 90%; background: transparent; border: none; border-bottom: 2px solid var(--accent); 
+            color: white; font-size: 2.5rem; text-align: center; outline: none; font-weight: 900;
+        }
+
+        /* Liste des résultats */
+        .res-list { display: flex; flex-direction: column; gap: 12px; }
+        .res-item { 
+            background: var(--card); padding: 18px; border-radius: 12px; 
+            border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;
+        }
+        .res-label { font-size: 0.85rem; color: var(--muted); font-weight: 500; }
+        .res-val { font-size: 1.05rem; font-weight: 700; letter-spacing: 0.5px; }
+
+        /* Couleurs Thématiques */
+        .meditation { color: #e91e63; } /* Rose Mystique */
+        .zodiaque { color: #9c27b0; }  /* Violet Astral */
         
-        .element-badge { padding: 4px 10px; border-radius: 4px; font-size: 0.9rem; font-weight: bold; text-transform: uppercase; }
-        .eau { color: #4299e1; }
-        .feu { color: #f56565; }
-        .terre { color: #ed8936; }
-        .air { color: #cbd5e0; }
+        /* Badges Éléments */
+        .nature-badge { padding: 4px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 900; }
+        .eau { background: rgba(66, 153, 225, 0.2); color: #4299e1; border: 1px solid #4299e1; }
+        .feu { background: rgba(245, 101, 101, 0.2); color: #f56565; border: 1px solid #f56565; }
+        .terre { background: rgba(237, 137, 54, 0.2); color: #ed8936; border: 1px solid #ed8936; }
+        .air { background: rgba(160, 174, 192, 0.2); color: #cbd5e0; border: 1px solid #cbd5e0; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <a href="index.html" class="back-btn">← Hub Principal</a>
+        <a href="index.html" class="back-btn">← RETOUR HUB</a>
     </div>
 
     <div class="container">
-        <div class="input-section">
+        <div class="input-box">
             <label>Valeur d'entrée (X)</label>
-            <input type="number" id="inputX" value="644" oninput="calculerToutesValeurs()">
+            <input type="number" id="X" value="644" oninput="updateCalculs()">
         </div>
 
-        <div class="result-group" id="results">
-            <div class="result-row">
-                <span class="label">Face apparent</span>
-                <span class="value" id="face-apparent">-</span>
+        <div class="res-list">
+            <div class="res-item">
+                <span class="res-label">Face Apparente</span>
+                <span class="res-val" id="apparent">-</span>
             </div>
-            <div class="result-row">
-                <span class="label">Face cachée</span>
-                <span class="value" id="face-cachee">-</span>
-            </div>
-            
-            <div class="result-row">
-                <span class="label">Chiffre Méditation</span>
-                <span class="value" id="chiffre-meditation" style="color:var(--accent);">-</span>
-            </div>
-            <div class="result-row">
-                <span class="label">Ordre Zodiaque (Reste /12)</span>
-                <span class="value" id="ordre-zodiaque">-</span>
-            </div>
-            <div class="result-row">
-                <span class="label">Nature (Élément)</span>
-                <span class="value" id="nature-valeur">-</span>
+            <div class="res-item">
+                <span class="res-label">Face Cachée</span>
+                <span class="res-val" id="cachee">-</span>
             </div>
 
-            <div class="result-row">
-                <span class="label">Chiffre Rouwhanique</span>
-                <span class="value" id="chiffre-rouwhanique">-</span>
+            <div class="res-item">
+                <span class="res-label">Chiffre Méditation</span>
+                <span class="res-val meditation" id="meditation">-</span>
             </div>
-            <div class="result-row">
-                <span class="label">Chiffre Lumineux</span>
-                <span class="value" id="chiffre-lumineux">-</span>
+            <div class="res-item">
+                <span class="res-label">Ordre Zodiaque</span>
+                <span class="res-val zodiaque" id="zodiaque">-</span>
+            </div>
+            <div class="res-item">
+                <span class="res-label">Nature Élémentaire</span>
+                <div id="nature-box"></div>
+            </div>
+
+            <div class="res-item">
+                <span class="res-label">Chiffre Rouwhanique</span>
+                <span class="res-val" id="rouwhanique">-</span>
+            </div>
+            <div class="res-item">
+                <span class="res-label">Chiffre Lumineux</span>
+                <span class="res-val" id="lumineux">-</span>
             </div>
         </div>
     </div>
 
     <script>
-        function calculerToutesValeurs() {
-            const x = parseInt(document.getElementById('inputX').value);
+        // Table de correspondance du Zodiaque
+        const zodiaqueMap = {
+            1: "Bélier", 2: "Taureau", 3: "Gémeaux", 4: "Cancer",
+            5: "Lion", 6: "Vierge", 7: "Balance", 8: "Scorpion",
+            9: "Sagittaire", 10: "Capricorne", 11: "Verseau", 0: "Poissons"
+        };
+
+        function updateCalculs() {
+            const x = parseInt(document.getElementById('X').value);
             if (isNaN(x)) return;
 
-            // 1. Face Apparent
-            document.getElementById('face-apparent').innerText = x;
+            // 1. Face Apparente
+            document.getElementById('apparent').innerText = x;
 
             // 2. Face Cachée (Inverse)
-            const inverse = parseInt(x.toString().split('').reverse().join(''));
-            document.getElementById('face-cachee').innerText = inverse;
+            const inverseTxt = x.toString().split('').reverse().join('');
+            const inverse = parseInt(inverseTxt);
+            document.getElementById('cachee').innerText = inverse;
 
-            // 3. Chiffre Méditation : (x + inverse) * 9
-            const meditation = (x + inverse) * 9;
-            document.getElementById('chiffre-meditation').innerText = meditation.toLocaleString();
+            // 3. Méditation : (x + inversé) * 9
+            const resMeditation = (x + inverse) * 9;
+            document.getElementById('meditation').innerText = resMeditation.toLocaleString();
 
-            // 4. Ordre Zodiaque : x % 12
-            document.getElementById('ordre-zodiaque').innerText = (x % 12);
+            // 4. Zodiaque : x % 12
+            const resteZodiaque = x % 12;
+            document.getElementById('zodiaque').innerText = `${resteZodiaque} — ${zodiaqueMap[resteZodiaque]}`;
 
             // 5. Nature : x % 4
             const resteNature = x % 4;
-            const displayNature = document.getElementById('nature-valeur');
+            const nBox = document.getElementById('nature-box');
+            let label = ""; let css = "";
             
-            if (resteNature === 0) {
-                displayNature.innerHTML = '<span class="element-badge eau">EAU (0)</span>';
-            } else if (resteNature === 1) {
-                displayNature.innerHTML = '<span class="element-badge feu">FEU (1)</span>';
-            } else if (resteNature === 2) {
-                displayNature.innerHTML = '<span class="element-badge terre">TERRE (2)</span>';
-            } else if (resteNature === 3) {
-                displayNature.innerHTML = '<span class="element-badge air">AIR (3)</span>';
+            switch(resteNature) {
+                case 0: label = "EAU"; css = "eau"; break;
+                case 1: label = "FEU"; css = "feu"; break;
+                case 2: label = "TERRE"; css = "terre"; break;
+                case 3: label = "AIR"; css = "air"; break;
             }
+            nBox.innerHTML = `<span class="nature-badge ${css}">${label} (${resteNature})</span>`;
 
-            // 6. Chiffre Rouwhanique : x * x
-            document.getElementById('chiffre-rouwhanique').innerText = (x * x).toLocaleString();
+            // 6. Rouwhanique : x * x
+            document.getElementById('rouwhanique').innerText = (x * x).toLocaleString();
 
-            // 7. Chiffre Lumineux : (x * (x + 1)) / 2
-            document.getElementById('chiffre-lumineux').innerText = ((x * (x + 1)) / 2).toLocaleString();
+            // 7. Lumineux : (x * (x+1)) / 2
+            document.getElementById('lumineux').innerText = ((x * (x + 1)) / 2).toLocaleString();
         }
 
-        window.onload = calculerToutesValeurs;
+        // Lancement initial
+        window.onload = updateCalculs;
     </script>
 </body>
 </html>
