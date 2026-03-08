@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Numérologie & Compatibilité - ASRAR PRO</title>
+    <title>Numérologie Expert - ASRAR PRO</title>
     <style>
         :root { 
             --bg: #0a0e17; --card: #161b2a; --accent: #00bcd4; --text: #ffffff; 
@@ -25,7 +25,8 @@
         .res-label { font-size: 0.75rem; color: var(--muted); font-weight: 600; }
         .res-val { font-size: 1rem; font-weight: 700; text-align: right; }
         
-        .astral-detail { font-size: 0.65rem; color: var(--purple); margin-top: 4px; display: block; }
+        /* NOUVEAUTÉ : Détails Astraux */
+        .astral-detail { font-size: 0.65rem; color: var(--purple); margin-top: 4px; display: block; font-weight: bold; }
 
         /* Badges Natures */
         .nature-badge { padding: 4px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 900; border: 1px solid; }
@@ -34,9 +35,9 @@
         .terre { color: #ed8936; border-color: #ed8936; background: rgba(237,137,54,0.1); }
         .air { color: #cbd5e0; border-color: #cbd5e0; background: rgba(203,213,224,0.1); }
 
-        /* Compatibilité */
+        /* NOUVEAUTÉ : Zone Compatibilité */
         .comp-title { color: var(--accent); font-size: 0.8rem; font-weight: bold; text-align: center; margin: 25px 0 10px; text-transform: uppercase; letter-spacing: 1px; }
-        #comp-result { padding: 15px; border-radius: 12px; text-align: center; font-weight: bold; font-size: 0.85rem; border: 1px dashed var(--border); transition: 0.3s; }
+        #comp-result { padding: 15px; border-radius: 12px; text-align: center; font-weight: bold; font-size: 0.85rem; border: 1px dashed var(--border); transition: 0.3s; margin-top: 10px; }
         .comp-success { color: #48bb78; background: rgba(72,187,120,0.1); border-color: #48bb78 !important; }
         .comp-danger { color: #f56565; background: rgba(245,101,101,0.1); border-color: #f56565 !important; }
         .comp-neutral { color: #ecc94b; background: rgba(236,201,75,0.1); border-color: #ecc94b !important; }
@@ -45,18 +46,17 @@
 <body>
 
     <div class="header">
-        <a href="index.html" class="back-btn">← HUB</a>
-        <span style="font-size: 0.6rem; color: var(--muted); font-weight: 900;">ASRAR PRO CALC</span>
+        <a href="index.html" class="back-btn">← HUB ASRAR PRO</a>
     </div>
 
     <div class="container">
         <div class="section-card">
             <label>Valeur d'Entrée (X)</label>
-            <input type="number" id="X" value="129" oninput="runCalculs()">
+            <input type="number" id="X" value="308" oninput="runCalculs()">
             
             <div class="res-item">
                 <span class="res-label">Zodiaque & Planète</span>
-                <div>
+                <div style="text-align: right;">
                     <span class="res-val" id="zod-name" style="color:var(--purple);">-</span>
                     <span class="astral-detail" id="zod-meta">-</span>
                 </div>
@@ -71,32 +71,32 @@
                 <span class="res-label">Méditation</span>
                 <div style="text-align: right;">
                     <span class="res-val" id="med-val" style="color:var(--pink);">-</span>
-                    <a href="interpretation.html" style="display:block; font-size:0.5rem; color:var(--pink); text-decoration:none; margin-top:2px;">SIGNIFICATION →</a>
+                    <a href="interpretation.html" style="display:block; font-size:0.5rem; color:var(--pink); text-decoration:none;">SIGNIFICATION →</a>
                 </div>
             </div>
         </div>
 
         <div class="comp-title">Test de Compatibilité</div>
         <div class="section-card">
-            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+            <div style="display: flex; gap: 10px;">
                 <div style="flex:1;">
                     <label>Votre X</label>
-                    <input type="number" id="val1" value="129" oninput="checkCompat()">
+                    <input type="number" id="val1" value="308" oninput="checkCompat()">
                 </div>
                 <div style="flex:1;">
                     <label>Autre Nombre</label>
-                    <input type="number" id="val2" placeholder="Ex: 644" oninput="checkCompat()">
+                    <input type="number" id="val2" placeholder="Ex: 129" oninput="checkCompat()">
                 </div>
             </div>
-            <div id="comp-result">En attente du 2ème nombre...</div>
+            <div id="comp-result">Entrez un 2ème nombre pour comparer...</div>
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-            <div class="res-item" style="flex-direction: column; align-items: flex-start;">
+            <div class="res-item" style="flex-direction: column; align-items: flex-start; height: 60px;">
                 <span class="res-label">Rouwhanique</span>
                 <span class="res-val" id="rouw-val">-</span>
             </div>
-            <div class="res-item" style="flex-direction: column; align-items: flex-start;">
+            <div class="res-item" style="flex-direction: column; align-items: flex-start; height: 60px;">
                 <span class="res-label">Lumineux</span>
                 <span class="res-val" id="lumi-val">-</span>
             </div>
@@ -122,35 +122,28 @@
         const natures = ["EAU", "FEU", "TERRE", "AIR"];
         const natureClasses = ["eau", "feu", "terre", "air"];
 
-        function animate(id, start, end) {
-            if (isNaN(end)) return;
-            document.getElementById(id).innerText = end.toLocaleString();
-        }
-
         function runCalculs() {
             const x = parseInt(document.getElementById('X').value);
             if (isNaN(x)) return;
 
-            // Zodiaque & Planète
+            // Zodiaque & Planète (Détails Astraux)
             const rZ = x % 12;
             const z = zodiacData[rZ];
             document.getElementById('zod-name').innerText = `${rZ} — ${z.n}`;
-            document.getElementById('zod-meta').innerText = `${z.p} | Dir: ${z.d} | ${z.h}`;
+            document.getElementById('zod-meta').innerText = `${z.p} | Dir: ${z.d} | Force: ${z.h}`;
 
             // Nature
             const rN = x % 4;
             document.getElementById('nat-box').innerHTML = `<span class="nature-badge ${natureClasses[rN]}">${natures[rN]}</span>`;
 
-            // Méditation : (X + Inverse) * 9
+            // Méditation
             const inv = parseInt(x.toString().split('').reverse().join(''));
-            const med = (x + inv) * 9;
-            document.getElementById('med-val').innerText = med.toLocaleString();
+            document.getElementById('med-val').innerText = ((x + inv) * 9).toLocaleString();
 
             // Math
             document.getElementById('rouw-val').innerText = (x * x).toLocaleString();
             document.getElementById('lumi-val').innerText = ((x * (x+1))/2).toLocaleString();
             
-            // Sync avec le test de compatibilité
             document.getElementById('val1').value = x;
             checkCompat();
         }
