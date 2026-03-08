@@ -12,80 +12,94 @@
         
         body { background-color: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
         .container { width: 100%; max-width: 500px; }
-        .header { width: 100%; margin-bottom: 20px; display: flex; justify-content: space-between; }
+        .header { width: 100%; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
         .back-btn { background: rgba(0, 188, 212, 0.1); border: 1px solid var(--accent); color: var(--accent); padding: 8px 15px; border-radius: 20px; text-decoration: none; font-size: 0.7rem; font-weight: bold; }
 
         /* Sections de Saisie */
         .section-card { background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         label { display: block; font-size: 0.6rem; color: var(--muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; text-align: center; }
-        input { width: 100%; background: transparent; border: none; border-bottom: 2px solid var(--accent); color: white; font-size: 2rem; text-align: center; outline: none; font-weight: 800; margin-bottom: 10px; }
+        input { width: 100%; background: transparent; border: none; border-bottom: 2px solid var(--accent); color: white; font-size: 2.2rem; text-align: center; outline: none; font-weight: 800; margin-bottom: 10px; }
 
         /* Résultats */
-        .res-item { background: var(--card); padding: 15px; border-radius: 12px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .res-item { background: var(--card); padding: 15px; border-radius: 12px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .res-label { font-size: 0.75rem; color: var(--muted); font-weight: 600; }
-        .res-val { font-size: 1rem; font-weight: 700; }
+        .res-val { font-size: 1rem; font-weight: 700; text-align: right; }
         
-        .astral-detail { font-size: 0.65rem; color: var(--purple); margin-top: 4px; display: block; text-align: right; }
+        .astral-detail { font-size: 0.65rem; color: var(--purple); margin-top: 4px; display: block; }
 
         /* Badges Natures */
-        .nature-badge { padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 900; }
-        .eau { color: #4299e1; border: 1px solid #4299e1; }
-        .feu { color: #f56565; border: 1px solid #f56565; }
-        .terre { color: #ed8936; border: 1px solid #ed8936; }
-        .air { color: #cbd5e0; border: 1px solid #cbd5e0; }
+        .nature-badge { padding: 4px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 900; border: 1px solid; }
+        .eau { color: #4299e1; border-color: #4299e1; background: rgba(66,153,225,0.1); }
+        .feu { color: #f56565; border-color: #f56565; background: rgba(245,101,101,0.1); }
+        .terre { color: #ed8936; border-color: #ed8936; background: rgba(237,137,54,0.1); }
+        .air { color: #cbd5e0; border-color: #cbd5e0; background: rgba(203,213,224,0.1); }
 
-        /* Zone Compatibilité */
-        .comp-title { color: var(--accent); font-size: 0.9rem; font-weight: bold; text-align: center; margin: 20px 0 10px; text-transform: uppercase; }
-        #comp-result { padding: 15px; border-radius: 12px; text-align: center; font-weight: bold; font-size: 0.9rem; margin-top: 10px; border: 1px dashed var(--border); }
-        .comp-success { color: #48bb78; background: rgba(72, 187, 120, 0.1); border-color: #48bb78 !important; }
-        .comp-danger { color: #f56565; background: rgba(245, 101, 101, 0.1); border-color: #f56565 !important; }
-        .comp-neutral { color: #ecc94b; background: rgba(236, 201, 75, 0.1); border-color: #ecc94b !important; }
+        /* Compatibilité */
+        .comp-title { color: var(--accent); font-size: 0.8rem; font-weight: bold; text-align: center; margin: 25px 0 10px; text-transform: uppercase; letter-spacing: 1px; }
+        #comp-result { padding: 15px; border-radius: 12px; text-align: center; font-weight: bold; font-size: 0.85rem; border: 1px dashed var(--border); transition: 0.3s; }
+        .comp-success { color: #48bb78; background: rgba(72,187,120,0.1); border-color: #48bb78 !important; }
+        .comp-danger { color: #f56565; background: rgba(245,101,101,0.1); border-color: #f56565 !important; }
+        .comp-neutral { color: #ecc94b; background: rgba(236,201,75,0.1); border-color: #ecc94b !important; }
     </style>
 </head>
 <body>
 
     <div class="header">
         <a href="index.html" class="back-btn">← HUB</a>
-        <a href="interpretation.html" class="back-btn" style="border-color:var(--pink); color:var(--pink);">GUIDE MÉDITATION</a>
+        <span style="font-size: 0.6rem; color: var(--muted); font-weight: 900;">ASRAR PRO CALC</span>
     </div>
 
     <div class="container">
         <div class="section-card">
-            <label>Votre Nombre Principal (X)</label>
-            <input type="number" id="X" value="644" oninput="runCalculs()">
+            <label>Valeur d'Entrée (X)</label>
+            <input type="number" id="X" value="129" oninput="runCalculs()">
             
-            <div id="main-results">
-                <div class="res-item">
-                    <span class="res-label">Zodiaque & Planète</span>
-                    <div style="text-align: right;">
-                        <span class="res-val" id="zod-name" style="color:var(--purple);">-</span>
-                        <span class="astral-detail" id="zod-meta">-</span>
-                    </div>
+            <div class="res-item">
+                <span class="res-label">Zodiaque & Planète</span>
+                <div>
+                    <span class="res-val" id="zod-name" style="color:var(--purple);">-</span>
+                    <span class="astral-detail" id="zod-meta">-</span>
                 </div>
-                <div class="res-item">
-                    <span class="res-label">Nature</span>
-                    <div id="nat-box"></div>
-                </div>
-                <div class="res-item">
-                    <span class="res-label">Chiffre Méditation</span>
+            </div>
+
+            <div class="res-item">
+                <span class="res-label">Nature</span>
+                <div id="nat-box"></div>
+            </div>
+
+            <div class="res-item">
+                <span class="res-label">Méditation</span>
+                <div style="text-align: right;">
                     <span class="res-val" id="med-val" style="color:var(--pink);">-</span>
+                    <a href="interpretation.html" style="display:block; font-size:0.5rem; color:var(--pink); text-decoration:none; margin-top:2px;">SIGNIFICATION →</a>
                 </div>
             </div>
         </div>
 
-        <div class="comp-title">Test de Compatibilité Élémentaire</div>
+        <div class="comp-title">Test de Compatibilité</div>
         <div class="section-card">
-            <div style="display: flex; gap: 10px;">
+            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
                 <div style="flex:1;">
                     <label>Votre X</label>
-                    <input type="number" id="val1" value="644" oninput="checkCompat()">
+                    <input type="number" id="val1" value="129" oninput="checkCompat()">
                 </div>
                 <div style="flex:1;">
-                    <label>Nombre Projet/Ami</label>
-                    <input type="number" id="val2" placeholder="Ex: 812" oninput="checkCompat()">
+                    <label>Autre Nombre</label>
+                    <input type="number" id="val2" placeholder="Ex: 644" oninput="checkCompat()">
                 </div>
             </div>
-            <div id="comp-result">Entrez un deuxième nombre...</div>
+            <div id="comp-result">En attente du 2ème nombre...</div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div class="res-item" style="flex-direction: column; align-items: flex-start;">
+                <span class="res-label">Rouwhanique</span>
+                <span class="res-val" id="rouw-val">-</span>
+            </div>
+            <div class="res-item" style="flex-direction: column; align-items: flex-start;">
+                <span class="res-label">Lumineux</span>
+                <span class="res-val" id="lumi-val">-</span>
+            </div>
         </div>
     </div>
 
@@ -108,23 +122,37 @@
         const natures = ["EAU", "FEU", "TERRE", "AIR"];
         const natureClasses = ["eau", "feu", "terre", "air"];
 
+        function animate(id, start, end) {
+            if (isNaN(end)) return;
+            document.getElementById(id).innerText = end.toLocaleString();
+        }
+
         function runCalculs() {
             const x = parseInt(document.getElementById('X').value);
             if (isNaN(x)) return;
 
-            // Zodiaque
+            // Zodiaque & Planète
             const rZ = x % 12;
             const z = zodiacData[rZ];
             document.getElementById('zod-name').innerText = `${rZ} — ${z.n}`;
-            document.getElementById('zod-meta').innerText = `${z.p} | Dir: ${z.d} | Force: ${z.h}`;
+            document.getElementById('zod-meta').innerText = `${z.p} | Dir: ${z.d} | ${z.h}`;
 
             // Nature
             const rN = x % 4;
             document.getElementById('nat-box').innerHTML = `<span class="nature-badge ${natureClasses[rN]}">${natures[rN]}</span>`;
 
-            // Méditation
+            // Méditation : (X + Inverse) * 9
             const inv = parseInt(x.toString().split('').reverse().join(''));
-            document.getElementById('med-val').innerText = ((x + inv) * 9).toLocaleString();
+            const med = (x + inv) * 9;
+            document.getElementById('med-val').innerText = med.toLocaleString();
+
+            // Math
+            document.getElementById('rouw-val').innerText = (x * x).toLocaleString();
+            document.getElementById('lumi-val').innerText = ((x * (x+1))/2).toLocaleString();
+            
+            // Sync avec le test de compatibilité
+            document.getElementById('val1').value = x;
+            checkCompat();
         }
 
         function checkCompat() {
@@ -132,43 +160,28 @@
             const n2 = parseInt(document.getElementById('val2').value);
             const box = document.getElementById('comp-result');
 
-            if (isNaN(n1) || isNaN(n2)) return;
-
-            const r1 = n1 % 4; // Nature 1
-            const r2 = n2 % 4; // Nature 2
-            
-            const nat1 = natures[r1];
-            const nat2 = natures[r2];
-
-            let msg = `${nat1} + ${nat2} : `;
-            let status = "";
-
-            // LOGIQUE DE COMPATIBILITÉ
-            if (r1 === r2) {
-                msg += "Excellente Harmonie (Même Nature)";
-                status = "comp-success";
-            } else if ((r1 === 1 && r2 === 3) || (r1 === 3 && r2 === 1)) {
-                msg += "Très Bon (Le Feu se nourrit de l'Air)";
-                status = "comp-success";
-            } else if ((r1 === 0 && r2 === 2) || (r1 === 2 && r2 === 0)) {
-                msg += "Fructueux (L'Eau nourrit la Terre)";
-                status = "comp-success";
-            } else if ((r1 === 1 && r2 === 0) || (r1 === 0 && r2 === 1)) {
-                msg += "Opposés (L'Eau éteint le Feu)";
-                status = "comp-danger";
-            } else if ((r1 === 2 && r2 === 3) || (r1 === 3 && r2 === 2)) {
-                msg += "Difficile (La Terre étouffe l'Air)";
-                status = "comp-danger";
-            } else {
-                msg += "Relation Neutre";
-                status = "comp-neutral";
+            if (isNaN(n1) || isNaN(n2)) {
+                box.innerText = "Entrez un 2ème nombre...";
+                box.className = "";
+                return;
             }
+
+            const r1 = n1 % 4;
+            const r2 = n2 % 4;
+            let msg = `${natures[r1]} + ${natures[r2]} : `;
+            let status = "comp-neutral";
+
+            if (r1 === r2) { status = "comp-success"; msg += "Harmonie Parfaite"; }
+            else if ((r1 === 1 && r2 === 3) || (r1 === 3 && r2 === 1)) { status = "comp-success"; msg += "Excellent (L'Air attise le Feu)"; }
+            else if ((r1 === 0 && r2 === 2) || (r1 === 2 && r2 === 0)) { status = "comp-success"; msg += "Fécond (L'Eau nourrit la Terre)"; }
+            else if ((r1 === 1 && r2 === 0) || (r1 === 0 && r2 === 1)) { status = "comp-danger"; msg += "Conflit (L'Eau éteint le Feu)"; }
+            else { msg += "Relation Stable"; }
 
             box.innerText = msg;
             box.className = status;
         }
 
-        window.onload = () => { runCalculs(); checkCompat(); };
+        window.onload = runCalculs;
     </script>
 </body>
 </html>
