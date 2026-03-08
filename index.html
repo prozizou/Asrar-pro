@@ -3,100 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ASRAR PRO - Hub</title>
+    <title>ASRAR PRO - Hub Moderne</title>
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8198863698846619" crossorigin="anonymous"></script>
 
     <style>
         :root {
-            --bg: #0f172a; --cuir: #3a1c0b; --or: #d9a06f; --texte: #f1e4c3;
+            --bg-dark: #0a0e17; /* Fond ultra sombre, uni */
+            --card-bg: #161b2a;
+            --text-main: #e0e6ed;
+            --text-muted: #8899a6;
+            --accent-default: #00bcd4; /* Cyan par défaut */
         }
 
         body {
-            background-color: var(--bg);
-            color: var(--texte);
-            font-family: 'Segoe UI', serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Inter', 'Segoe UI', Roboto, sans-serif; /* Police Pro, clean */
             margin: 0;
-            padding: 15px;
-            background-image: url('https://www.transparenttextures.com/patterns/parchment.png');
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        .header-main {
+        /* En-tête Clean & Pro */
+        .header-pro {
             text-align: center;
-            margin: 20px 0 30px;
+            margin: 30px 0 40px;
         }
 
-        h1 { color: var(--or); letter-spacing: 2px; text-transform: uppercase; margin: 0; }
+        .main-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: -1px; /* Style moderne resserré */
+            background: linear-gradient(135deg, #fff 0%, #888 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+        }
 
-        /* Grille dynamique */
-        .menu-grid {
+        .tagline-pro {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 5px;
+        }
+
+        /* Grille Moderne */
+        .grid-pro {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 15px;
-            max-width: 600px;
-            margin: 0 auto;
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 40px;
         }
 
-        .menu-card {
-            background: var(--cuir);
-            border: 1px solid #5d3a1a;
+        .card-pro {
+            background: var(--card-bg);
             border-radius: 12px;
+            border: 1px solid #2d3748;
             overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.3s;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-            cursor: pointer;
-            transition: transform 0.2s;
+            position: relative;
         }
 
-        .menu-card:active { transform: scale(0.96); }
+        .card-pro:active { transform: scale(0.97); }
 
-        /* Wrapper d'image avec effet Glide */
-        .img-box {
+        /* Effet de lueur au survol/clic */
+        .card-pro:hover {
+            box-shadow: 0 0 15px var(--card-glow-color, rgba(0, 188, 212, 0.3));
+            border-color: var(--card-glow-color, #00bcd4);
+        }
+
+        /* Conteneur d'image propre */
+        .image-box-pro {
             width: 100%;
-            height: 100px;
-            background: #1a1a1a;
-            overflow: hidden;
+            height: 90px;
+            background: #000;
+            position: relative;
         }
 
-        .img-box img {
+        .image-box-pro img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: opacity 0.4s;
+            transition: opacity 0.5s;
         }
 
-        .label-box {
-            padding: 12px 5px;
-            text-align: center;
-            background: rgba(0,0,0,0.2);
+        /* Texte Professionnel */
+        .info-box-pro {
+            padding: 12px;
+            text-align: left;
+            border-top: 1px solid #2d3748;
         }
 
-        .label-text {
+        .label-pro {
             font-size: 0.85rem;
-            font-weight: bold;
-            color: var(--or);
+            font-weight: 600;
+            color: var(--text-main);
+            margin: 0;
         }
 
-        /* Zone Pub */
-        .ad-footer {
-            margin-top: 30px;
-            min-height: 80px;
+        /* Bouton avec Luminescence Adaptative */
+        .btn-enter {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: transparent;
+            border: 1px solid var(--card-glow-color, #00bcd4);
+            color: var(--card-glow-color, #00bcd4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            box-shadow: 0 0 10px var(--card-glow-color, rgba(0, 188, 212, 0.5));
+            transition: all 0.3s;
+        }
+
+        /* Zone Pub Pro */
+        .ad-pro {
+            width: 100%;
+            max-width: 500px;
+            margin-top: auto;
             text-align: center;
+            border-top: 1px solid #2d3748;
+            padding: 15px 0;
         }
     </style>
 </head>
 <body>
 
-    <div class="header-main">
-        <h1>ASRAR PRO</h1>
-        <p style="font-size: 0.7rem; opacity: 0.6;">VOTRE GUIDE MYSTIQUE</p>
+    <div class="header-pro">
+        <h1 class="main-title">ASRAR PRO</h1>
+        <div class="tagline-pro">Intelligence Mystique</div>
     </div>
 
-    <div class="menu-grid" id="main-menu">
+    <div class="grid-pro" id="main-grid">
         </div>
 
-    <div class="ad-footer">
+    <div class="ad-pro">
         <ins class="adsbygoogle"
              style="display:block"
              data-ad-client="ca-pub-8198863698846619"
@@ -107,7 +161,7 @@
     </div>
 
     <script>
-        // Vos données JSON intégrées directement
+        // Vos données JSON exactes
         const menuData = {
           "asrar": [
             { "id": 1, "titre": "Asrar", "image": "https://i.ibb.co/mryjJvhR/40688297-mystique-alchimique-cercle-secret-la-magie-cercle-pour-breloques-vectoriel.jpg" },
@@ -121,32 +175,70 @@
           ]
         };
 
-        function renderMenu() {
-            const grid = document.getElementById('main-menu');
-            grid.innerHTML = menuData.asrar.map(item => `
-                <div class="menu-card" onclick="handleNavigation('${item.titre}')">
-                    <div class="img-box">
-                        <img src="${item.image}" alt="${item.titre}" loading="lazy">
+        function renderGrid() {
+            const grid = document.getElementById('main-grid');
+            grid.innerHTML = menuData.asrar.map((item, index) => `
+                <div class="card-pro" id="card-${item.id}" onclick="handleNav('${item.titre}')">
+                    <div class="image-box-pro">
+                        <img src="${item.image}" id="img-${item.id}" alt="${item.titre}" loading="lazy" crossorigin="anonymous">
                     </div>
-                    <div class="label-box">
-                        <div class="label-text">${item.titre}</div>
+                    <div class="info-box-pro">
+                        <h3 class="label-pro">${item.titre}</h3>
                     </div>
+                    <div class="btn-enter" id="btn-${item.id}">→</div>
                 </div>
             `).join('');
+            
+            // Une fois la grille dessinée, on calcule les couleurs
+            calculateGlowColors();
         }
 
-        function handleNavigation(titre) {
-            // Logique de redirection automatique
-            if (titre === "Marché & Services") {
-                window.location.href = 'Market.html';
-            } else if (titre === "Bibliothèque") {
-                window.location.href = 'biblio.html';
-            } else {
-                alert("La section " + titre + " sera bientôt disponible.");
+        // --- MAGIE DE LA LUMINESCENCE ADAPTATIVE ---
+        function calculateGlowColors() {
+            menuData.asrar.forEach(item => {
+                const img = document.getElementById(`img-${item.id}`);
+                const card = document.getElementById(`card-${item.id}`);
+                const btn = document.getElementById(`btn-${item.id}`);
+
+                // S'assure que l'image est chargée pour extraire la couleur
+                if (img.complete) {
+                    applyColor(img, card, btn);
+                } else {
+                    img.addEventListener('load', () => applyColor(img, card, btn));
+                }
+            });
+        }
+
+        function applyColor(img, card, btn) {
+            try {
+                // Création d'un canvas invisible pour analyser l'image
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = 1; canvas.height = 1; // On réduit à 1 pixel pour avoir la moyenne
+                ctx.drawImage(img, 0, 0, 1, 1);
+                const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data;
+                
+                // On crée une couleur lumineuse (on booste la saturation)
+                const glowColor = `rgba(${r}, ${g}, ${b}, 0.6)`;
+                const borderColor = `rgb(${r}, ${g}, ${b})`;
+
+                // Application des styles CSS variables dynamiques
+                card.style.setProperty('--card-glow-color', borderColor);
+                btn.style.borderColor = borderColor;
+                btn.style.color = borderColor;
+                btn.style.boxShadow = `0 0 10px ${glowColor}`;
+            } catch (e) {
+                console.log("Erreur d'extraction de couleur (CORS probable).");
             }
         }
 
-        window.onload = renderMenu;
+        function handleNav(titre) {
+            if (titre === "Marché & Services") window.location.href = 'Market.html';
+            else if (titre === "Bibliothèque") window.location.href = 'biblio.html';
+            else alert("La section " + titre + " est en cours d'activation.");
+        }
+
+        window.onload = renderGrid;
     </script>
 </body>
 </html>
