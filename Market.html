@@ -2,93 +2,39 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ASRAR PRO - Marché Premium</title>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8198863698846619" crossorigin="anonymous"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marché - ASRAR PRO</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-
     <style>
-        :root { --bg: #0a0e17; --card-bg: #161b2a; --text: #e0e6ed; --accent: #d9a06f; }
-        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding: 15px; }
-        
-        .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; border-bottom: 1px solid #2d3748; padding-bottom: 15px; }
-        .back-btn { background: none; border: 1px solid var(--accent); color: var(--accent); padding: 5px 15px; border-radius: 20px; cursor: pointer; font-size: 0.8rem; }
-
-        .sellers-row { display: flex; overflow-x: auto; gap: 15px; padding: 10px 5px; scrollbar-width: none; }
-        .sellers-row::-webkit-scrollbar { display: none; }
-
-        .seller-card { 
-            flex: 0 0 160px; background: var(--card-bg); border-radius: 12px; border: 1px solid #2d3748; 
-            overflow: hidden; transition: all 0.3s; position: relative; text-align: center;
-        }
-
-        .seller-img-box { width: 100%; height: 110px; background: #000; position: relative; }
-        .seller-img-box img { width: 100%; height: 100%; object-fit: cover; }
-        
-        .badge-follow { position: absolute; top: 5px; right: 5px; background: var(--glow-color, var(--accent)); color: #000; font-size: 0.6rem; font-weight: 800; padding: 2px 7px; border-radius: 10px; }
-
-        .seller-info { padding: 10px; }
-        .seller-name { font-size: 0.8rem; font-weight: bold; color: #fff; margin-bottom: 8px; }
-        
-        .btn-wa { 
-            background: transparent; border: 1px solid var(--glow-color, var(--accent)); 
-            color: var(--glow-color, var(--accent)); padding: 6px; border-radius: 4px; 
-            font-size: 0.65rem; width: 100%; cursor: pointer; font-weight: bold;
-        }
+        body { background: #0a0e17; color: #fff; font-family: sans-serif; margin: 0; padding: 15px; }
+        .row { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 10px; }
+        .scard { flex: 0 0 160px; background: #161b2a; border-radius: 12px; border: 1px solid #d9a06f; overflow: hidden; position: relative; }
+        .simg { width: 100%; height: 110px; background: #000; }
+        .simg img { width: 100%; height: 100%; object-fit: cover; }
+        .badge { position: absolute; top: 5px; right: 5px; background: #d9a06f; color: #000; font-size: 0.6rem; padding: 2px 5px; border-radius: 5px; }
+        .btn-wa { width: 100%; background: transparent; border: 1px solid #d9a06f; color: #d9a06f; padding: 6px; font-size: 0.7rem; cursor: pointer; border-radius: 4px; }
     </style>
 </head>
 <body>
-
-    <div class="header">
-        <button class="back-btn" onclick="location.href='index.html'">← Accueil</button>
-        <h2 style="margin:0; font-size:1rem; letter-spacing:1px; color:var(--accent);">SERVICES PREMIUM</h2>
-    </div>
-
-    <div class="sellers-row" id="seller-list"></div>
-
+    <button onclick="location.href='index.html'" style="background:none; border:1px solid #d9a06f; color:#d9a06f; border-radius:20px; padding:5px 15px; margin-bottom:20px;">← Accueil</button>
+    <h2 style="color:#d9a06f; font-size:1rem;">SERVICES PREMIUM</h2>
+    <div class="row" id="slist"></div>
     <script>
-        const config = { databaseURL: "https://asrar-bc059.firebaseio.com" };
-        firebase.initializeApp(config);
-        const db = firebase.database();
-
-        function loadSellers() {
-            db.ref('profile_clients').on('value', snap => {
-                const data = snap.val();
-                if(!data) return;
-                const items = Object.keys(data).map(k => ({...data[k], key: k}));
-                
-                document.getElementById('seller-list').innerHTML = items.map(s => `
-                    <div class="seller-card" id="seller-${s.key}">
-                        <div class="seller-img-box">
-                            <div class="badge-follow" id="badge-${s.key}">👍 ${s.follow || 0}</div>
-                            <img src="${s.img}" id="img-${s.key}" crossorigin="anonymous" onload="extractSellerColor(this, '${s.key}')">
-                        </div>
-                        <div class="seller-info">
-                            <div class="seller-name">${s.profile_name}</div>
-                            <button class="btn-wa" id="btn-${s.key}" onclick="window.location.href='https://wa.me/${s.number}'">CONTACTER</button>
-                        </div>
+        firebase.initializeApp({ databaseURL: "https://asrar-bc059.firebaseio.com" });
+        firebase.database().ref('profile_clients').on('value', s => {
+            const d = s.val();
+            document.getElementById('slist').innerHTML = Object.keys(d).map(k => `
+                <div class="scard">
+                    <div class="badge">👍 ${d[k].follow || 0}</div>
+                    <div class="simg"><img src="${d[k].img}"></div>
+                    <div style="padding:10px; text-align:center;">
+                        <div style="font-size:0.8rem; font-weight:bold; margin-bottom:8px;">${d[k].profile_name}</div>
+                        <button class="btn-wa" onclick="location.href='https://wa.me/${d[k].number}'">CONTACTER</button>
                     </div>
-                `).join('');
-            });
-        }
-
-        function extractSellerColor(img, key) {
-            try {
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                canvas.width = 1; canvas.height = 1;
-                ctx.drawImage(img, 0, 0, 1, 1);
-                const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data;
-                const color = `rgb(${r}, ${g}, ${b})`;
-                const card = document.getElementById('seller-' + key);
-                card.style.setProperty('--glow-color', color);
-                card.style.borderColor = color;
-                card.style.boxShadow = `0 4px 15px rgba(${r}, ${g}, ${b}, 0.3)`;
-            } catch(e) {}
-        }
-
-        window.onload = loadSellers;
+                </div>
+            `).join('');
+        });
     </script>
 </body>
 </html>
