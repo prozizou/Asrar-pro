@@ -3,97 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ASRAR PRO - La Grande Bibliothèque</title>
+    <title>ASRAR PRO - Bibliothèque</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
 
     <style>
         :root {
-            --bg-mystique: #0f172a; 
-            --cuir-grimoire: #3a1c0b; 
-            --or-terni: #d9a06f; 
-            --page-vieille: #f1e4c3; 
-            --bordure-livre: 2px solid #5d3a1a;
+            --bg: #0f172a; --cuir: #3a1c0b; --or: #d9a06f; --texte: #f1e4c3;
         }
 
         body {
-            background-color: var(--bg-mystique);
-            color: var(--page-vieille);
-            font-family: 'Garamond', serif;
-            margin: 0; padding: 20px;
+            background-color: var(--bg); color: var(--texte);
+            font-family: 'Garamond', serif; margin: 0; padding: 20px;
             background-image: url('https://www.transparenttextures.com/patterns/parchment.png');
         }
 
-        /* En-tête */
-        .header {
-            display: flex; align-items: center; gap: 15px;
-            margin-bottom: 30px; border-bottom: var(--bordure-livre);
-            padding-bottom: 15px;
-        }
+        .header { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; border-bottom: 2px solid #5d3a1a; padding-bottom: 10px; }
+        .back-btn { background: var(--cuir); border: 1px solid #5d3a1a; color: var(--or); padding: 8px 12px; border-radius: 8px; cursor: pointer; }
 
-        .back-btn {
-            background: var(--cuir-grimoire); border: var(--bordure-livre);
-            color: var(--or-terni); padding: 10px 15px;
-            border-radius: 8px; cursor: pointer; font-size: 1.2rem;
-        }
-
-        /* Grille des Livres */
         .grimoire-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 20px;
         }
 
         .grimoire-card {
-            background: var(--cuir-grimoire);
-            border-radius: 5px 15px 15px 5px;
-            overflow: hidden; border: var(--bordure-livre);
-            cursor: pointer; transition: 0.3s;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.7);
+            background: var(--cuir); border-radius: 5px 15px 15px 5px;
+            overflow: hidden; border: 1px solid #5d3a1a;
+            cursor: pointer; transition: 0.2s;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.6);
             position: relative;
         }
 
-        /* Effet de tranche de livre */
-        .grimoire-card::before {
-            content: ""; position: absolute; top: 0; left: 0; 
-            width: 10px; height: 100%; background: rgba(0,0,0,0.3);
-            border-right: 1px solid rgba(217, 160, 111, 0.1);
-        }
+        .grimoire-card:active { transform: scale(0.95); }
 
-        .grimoire-card:hover { transform: translateY(-5px) rotate(-1deg); border-color: var(--or-terni); }
+        .grimoire-cover { width: 100%; height: 170px; object-fit: cover; opacity: 0.9; }
 
-        .grimoire-cover { width: 100%; height: 180px; object-fit: cover; opacity: 0.8; }
-
-        .grimoire-info { padding: 12px; text-align: center; background: rgba(0,0,0,0.2); }
+        .grimoire-info { padding: 10px; text-align: center; background: rgba(0,0,0,0.3); }
 
         .grimoire-title { 
-            font-size: 0.8rem; font-weight: 700; color: var(--or-terni); 
-            text-transform: uppercase; margin-bottom: 5px;
+            font-size: 0.75rem; font-weight: 700; color: var(--or); 
+            text-transform: uppercase; line-height: 1.2;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
         }
 
-        .page-count { font-size: 0.65rem; opacity: 0.7; font-style: italic; }
+        .page-badge { font-size: 0.6rem; opacity: 0.7; margin-top: 4px; }
 
-        /* Lecteur PDF (Modal) */
+        /* Lecteur PDF */
         .modal { 
             display: none; position: fixed; inset: 0; 
-            background: rgba(0,0,0,0.95); z-index: 1000; flex-direction: column; 
+            background: #000; z-index: 1000; flex-direction: column; 
         }
         
         .modal-header {
-            padding: 15px; display: flex; justify-content: space-between;
-            align-items: center; background: var(--cuir-grimoire); color: var(--or-terni);
+            padding: 10px; display: flex; justify-content: space-between;
+            align-items: center; background: var(--cuir); color: var(--or);
         }
         
-        iframe { width: 100%; height: 100%; border: none; background: white; }
+        iframe { width: 100%; height: 100%; border: none; }
+        
+        /* Animation de chargement */
+        .loader { border: 3px solid #f3f3f3; border-top: 3px solid var(--or); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-right: 5px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
     <div class="header">
         <button class="back-btn" onclick="window.location.href='index.html'">📜</button>
-        <h1 style="margin:0; font-size:1.1rem; letter-spacing:1px;">LA GRANDE BIBLIOTHÈQUE</h1>
+        <h1 style="margin:0; font-size:1rem;">BIBLIOTHÈQUE</h1>
     </div>
 
     <div class="grimoire-grid" id="grimoire-list">
@@ -101,23 +80,19 @@
 
     <div id="reader" class="modal">
         <div class="modal-header">
-            <span id="v-title">Lecture</span>
-            <button onclick="closeReader()" style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;">✕</button>
+            <span id="v-title" style="font-size: 0.8rem;">Lecture...</span>
+            <button onclick="closeReader()" style="background:none; border:none; color:white; font-size:1.2rem;">✕</button>
         </div>
-        <iframe id="pdf-viewer" src=""></iframe>
+        <div id="loading-msg" style="text-align:center; padding: 20px; color: var(--or);"><div class="loader"></div> Ouverture du grimoire...</div>
+        <iframe id="pdf-viewer" src="" onload="document.getElementById('loading-msg').style.display='none'"></iframe>
     </div>
 
     <script>
-        // --- CONFIGURATION FIREBASE ---
+        // Configuration simple
         const config = { databaseURL: "https://asrar-bc059.firebaseio.com" };
         firebase.initializeApp(config);
         const db = firebase.database();
 
-        // --- CONFIGURATION ROBOT PDF.js ---
-        const pdfjsLib = window['pdfjs-dist/build/pdf'];
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
-
-        // --- CHARGEMENT DE LA BRANCHE ALMAQTAB ---
         function loadBooks() {
             db.ref('almaqtab').on('value', snap => {
                 const data = snap.val();
@@ -126,42 +101,27 @@
                 const items = Object.keys(data).map(k => ({...data[k], key: k}));
                 
                 document.getElementById('grimoire-list').innerHTML = items.map(grim => `
-                    <div class="grimoire-card" onclick="openGrimoire('${grim.pdf}', '${grim.text}')">
-                        <img src="${grim.img}" class="grimoire-cover" onerror="this.src='https://via.placeholder.com/150x200?text=Livre'">
+                    <div class="grimoire-card" onclick="openGrimoire('${grim.pdf}', '${grim.text.replace(/'/g, "\\'")}')">
+                        <img src="${grim.img}" class="grimoire-cover" loading="lazy">
                         <div class="grimoire-info">
-                            <div class="grimoire-title">${grim.text ? grim.text.replace('.pdf', '') : 'Manuscrit'}</div>
-                            <div id="p-${grim.key}" class="page-count">Calcul des pages...</div>
+                            <div class="grimoire-title">${grim.text ? grim.text.replace('.pdf', '') : 'Grimoire'}</div>
+                            <div class="page-badge">📖 Consulter</div>
                         </div>
                     </div>
                 `).join('');
-
-                // Demander au robot de compter pour chaque livre
-                items.forEach(grim => {
-                    if(grim.pdf) countPages(grim.pdf, `p-${grim.key}`);
-                });
             });
         }
 
-        // --- FONCTION DU ROBOT POUR COMPTER LES PAGES ---
-        async function countPages(url, elementId) {
-            try {
-                // Transformation pour lecture directe du PDF sur Drive
-                const streamUrl = url.replace('/view', '/preview').replace('/edit', '/preview');
-                const loadingTask = pdfjsLib.getDocument(streamUrl);
-                const pdf = await loadingTask.promise;
-                document.getElementById(elementId).innerText = "📖 " + pdf.numPages + " pages";
-            } catch (e) {
-                document.getElementById(elementId).innerText = "📖 Grimoire précieux";
-            }
-        }
-
-        // --- GESTION DU LECTEUR ---
         function openGrimoire(url, title) {
             if(!url) return alert("Lien introuvable.");
-            let finalUrl = url.replace('/view', '/preview').replace('/edit', '/preview');
-            document.getElementById('v-title').innerText = title;
-            document.getElementById('pdf-viewer').src = finalUrl;
+            
             document.getElementById('reader').style.display = 'flex';
+            document.getElementById('loading-msg').style.display = 'block';
+            document.getElementById('v-title').innerText = title;
+            
+            // Transformation du lien Drive
+            let finalUrl = url.replace('/view', '/preview').replace('/edit', '/preview');
+            document.getElementById('pdf-viewer').src = finalUrl;
         }
 
         function closeReader() {
