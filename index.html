@@ -3,140 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ASRAR PRO - Hub Moderne</title>
+    <title>ASRAR PRO - Hub Intelligent</title>
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8198863698846619" crossorigin="anonymous"></script>
 
     <style>
         :root {
-            --bg-dark: #0a0e17; /* Fond ultra sombre, uni */
+            --bg-dark: #0a0e17; /* Fond uni ultra sombre */
             --card-bg: #161b2a;
-            --text-main: #e0e6ed;
+            --text-main: #ffffff;
             --text-muted: #8899a6;
-            --accent-default: #00bcd4; /* Cyan par défaut */
+            --accent-default: #00bcd4;
         }
 
         body {
             background-color: var(--bg-dark);
             color: var(--text-main);
-            font-family: 'Inter', 'Segoe UI', Roboto, sans-serif; /* Police Pro, clean */
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             margin: 0;
             padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            min-height: 100vh;
         }
 
-        /* En-tête Clean & Pro */
+        /* En-tête Pro */
         .header-pro {
             text-align: center;
-            margin: 30px 0 40px;
+            margin: 40px 0 50px;
         }
 
         .main-title {
-            font-size: 1.8rem;
-            font-weight: 800;
-            letter-spacing: -1px; /* Style moderne resserré */
-            background: linear-gradient(135deg, #fff 0%, #888 100%);
+            font-size: 2rem;
+            font-weight: 900;
+            letter-spacing: -1.5px;
+            text-transform: uppercase;
+            background: linear-gradient(180deg, #fff 0%, #555 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin: 0;
         }
 
-        .tagline-pro {
-            font-size: 0.8rem;
+        .tagline {
+            font-size: 0.75rem;
             color: var(--text-muted);
+            letter-spacing: 3px;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-top: 5px;
+            margin-top: 8px;
         }
 
-        /* Grille Moderne */
-        .grid-pro {
+        /* Grille Interactive */
+        .grid-container {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
+            gap: 18px;
             width: 100%;
-            max-width: 500px;
-            margin-bottom: 40px;
+            max-width: 480px;
         }
 
         .card-pro {
             background: var(--card-bg);
-            border-radius: 12px;
-            border: 1px solid #2d3748;
+            border-radius: 16px;
+            border: 1px solid #232d42;
             overflow: hidden;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.3s;
+            position: relative;
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
             display: flex;
             flex-direction: column;
-            position: relative;
         }
 
-        .card-pro:active { transform: scale(0.97); }
-
-        /* Effet de lueur au survol/clic */
-        .card-pro:hover {
-            box-shadow: 0 0 15px var(--card-glow-color, rgba(0, 188, 212, 0.3));
-            border-color: var(--card-glow-color, #00bcd4);
+        .card-pro:active {
+            transform: scale(0.96);
         }
 
-        /* Conteneur d'image propre */
-        .image-box-pro {
+        /* Image avec fallback noir */
+        .img-wrapper {
             width: 100%;
-            height: 90px;
+            height: 100px;
             background: #000;
+            overflow: hidden;
             position: relative;
         }
 
-        .image-box-pro img {
+        .img-wrapper img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: opacity 0.5s;
+            opacity: 0;
+            transition: opacity 0.6s ease;
         }
 
-        /* Texte Professionnel */
-        .info-box-pro {
-            padding: 12px;
-            text-align: left;
-            border-top: 1px solid #2d3748;
+        .img-wrapper img.loaded {
+            opacity: 1;
         }
 
-        .label-pro {
+        /* Texte & Bouton Luminescent */
+        .card-info {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #232d42;
+        }
+
+        .card-title {
             font-size: 0.85rem;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--text-main);
             margin: 0;
         }
 
-        /* Bouton avec Luminescence Adaptative */
-        .btn-enter {
-            width: 24px;
-            height: 24px;
+        .btn-glow {
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
-            background: transparent;
-            border: 1px solid var(--card-glow-color, #00bcd4);
-            color: var(--card-glow-color, #00bcd4);
+            border: 1.5px solid var(--glow-color, var(--accent-default));
+            color: var(--glow-color, var(--accent-default));
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 0.8rem;
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            box-shadow: 0 0 10px var(--card-glow-color, rgba(0, 188, 212, 0.5));
-            transition: all 0.3s;
+            box-shadow: 0 0 12px var(--glow-alpha, rgba(0, 188, 212, 0.4));
+            transition: all 0.3s ease;
         }
 
-        /* Zone Pub Pro */
-        .ad-pro {
-            width: 100%;
-            max-width: 500px;
+        /* Zone Publicitaire */
+        .ad-section {
             margin-top: auto;
+            width: 100%;
+            max-width: 480px;
+            padding: 25px 0;
             text-align: center;
-            border-top: 1px solid #2d3748;
-            padding: 15px 0;
         }
     </style>
 </head>
@@ -144,13 +143,13 @@
 
     <div class="header-pro">
         <h1 class="main-title">ASRAR PRO</h1>
-        <div class="tagline-pro">Intelligence Mystique</div>
+        <div class="tagline">Technologie & Ézotérisme</div>
     </div>
 
-    <div class="grid-pro" id="main-grid">
+    <div class="grid-container" id="hub-grid">
         </div>
 
-    <div class="ad-pro">
+    <div class="ad-section">
         <ins class="adsbygoogle"
              style="display:block"
              data-ad-client="ca-pub-8198863698846619"
@@ -162,7 +161,7 @@
 
     <script>
         // Vos données JSON exactes
-        const menuData = {
+        const data = {
           "asrar": [
             { "id": 1, "titre": "Asrar", "image": "https://i.ibb.co/mryjJvhR/40688297-mystique-alchimique-cercle-secret-la-magie-cercle-pour-breloques-vectoriel.jpg" },
             { "id": 2, "titre": "Bibliothèque", "image": "https://i.ibb.co/zWf4zhFR/pile-livres-colores-1308-171741.jpg" },
@@ -175,70 +174,65 @@
           ]
         };
 
-        function renderGrid() {
-            const grid = document.getElementById('main-grid');
-            grid.innerHTML = menuData.asrar.map((item, index) => `
-                <div class="card-pro" id="card-${item.id}" onclick="handleNav('${item.titre}')">
-                    <div class="image-box-pro">
-                        <img src="${item.image}" id="img-${item.id}" alt="${item.titre}" loading="lazy" crossorigin="anonymous">
+        function initHub() {
+            const grid = document.getElementById('hub-grid');
+            grid.innerHTML = data.asrar.map(item => `
+                <div class="card-pro" id="card-${item.id}" onclick="navigate('${item.titre}')">
+                    <div class="img-wrapper">
+                        <img src="${item.image}" id="img-${item.id}" crossorigin="anonymous" 
+                             onload="processColor(this, '${item.id}')">
                     </div>
-                    <div class="info-box-pro">
-                        <h3 class="label-pro">${item.titre}</h3>
+                    <div class="card-info">
+                        <h3 class="card-title">${item.titre}</h3>
+                        <div class="btn-glow" id="btn-${item.id}">→</div>
                     </div>
-                    <div class="btn-enter" id="btn-${item.id}">→</div>
                 </div>
             `).join('');
-            
-            // Une fois la grille dessinée, on calcule les couleurs
-            calculateGlowColors();
         }
 
-        // --- MAGIE DE LA LUMINESCENCE ADAPTATIVE ---
-        function calculateGlowColors() {
-            menuData.asrar.forEach(item => {
-                const img = document.getElementById(`img-${item.id}`);
-                const card = document.getElementById(`card-${item.id}`);
-                const btn = document.getElementById(`btn-${item.id}`);
-
-                // S'assure que l'image est chargée pour extraire la couleur
-                if (img.complete) {
-                    applyColor(img, card, btn);
-                } else {
-                    img.addEventListener('load', () => applyColor(img, card, btn));
-                }
-            });
-        }
-
-        function applyColor(img, card, btn) {
+        // --- SYSTÈME DE LUMINESCENCE ADAPTATIVE ---
+        function processColor(img, id) {
+            img.classList.add('loaded');
             try {
-                // Création d'un canvas invisible pour analyser l'image
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
-                canvas.width = 1; canvas.height = 1; // On réduit à 1 pixel pour avoir la moyenne
+                canvas.width = 1; canvas.height = 1;
                 ctx.drawImage(img, 0, 0, 1, 1);
                 const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data;
                 
-                // On crée une couleur lumineuse (on booste la saturation)
-                const glowColor = `rgba(${r}, ${g}, ${b}, 0.6)`;
-                const borderColor = `rgb(${r}, ${g}, ${b})`;
-
-                // Application des styles CSS variables dynamiques
-                card.style.setProperty('--card-glow-color', borderColor);
-                btn.style.borderColor = borderColor;
-                btn.style.color = borderColor;
-                btn.style.boxShadow = `0 0 10px ${glowColor}`;
+                const color = `rgb(${r}, ${g}, ${b})`;
+                const alphaColor = `rgba(${r}, ${g}, ${b}, 0.3)`;
+                
+                const card = document.getElementById(`card-${id}`);
+                const btn = document.getElementById(`btn-${id}`);
+                
+                // Appliquer les styles dynamiques
+                card.style.setProperty('--glow-color', color);
+                card.style.setProperty('--glow-alpha', alphaColor);
+                
+                // Effet de bordure lumineuse sur la carte
+                card.style.borderColor = `rgba(${r}, ${g}, ${b}, 0.5)`;
+                card.addEventListener('mouseenter', () => {
+                    card.style.boxShadow = `0 0 20px rgba(${r}, ${g}, ${b}, 0.4)`;
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.boxShadow = 'none';
+                });
             } catch (e) {
-                console.log("Erreur d'extraction de couleur (CORS probable).");
+                console.warn("Analyse de couleur bloquée par CORS pour l'ID: " + id);
             }
         }
 
-        function handleNav(titre) {
-            if (titre === "Marché & Services") window.location.href = 'Market.html';
+        function navigate(titre) {
+            if (navigator.vibrate) navigator.vibrate(10);
+            
+            if (titre === "Asrar") window.location.href = 'Asrar.html';
+            else if (titre === "Marché & Services") window.location.href = 'Market.html';
             else if (titre === "Bibliothèque") window.location.href = 'biblio.html';
-            else alert("La section " + titre + " est en cours d'activation.");
+            else alert("La section " + titre + " est en cours de développement.");
         }
 
-        window.onload = renderGrid;
+        window.onload = initHub;
     </script>
 </body>
 </html>
