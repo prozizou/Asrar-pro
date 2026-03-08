@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASRAR PRO - Astral Expert</title>
+    <title>ASRAR PRO - Numérologie Expert</title>
     <style>
         :root { 
             --bg: #0a0e17; --card: #161b2a; --accent: #00bcd4; --text: #ffffff; 
@@ -16,29 +16,29 @@
         .header { width: 100%; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
         .back-btn { background: rgba(0, 188, 212, 0.1); border: 1px solid var(--accent); color: var(--accent); padding: 8px 15px; border-radius: 20px; text-decoration: none; font-size: 0.7rem; font-weight: bold; }
 
-        /* Section Saisie */
-        .section-card { background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; }
-        label { display: block; font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
-        input { width: 100%; background: transparent; border: none; border-bottom: 2px solid var(--accent); color: white; font-size: 2.5rem; text-align: center; outline: none; font-weight: 800; margin-bottom: 15px; }
+        /* Sections */
+        .section-card { background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        label { display: block; font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; text-align: center; }
+        input { width: 100%; background: transparent; border: none; border-bottom: 2px solid var(--accent); color: white; font-size: 2.2rem; text-align: center; outline: none; font-weight: 800; margin-bottom: 15px; }
 
-        /* Items de Résultat */
+        /* Items */
         .res-item { background: var(--card); padding: 15px; border-radius: 12px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .res-label { font-size: 0.75rem; color: var(--muted); font-weight: 600; text-transform: uppercase; }
         .res-val { font-size: 1.1rem; font-weight: 700; text-align: right; }
         
-        /* Détails Astraux (Nouveauté) */
-        .astral-detail { font-size: 0.7rem; color: var(--purple); margin-top: 4px; display: block; font-weight: 900; letter-spacing: 0.5px; }
+        /* Détails Astraux */
+        .astral-detail { font-size: 0.7rem; color: var(--purple); margin-top: 4px; display: block; font-weight: bold; }
 
-        /* Badge Nature */
-        .nature-badge { padding: 5px 15px; border-radius: 8px; font-size: 0.8rem; font-weight: 900; border: 1px solid; }
+        /* Natures */
+        .nature-badge { padding: 4px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 900; border: 1px solid; }
         .eau { color: #4299e1; border-color: #4299e1; background: rgba(66,153,225,0.1); }
         .feu { color: #f56565; border-color: #f56565; background: rgba(245,101,101,0.1); }
         .terre { color: #ed8936; border-color: #ed8936; background: rgba(237,137,54,0.1); }
         .air { color: #cbd5e0; border-color: #cbd5e0; background: rgba(203,213,224,0.1); }
 
-        /* Zone Compatibilité (Nouveauté) */
-        .comp-title { color: var(--accent); font-size: 0.8rem; font-weight: bold; text-align: center; margin: 10px 0; text-transform: uppercase; }
-        #comp-result { padding: 15px; border-radius: 12px; text-align: center; font-weight: bold; font-size: 0.85rem; border: 1px dashed var(--border); transition: 0.3s; margin-top: 10px; }
+        /* Compatibilité */
+        .comp-title { color: var(--accent); font-size: 0.8rem; font-weight: bold; text-align: center; margin: 20px 0 10px; text-transform: uppercase; letter-spacing: 1px; }
+        #comp-result { padding: 15px; border-radius: 12px; text-align: center; font-weight: bold; font-size: 0.85rem; border: 1px dashed var(--border); transition: 0.3s; }
         .comp-success { color: #48bb78; background: rgba(72,187,120,0.1); border-color: #48bb78 !important; }
         .comp-danger { color: #f56565; background: rgba(245,101,101,0.1); border-color: #f56565 !important; }
     </style>
@@ -47,12 +47,12 @@
 
     <div class="header">
         <a href="index.html" class="back-btn">← HUB ASRAR</a>
-        <span style="font-size: 0.6rem; color: var(--pink); font-weight: 900;">MODE EXPERT</span>
+        <span style="font-size: 0.6rem; color: var(--pink); font-weight: 900; letter-spacing: 2px;">MODE EXPERT V3</span>
     </div>
 
     <div class="container">
         <div class="section-card">
-            <label>Votre Nombre (X)</label>
+            <label>Valeur d'Entrée (X)</label>
             <input type="number" id="X" value="308" oninput="runCalculs()">
             
             <div class="res-item">
@@ -64,20 +64,20 @@
             </div>
 
             <div class="res-item">
-                <span class="res-label">Nature Élémentaire</span>
+                <span class="res-label">Nature</span>
                 <div id="nat-box"></div>
             </div>
         </div>
 
-        <div class="comp-title">Compatibilité des Natures</div>
+        <div class="comp-title">Test de Compatibilité Élémentaire</div>
         <div class="section-card">
-            <div style="display: flex; gap: 10px;">
+            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
                 <div style="flex:1;">
                     <label>Votre X</label>
                     <input type="number" id="val1" value="308" oninput="checkCompat()">
                 </div>
                 <div style="flex:1;">
-                    <label>Nombre Projet/Ami</label>
+                    <label>Second Nombre</label>
                     <input type="number" id="val2" placeholder="Ex: 129" oninput="checkCompat()">
                 </div>
             </div>
@@ -119,22 +119,18 @@
             const x = parseInt(document.getElementById('X').value);
             if (isNaN(x)) return;
 
-            // Zodiaque & Détails Astraux
             const rZ = x % 12;
             const z = zodiacData[rZ];
             document.getElementById('zod-name').innerText = `${rZ} — ${z.n}`;
-            document.getElementById('zod-meta').innerText = `Planète: ${z.p} | Dir: ${z.d} | Force: ${z.h}`;
+            document.getElementById('zod-meta').innerText = `Astre: ${z.p} | Dir: ${z.d} | Force: ${z.h}`;
 
-            // Nature
             const rN = x % 4;
             document.getElementById('nat-box').innerHTML = `<span class="nature-badge ${natCls[rN]}">${nats[rN]}</span>`;
 
-            // Méditation & Rouwhanique
             const inv = parseInt(x.toString().split('').reverse().join(''));
             document.getElementById('med-val').innerText = ((x + inv) * 9).toLocaleString();
             document.getElementById('rouw-val').innerText = (x * x).toLocaleString();
             
-            // Sync compatibilité
             document.getElementById('val1').value = x;
             checkCompat();
         }
@@ -143,16 +139,16 @@
             const n1 = parseInt(document.getElementById('val1').value);
             const n2 = parseInt(document.getElementById('val2').value);
             const box = document.getElementById('comp-result');
-            if (isNaN(n1) || isNaN(n2)) return;
+            if (isNaN(n1) || isNaN(n2)) { box.innerText = "Entrez un 2ème nombre..."; box.className = ""; return; }
 
             const r1 = n1 % 4; const r2 = n2 % 4;
-            let status = "comp-success";
             let msg = `${nats[r1]} + ${nats[r2]} : `;
+            let status = "comp-success";
 
-            if (r1 === r2) msg += "Harmonie Parfaite";
-            else if ((r1==1 && r2==3) || (r1==3 && r2==1)) msg += "Excellent (Le Feu et l'Air)";
-            else if ((r1==0 && r2==1) || (r1==1 && r2==0)) { msg += "Conflit (L'Eau et le Feu)"; status = "comp-danger"; }
-            else msg += "Relation Stable";
+            if (r1 === r2) msg += "Union Parfaite";
+            else if ((r1==1 && r2==3) || (r1==3 && r2==1)) msg += "Excellent (Attirance)";
+            else if ((r1==0 && r2==1) || (r1==1 && r2==0)) { msg += "Opposition (Choc)"; status = "comp-danger"; }
+            else msg += "Relation Neutre";
 
             box.innerText = msg;
             box.className = status;
